@@ -6,7 +6,7 @@ package model.world;
  * 
  * @author Belal Abouraya
  */
-public class Cell {
+public abstract class Cell {
 	private boolean isVisible;
 
 	public Cell() {

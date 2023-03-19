@@ -21,7 +21,7 @@ public class Game {
 	public static ArrayList<Hero> availableHeros;
 	public static ArrayList<Hero> heros;
 	public static ArrayList<Zombie> zombies;
-	static Cell[][] map;
+	public static Cell[][] map;
 
 	/**
 	 * Reads the CSV file with filePath and loads the Heros into the availableHeros
