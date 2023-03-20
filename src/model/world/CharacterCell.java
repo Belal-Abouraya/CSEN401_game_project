@@ -27,6 +27,10 @@ public class CharacterCell extends Cell{
 		this.isSafe = isSafe;
 	}
 	
+	/**
+	* Constructor for the CharacterCell class that accepts only one arguement
+	*/
+	
 	public CharacterCell(Character character) {
 		this(false , character);
 	}
