@@ -4,9 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
-
+import model.characters.Explorer;
+import model.characters.Fighter;
 import model.characters.Hero;
 import model.characters.Zombie;
 import model.world.Cell;
@@ -18,10 +18,10 @@ import model.world.Cell;
  * @author Belal
  */
 public class Game {
-	public static ArrayList<Hero> availableHeros;
-	public static ArrayList<Hero> heros;
-	public static ArrayList<Zombie> zombies;
-	public static Cell[][] map;
+	public static ArrayList<Hero> availableHeros = new ArrayList<>();
+	public static ArrayList<Hero> heros = new ArrayList<>();
+	public static ArrayList<Zombie> zombies = new ArrayList<>();
+	public static Cell[][] map = new Cell[15][15];
 
 	/**
 	 * Reads the CSV file with filePath and loads the Heros into the availableHeros
@@ -49,22 +49,20 @@ public class Game {
 			int maxHp = Integer.parseInt(tmp[2]);
 			int maxActions = Integer.parseInt(tmp[3]);
 			int attackDmg = Integer.parseInt(tmp[4]);
-			// todo
-			// add the appropriate constructors when the subclasses are finished
 			switch (type) {
 			case "FIGH":
-
+				availableHeros.add(new Fighter(name, maxHp, attackDmg, maxActions));
 				break;
 			case "EXP":
-
+				availableHeros.add(new Explorer(name, maxHp, attackDmg, maxActions));
 				break;
 			case "MED":
-
+				availableHeros.add(new Explorer(name, maxHp, attackDmg, maxActions));
 				break;
 			}
-			System.out.println(Arrays.toString(tmp));
 		}
 		fr.close();
+		sc.close();
 	}
 
 }
