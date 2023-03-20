@@ -18,6 +18,7 @@ public class Medic extends Hero{
      * @param attackDmg
      * @param maxActions
      */
+	
     public Medic(String name , int maxHp , int attackDmg , int maxActions){
         super(name , maxHp , attackDmg , maxActions);
     }

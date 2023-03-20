@@ -19,7 +19,7 @@ import java.awt.Point;
 public abstract class Character {
 	private String name;
 	private Point location;
-	private int maxHP;
+	private int maxHp;
 	private int currentHp;
 	private int attackDmg;
 	private Character target;
@@ -35,11 +35,11 @@ public abstract class Character {
 
 	public Character(String name, int maxHp, int attackDmg) {
 		this.name = name;
-		this.maxHP = maxHp;
+		this.maxHp = maxHp;
 		this.attackDmg = attackDmg;
 		this.target = null;
 		this.location = null;
-		this.currentHp = 0;
+		this.currentHp = maxHp;
 	}
 
 	/**
@@ -67,7 +67,7 @@ public abstract class Character {
 	 * @param currentHp the currentHp to set
 	 */
 	public void setCurrentHp(int currentHp) {
-		this.currentHp = currentHp;
+		this.currentHp = Math.min(currentHp , maxHp);
 	}
 
 	/**
@@ -94,8 +94,8 @@ public abstract class Character {
 	/**
 	 * @return the maxHP
 	 */
-	public int getMaxHP() {
-		return maxHP;
+	public int getMaxHp() {
+		return maxHp;
 	}
 
 	/**

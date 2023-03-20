@@ -5,7 +5,7 @@ import model.collectibles.Vaccine;
 import java.util.ArrayList;
 
 /**
- * Hero is the abstract base class of all heros in the game. it contains all
+ * Hero is the abstract base class of all heroes in the game. it contains all
  * common attributes of heros in the game such as :
  * <ul>
  * <li>number of available actions in a turn</li>
@@ -41,8 +41,8 @@ public abstract class Hero extends Character {
 		this.maxActions = maxActions;
 		this.actionsAvailable = maxActions;
 		this.specialAction = false;
-		this.vaccineInventory = null;
-		this.supplyInventory = null;
+		this.vaccineInventory = new ArrayList<>();
+		this.supplyInventory = new ArrayList<>();
 	}
 
 	/**

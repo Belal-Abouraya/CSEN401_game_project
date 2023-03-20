@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import model.characters.Explorer;
 import model.characters.Fighter;
+import model.characters.Medic;
 import model.characters.Hero;
 import model.characters.Zombie;
 import model.world.Cell;
@@ -18,8 +19,8 @@ import model.world.Cell;
  * @author Belal
  */
 public class Game {
-	public static ArrayList<Hero> availableHeros = new ArrayList<>();
-	public static ArrayList<Hero> heros = new ArrayList<>();
+	public static ArrayList<Hero> availableHeroes = new ArrayList<>();
+	public static ArrayList<Hero> heroes = new ArrayList<>();
 	public static ArrayList<Zombie> zombies = new ArrayList<>();
 	public static Cell[][] map = new Cell[15][15];
 
@@ -39,7 +40,7 @@ public class Game {
 	 * @param filePath The path of the file containg the heros' information.
 	 * @throws FileNotFoundException, IOException
 	 */
-	public static void loadHeros(String filePath) throws FileNotFoundException, IOException {
+	public static void loadHeroes(String filePath) throws FileNotFoundException, IOException {
 		FileReader fr = new FileReader(filePath);
 		Scanner sc = new Scanner(fr);
 		while (sc.hasNextLine()) {
@@ -51,13 +52,13 @@ public class Game {
 			int attackDmg = Integer.parseInt(tmp[4]);
 			switch (type) {
 			case "FIGH":
-				availableHeros.add(new Fighter(name, maxHp, attackDmg, maxActions));
+				availableHeroes.add(new Fighter(name, maxHp, attackDmg, maxActions));
 				break;
 			case "EXP":
-				availableHeros.add(new Explorer(name, maxHp, attackDmg, maxActions));
+				availableHeroes.add(new Explorer(name, maxHp, attackDmg, maxActions));
 				break;
 			case "MED":
-				availableHeros.add(new Explorer(name, maxHp, attackDmg, maxActions));
+				availableHeroes.add(new Medic(name, maxHp, attackDmg, maxActions));
 				break;
 			}
 		}

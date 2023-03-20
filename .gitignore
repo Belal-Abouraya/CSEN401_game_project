@@ -5,6 +5,12 @@
 .settings/
 bin/
 
+#intelliJ files
+.name
+misc.xml
+vcs.xml
+workspace.xml
+
 # Compiled class file
 *.class
 

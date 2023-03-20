@@ -1,5 +1,7 @@
 package model.world;
 
+import model.characters.Character;
+
 /**
  * CharacterCell is a special type of cells.
  * it contains two attributes which are:
@@ -15,20 +17,27 @@ public class CharacterCell extends Cell{
 	private Character character;
 	private boolean isSafe;
 	
-	  /**
+	 /**
+     * constructor for the CharacterCell class that initializes the character and isSafe variables
+     */
+	
+
+	public CharacterCell(boolean isSafe , Character character) {
+		this.character = character;
+		this.isSafe = isSafe;
+	}
+	
+	public CharacterCell(Character character) {
+		this(false , character);
+	}
+	
+	
+	/**
      * the default construcor of the class
      */
 
 	public CharacterCell() {
 		
-	}
-	  /**
-     * constructor for the CharacterCell class that initializes the character and isSafe variables
-     */
-
-	public CharacterCell(Character character , boolean isSafe) {
-		this.character = character;
-		this.isSafe = isSafe;
 	}
 	
 	/**

@@ -8,7 +8,7 @@ import model.collectibles.Collectible;
 
 
 public class CollectibleCell extends Cell{
-	Collectible collectible;
+	private Collectible collectible;
 	/**
 	 * The default constructor for the class.
 	 */
