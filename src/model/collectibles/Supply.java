@@ -1,4 +1,16 @@
 package model.collectibles;
 
-public class Supply {
+/**
+ * represents Supplies  in the game
+ *
+ * @author Rafael Samuel
+ */
+public class Supply implements Collectible {
+	
+	/**
+     * Default constructor for the class.
+     */
+	public Supply() {
+		
+	}
 }
