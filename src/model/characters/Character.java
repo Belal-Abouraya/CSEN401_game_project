@@ -34,6 +34,8 @@ public abstract class Character {
 	 */
 
 	public Character(String name, int maxHp, int attackDmg) {
+		maxHp = Math.max(maxHp, 0);
+		attackDmg = Math.max(attackDmg, 0);
 		this.name = name;
 		this.maxHp = maxHp;
 		this.attackDmg = attackDmg;
@@ -67,7 +69,8 @@ public abstract class Character {
 	 * @param currentHp the currentHp to set
 	 */
 	public void setCurrentHp(int currentHp) {
-		this.currentHp = Math.min(currentHp , maxHp);
+		currentHp = Math.max(currentHp, 0);
+		this.currentHp = Math.min(currentHp, maxHp);
 	}
 
 	/**

@@ -38,6 +38,7 @@ public abstract class Hero extends Character {
 
 	public Hero(String name, int maxHp, int attackDmg, int maxActions) {
 		super(name, maxHp, attackDmg);
+		maxActions = Math.max(maxActions, 0);
 		this.maxActions = maxActions;
 		this.actionsAvailable = maxActions;
 		this.specialAction = false;
@@ -58,6 +59,7 @@ public abstract class Hero extends Character {
 	 * @param actionsAvailable the number of available actions to set.
 	 */
 	public void setActionsAvailable(int actionsAvailable) {
+		actionsAvailable = Math.max(actionsAvailable, 0);
 		this.actionsAvailable = actionsAvailable;
 	}
 
