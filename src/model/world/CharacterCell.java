@@ -23,6 +23,7 @@ public class CharacterCell extends Cell{
 	
 
 	public CharacterCell(boolean isSafe , Character character) {
+		super();
 		this.character = character;
 		this.isSafe = isSafe;
 	}
@@ -32,6 +33,7 @@ public class CharacterCell extends Cell{
 	*/
 	
 	public CharacterCell(Character character) {
+	
 		this(false , character);
 	}
 	
@@ -41,7 +43,7 @@ public class CharacterCell extends Cell{
      */
 
 	public CharacterCell() {
-		
+		super();
 	}
 	
 	/**
