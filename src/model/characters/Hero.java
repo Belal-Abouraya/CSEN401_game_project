@@ -4,6 +4,10 @@ import model.collectibles.Supply;
 import model.collectibles.Vaccine;
 import java.util.ArrayList;
 
+import engine.Game;
+import exceptions.InvalidTargetException;
+import exceptions.NotEnoughActionsException;
+
 /**
  * Hero is the abstract base class of all heroes in the game. it contains all
  * common attributes of heros in the game such as :
@@ -16,6 +20,7 @@ import java.util.ArrayList;
  * </ul>
  *
  * @author Ahmed Hussein
+ * @author Belal Abouraya
  */
 
 public abstract class Hero extends Character {
@@ -47,7 +52,31 @@ public abstract class Hero extends Character {
 	}
 
 	/**
-	 *
+	 * checks the availble actions and throws exception if there are not any
+	 * othrewise it calls the superclass method and decrements the available
+	 * actions.
+	 * 
+	 * @throws NotEnoughActionsException
+	 * @throws InvalidTargetException
+	 */
+	@Override
+	public void attack() throws InvalidTargetException, NotEnoughActionsException {
+		if (actionsAvailable > 0) {
+			super.attack();
+			actionsAvailable--;
+		} else
+			throw new NotEnoughActionsException();
+	}
+
+	/**
+	 * removes the dead hero from the heroes ArrayList
+	 */
+	@Override
+	public void onCharacterDeath() {
+		Game.heroes.remove(this);
+	}
+
+	/**
 	 * @return the number of the available actions.
 	 */
 	public int getActionsAvailable() {
@@ -55,7 +84,6 @@ public abstract class Hero extends Character {
 	}
 
 	/**
-	 *
 	 * @param actionsAvailable the number of available actions to set.
 	 */
 	public void setActionsAvailable(int actionsAvailable) {
@@ -64,7 +92,6 @@ public abstract class Hero extends Character {
 	}
 
 	/**
-	 *
 	 * @return the maximum number of actions in a turn.
 	 */
 	public int getMaxActions() {
@@ -72,7 +99,6 @@ public abstract class Hero extends Character {
 	}
 
 	/**
-	 *
 	 * @return whether the special action is used.
 	 */
 	public boolean isSpecialAction() {
@@ -80,7 +106,6 @@ public abstract class Hero extends Character {
 	}
 
 	/**
-	 *
 	 * @param specialAction the special action usage state to set.
 	 */
 	public void setSpecialAction(boolean specialAction) {
@@ -88,7 +113,6 @@ public abstract class Hero extends Character {
 	}
 
 	/**
-	 *
 	 * @return the list of vaccines collected.
 	 */
 
@@ -97,7 +121,6 @@ public abstract class Hero extends Character {
 	}
 
 	/**
-	 *
 	 * @return the list of supplies collected.
 	 */
 	public ArrayList<Supply> getSupplyInventory() {

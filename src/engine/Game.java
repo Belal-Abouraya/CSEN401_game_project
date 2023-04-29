@@ -16,7 +16,7 @@ import model.world.Cell;
  * The Game class represents the main engine of the game, and ensures all game
  * rules are followed
  * 
- * @author Belal
+ * @author Belal Abouraya
  */
 public class Game {
 	public static ArrayList<Hero> availableHeroes = new ArrayList<>();

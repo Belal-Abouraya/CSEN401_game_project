@@ -10,7 +10,7 @@ public abstract class GameActionException extends Exception {
 	/**
 	 * Default constructor for the class.
 	 */
-	public GameActionException() {
+	GameActionException() {
 		super();
 	}
 
@@ -19,7 +19,7 @@ public abstract class GameActionException extends Exception {
 	 * 
 	 * @param s Custom message to display for the exception
 	 */
-	public GameActionException(String s) {
+	GameActionException(String s) {
 		super(s);
 	}
 }

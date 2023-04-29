@@ -9,21 +9,21 @@ package model.world;
 public abstract class Cell {
 	private boolean isVisible;
 
-	public Cell() {
+	Cell() {
 		isVisible = false;
 	}
 
 	/**
 	 * @return the isVisible
 	 */
-	public boolean isVisible() {
+	boolean isVisible() {
 		return isVisible;
 	}
 
 	/**
 	 * @param isVisible the isVisible to set
 	 */
-	public void setVisible(boolean isVisible) {
+	void setVisible(boolean isVisible) {
 		this.isVisible = isVisible;
 	}
 }
