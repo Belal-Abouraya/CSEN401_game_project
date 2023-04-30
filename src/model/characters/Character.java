@@ -48,10 +48,10 @@ public abstract class Character {
 		this.currentHp = maxHp;
 	}
 
-	/*
+	/**
 	 * Checks wether a character is adjacent to another one
 	 */
-	private boolean isAdjacent(Character c) {
+	public boolean isAdjacent(Character c) {
 		if (c == null)
 			return false;
 		Point tmp = c.getLocation();
@@ -84,6 +84,9 @@ public abstract class Character {
 	 */
 	void attack() throws InvalidTargetException, NotEnoughActionsException {
 		if (!isAdjacent(target))
+			throw new InvalidTargetException();
+		if((this instanceof Hero && target instanceof Hero) ||
+				(this instanceof Zombie && target instanceof Zombie))
 			throw new InvalidTargetException();
 		target.defend(this);
 		target.setCurrentHp(target.getCurrentHp() - attackDmg);

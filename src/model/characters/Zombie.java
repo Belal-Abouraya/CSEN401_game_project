@@ -31,6 +31,7 @@ public class Zombie extends Character {
 	 */
 	@Override
 	public void onCharacterDeath() {
+		super.onCharacterDeath();
 		Game.zombies.remove(this);
 	}
 

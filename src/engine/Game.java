@@ -25,13 +25,13 @@ public class Game {
 	public static Cell[][] map = new Cell[15][15];
 
 	/**
-	 * Reads the CSV file with filePath and loads the Heros into the availableHeros
+	 * Reads the CSV file with filePath and loads the Heroes into the availableHeroes
 	 * ArrayList. The .csv file format should be follows:
 	 * <ul>
-	 * <li>Each linerepresents the information of a single Hero.
+	 * <li>Each line represents the information of a single Hero.
 	 * <li>The data has no header, i.e. the first line represents the first Hero.
 	 * <li>The parameters are separated by a comma (,).
-	 * <li>The line represents the Heros’s data as follows: name, type, max Hp, max
+	 * <li>The line represents the Heroes’s data as follows: name, type, max Hp, max
 	 * actions, attack damage .
 	 * <li>The type represents the type of Hero:- • FIGH for Fighter • EXP for
 	 * Explorer • MED for Medic

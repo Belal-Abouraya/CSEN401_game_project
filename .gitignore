@@ -10,6 +10,8 @@ bin/
 misc.xml
 vcs.xml
 workspace.xml
+CSEN401_game_project.iml
+.idea/
 
 # Compiled class file
 *.class
