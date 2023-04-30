@@ -27,12 +27,14 @@ public class Zombie extends Character {
 	}
 
 	/**
-	 * removes the dead zombie from the zombies ArrayList
+	 * removes the dead zombie from the zombies ArrayList and calls
+	 * {@link spawnZombie}.
 	 */
 	@Override
 	public void onCharacterDeath() {
 		super.onCharacterDeath();
 		Game.zombies.remove(this);
+		Game.spawnZombie();
 	}
 
 }

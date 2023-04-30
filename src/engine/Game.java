@@ -11,6 +11,7 @@ import model.characters.Medic;
 import model.characters.Hero;
 import model.characters.Zombie;
 import model.world.Cell;
+import model.world.CharacterCell;
 
 /**
  * The Game class represents the main engine of the game, and ensures all game
@@ -22,6 +23,7 @@ public class Game {
 	public static ArrayList<Hero> availableHeroes = new ArrayList<>();
 	public static ArrayList<Hero> heroes = new ArrayList<>();
 	public static ArrayList<Zombie> zombies = new ArrayList<>();
+	public static ArrayList<int[]> emptyCells = new ArrayList<>();
 	public static Cell[][] map = new Cell[15][15];
 
 	/**
@@ -66,4 +68,17 @@ public class Game {
 		sc.close();
 	}
 
+	/**
+	 * working description
+	 */
+	public static void clearCell(int x, int y) {
+
+	}
+
+	/**
+	 * working description
+	 */
+	public static void spawnZombie() {
+
+	}
 }
