@@ -104,10 +104,10 @@ public abstract class Character {
 
 	/**
 	 * This method should is called whenever a character’s currentHp reaches zero.
-	 * It handles removing the character from the game and updating the map
+	 * It handles removing the character from the game and updating the map.
 	 */
 	void onCharacterDeath() {
-		((CharacterCell) Game.map[location.x][location.y]).setCharacter(null);
+		Game.clearCell(location.x, location.y);
 	}
 
 	/**
