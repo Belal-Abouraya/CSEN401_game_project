@@ -9,7 +9,7 @@ package model.world;
 public abstract class Cell {
 	private boolean isVisible;
 
-	Cell() {
+	public Cell() {
 		isVisible = false;
 	}
 

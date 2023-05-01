@@ -6,6 +6,7 @@ import model.collectibles.Supply;
 import model.collectibles.Vaccine;
 import java.util.ArrayList;
 import java.awt.Point;
+import java.util.Arrays;
 
 import engine.Game;
 import exceptions.InvalidTargetException;
@@ -78,17 +79,6 @@ public abstract class Hero extends Character {
 	 * A method that is called when the current hero wishes to move in a
 	 * particular direction.
 	 *
-	 * <p>
-	 *     first we make sure that we have action points
-	 *     then depending on the direction input we change the location of the hero
-	 *     after that we make sure that the new location is a valid one
-	 *     then we remove the hero from the previous location
-	 *     and add it to the new cell and depending on the type of the cell we make certain action:-
-	 *     1- already a character cell and in that case we see whether it contains a character
-	 *     2- a trap cell, in this case we handel the damage
-	 *     3- a collectible cell, in this case we pick up that collectible
-	 *
-	 * </p>
 	 *
 	 * @param direction
 	 *
@@ -130,7 +120,8 @@ public abstract class Hero extends Character {
 			((CharacterCell)Game.map[x][y]).setCharacter(this);
 		}
 		actionsAvailable--;
-		((CharacterCell)Game.map[oldX][oldY]).setCharacter(null);
+		Game.emptyCells.remove(new ArrayList<>(Arrays.asList(x,y)));
+		Game.clearCell(oldX,oldY);
 		makeAllAdjacentVisible(x,y);
 		setLocation(new Point(x,y));
 	}
@@ -172,10 +163,10 @@ public abstract class Hero extends Character {
 	 * @throws NoAvailableResourcesException
 	 */
 	public void useSpecial() throws NoAvailableResourcesException {
-		if(getSupplyInventory().isEmpty()){
+		if(supplyInventory.isEmpty()){
 			throw new NoAvailableResourcesException();
 		}
-		Supply supply = this.getSupplyInventory().get(0);
+		Supply supply = supplyInventory.get(0);
 		supply.use(this);
 		specialAction = true ;
 	}
@@ -202,6 +193,7 @@ public abstract class Hero extends Character {
 		Vaccine vaccine = vaccineInventory.get(0);
 		vaccine.use(this);
 		Point targetLocation = getTarget().getLocation();
+		Game.zombies.remove((Zombie) getTarget());
 		int x = targetLocation.x , y = targetLocation.y ;
 		Hero newHero = Game.availableHeroes.get(0);
 		Game.availableHeroes.remove(newHero);

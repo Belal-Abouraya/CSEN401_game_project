@@ -1,7 +1,10 @@
 package model.collectibles;
 
-import exceptions.NoAvailableResourcesException;
+import engine.Game;
+import exceptions.InvalidTargetException;
+import model.characters.Character;
 import model.characters.Hero;
+import model.characters.Zombie;
 
 /**
  * represents Vaccines in the game

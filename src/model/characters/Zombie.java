@@ -13,7 +13,8 @@ public class Zombie extends Character {
 	private static int ZOMBIES_COUNT;
 
 	/**
-	 * Constructor that initializes the name, maximum Hp, and attack damage .
+	 * Constructor that initializes the name, maximum Hp, and attack damage
+	 * and adds it to zombies arrayList in the Game.
 	 *
 	 * @pram name
 	 * @pram maxHp
@@ -21,6 +22,7 @@ public class Zombie extends Character {
 	 */
 	public Zombie() {
 		super("Zombie " + (ZOMBIES_COUNT + 1), 40, 10);
+		Game.zombies.add(this);
 		ZOMBIES_COUNT++;
 	}
 

@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import model.characters.Explorer;
 import model.characters.Fighter;
@@ -77,10 +78,7 @@ public class Game {
 	 */
 	public static void clearCell(int x, int y) {
 		map[x][y] = new CharacterCell();
-		ArrayList<Integer> tmp = new ArrayList<>(2);
-		tmp.add(x);
-		tmp.add(y);
-		emptyCells.add(tmp);
+		emptyCells.add(new ArrayList<>(Arrays.asList(x,y)));
 	}
 
 	/**

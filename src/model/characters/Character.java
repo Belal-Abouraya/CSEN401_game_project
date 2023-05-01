@@ -37,7 +37,7 @@ public abstract class Character {
 	 * @param maxHp
 	 * @param attackDmg
 	 */
-	Character(String name, int maxHp, int attackDmg) {
+	public Character(String name, int maxHp, int attackDmg) {
 		maxHp = Math.max(maxHp, 0);
 		attackDmg = Math.max(attackDmg, 0);
 		this.name = name;
@@ -73,7 +73,7 @@ public abstract class Character {
 	 * Handles applying the logic of an attack on the character’s target.
 	 * <p>
 	 * First checks if the target is adjacent to the character's or not where
-	 * adjacenct cells are defined as cells within radius 1 of the character's cell
+	 * adjacent cells are defined as cells within radius 1 of the character's cell
 	 * in all directions: Horizontal, Vertical, and Diagonal. if it is not it throws
 	 * an exception, otherwise it calls {@link defend} then decreases the target's
 	 * HP; finally it checks the target's HP if it is zero it sets target to null.
@@ -82,7 +82,7 @@ public abstract class Character {
 	 * @throws InvalidTargetException
 	 * @throws NotEnoughActionsException
 	 */
-	void attack() throws InvalidTargetException, NotEnoughActionsException {
+	public void attack() throws InvalidTargetException, NotEnoughActionsException {
 		if (!isAdjacent(target))
 			throw new InvalidTargetException();
 		if((this instanceof Hero && target instanceof Hero) ||
@@ -101,7 +101,7 @@ public abstract class Character {
 	 * 
 	 * @param target
 	 */
-	void defend(Character target) {
+	public void defend(Character target) {
 		target.setCurrentHp(target.getCurrentHp() - attackDmg / 2);
 	}
 
@@ -109,28 +109,28 @@ public abstract class Character {
 	 * This method should is called whenever a character’s currentHp reaches zero.
 	 * It handles removing the character from the game by calling {@link clearCell}.
 	 */
-	void onCharacterDeath() {
+	public void onCharacterDeath() {
 		Game.clearCell(location.x, location.y);
 	}
 
 	/**
 	 * @return the location
 	 */
-	Point getLocation() {
+	public Point getLocation() {
 		return location;
 	}
 
 	/**
 	 * @param location the location to set
 	 */
-	void setLocation(Point location) {
+	public void setLocation(Point location) {
 		this.location = location;
 	}
 
 	/**
 	 * @return the currentHp
 	 */
-	int getCurrentHp() {
+	public int getCurrentHp() {
 		return currentHp;
 	}
 
@@ -139,7 +139,7 @@ public abstract class Character {
 	 * 
 	 * @param currentHp the currentHp to set
 	 */
-	void setCurrentHp(int currentHp) {
+	public void setCurrentHp(int currentHp) {
 		currentHp = Math.max(currentHp, 0);
 		this.currentHp = Math.min(currentHp, maxHp);
 		if (currentHp == 0)
@@ -149,35 +149,35 @@ public abstract class Character {
 	/**
 	 * @return the target
 	 */
-	Character getTarget() {
+	public Character getTarget() {
 		return target;
 	}
 
 	/**
 	 * @param target the target to set
 	 */
-	void setTarget(Character target) {
+	public void setTarget(Character target) {
 		this.target = target;
 	}
 
 	/**
 	 * @return the name
 	 */
-	String getName() {
+	public String getName() {
 		return name;
 	}
 
 	/**
 	 * @return the maxHP
 	 */
-	int getMaxHp() {
+	public int getMaxHp() {
 		return maxHp;
 	}
 
 	/**
 	 * @return the attackDmg
 	 */
-	int getAttackDmg() {
+	public int getAttackDmg() {
 		return attackDmg;
 	}
 
