@@ -1,5 +1,6 @@
 package model.collectibles;
 
+import exceptions.NoAvailableResourcesException;
 import model.characters.Hero;
 
 /**
@@ -22,7 +23,7 @@ public class Vaccine implements Collectible {
 	}
 
 	@Override
-	public void use(Hero owner) {
+	public void use(Hero owner){
 		owner.getVaccineInventory().remove(this);
 	}
 }

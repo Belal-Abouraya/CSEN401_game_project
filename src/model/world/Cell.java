@@ -16,14 +16,14 @@ public abstract class Cell {
 	/**
 	 * @return the isVisible
 	 */
-	boolean isVisible() {
+	public boolean isVisible() {
 		return isVisible;
 	}
 
 	/**
 	 * @param isVisible the isVisible to set
 	 */
-	void setVisible(boolean isVisible) {
+    public void setVisible(boolean isVisible) {
 		this.isVisible = isVisible;
 	}
 }
