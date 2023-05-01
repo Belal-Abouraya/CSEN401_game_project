@@ -33,7 +33,6 @@ public class CharacterCell extends Cell {
 	 */
 
 	public CharacterCell(Character character) {
-
 		this(false, character);
 	}
 

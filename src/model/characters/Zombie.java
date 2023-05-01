@@ -20,10 +20,8 @@ public class Zombie extends Character {
 	 * @pram attackDmg
 	 */
 	public Zombie() {
-
 		super("Zombie " + (ZOMBIES_COUNT + 1), 40, 10);
 		ZOMBIES_COUNT++;
-
 	}
 
 	/**
@@ -32,6 +30,7 @@ public class Zombie extends Character {
 	 */
 	@Override
 	public void onCharacterDeath() {
+		super.onCharacterDeath();
 		Game.zombies.remove(this);
 		Game.spawnZombie();
 	}

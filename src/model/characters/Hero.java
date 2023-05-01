@@ -73,6 +73,7 @@ public abstract class Hero extends Character {
 	 */
 	@Override
 	public void onCharacterDeath() {
+		super.onCharacterDeath();
 		Game.heroes.remove(this);
 	}
 

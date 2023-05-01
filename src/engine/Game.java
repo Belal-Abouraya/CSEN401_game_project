@@ -23,7 +23,7 @@ public class Game {
 	public static ArrayList<Hero> availableHeroes = new ArrayList<>();
 	public static ArrayList<Hero> heroes = new ArrayList<>();
 	public static ArrayList<Zombie> zombies = new ArrayList<>();
-	public static ArrayList<int[]> emptyCells = new ArrayList<>();
+	public static ArrayList<ArrayList<Integer>> emptyCells = new ArrayList<>();
 	public static Cell[][] map = new Cell[15][15];
 
 	/**
@@ -69,16 +69,30 @@ public class Game {
 	}
 
 	/**
-	 * working description
+	 * Clears the cell on the map by making a new cell in its location and adding
+	 * the location to the emptyCells ArrayList
+	 * 
+	 * @param x the x coordinate of the cell
+	 * @param y the y coordinate of the cell
 	 */
 	public static void clearCell(int x, int y) {
-
+		map[x][y] = new CharacterCell();
+		ArrayList<Integer> tmp = new ArrayList<>(2);
+		tmp.add(x);
+		tmp.add(y);
+		emptyCells.add(tmp);
 	}
 
 	/**
-	 * working description
+	 * Spawns a new zombie at a random location on the map.
 	 */
 	public static void spawnZombie() {
-
+		if (emptyCells.isEmpty())
+			return;
+		int idx = (int) (Math.random() * emptyCells.size());
+		int x = emptyCells.get(idx).get(0);
+		int y = emptyCells.get(idx).get(1);
+		map[x][y] = new CharacterCell(new Zombie());
+		emptyCells.remove(idx);
 	}
 }
