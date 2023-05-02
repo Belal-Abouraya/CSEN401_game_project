@@ -115,6 +115,12 @@ public class Game {
 	 * @param h
 	 */
 	public static void startGame(Hero h) {
+		
+		for(int i = 1 ; i < 15 ; i++) {
+			for(int j = 1 ; j < 15 ; j++) {
+				emptyCells.add(new ArrayList<>(Arrays.asList(i,j)));
+			}
+		}
 		map[0][0] = new CharacterCell(h) ;
 		availableHeroes.remove(h);
 		heroes.add(h);
@@ -159,6 +165,7 @@ public class Game {
 				Hero h =  z.getAdjacentTarget() ;
 				z.setTarget(h);
 				z.attack();
+				z.setTarget(null);
 			}
 		}
 		
