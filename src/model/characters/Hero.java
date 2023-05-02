@@ -28,6 +28,7 @@ import model.world.TrapCell;
  *
  * @author Ahmed Hussein
  * @author Belal Abouraya
+ * @author rafael Rafael Samuel
  */
 
 public abstract class Hero extends Character {
@@ -133,7 +134,7 @@ public abstract class Hero extends Character {
 	 * @param y the y component of the location
 	 */
 
-	private static void makeAllAdjacentVisible(int x , int y){
+	public  static void makeAllAdjacentVisible(int x , int y){
 		for(int i = x-1 ; i < x+2 ; i++ ){
 			for(int j = y-1 ; j < y+2 ; j++){
 				if(isValidLocation(i,j)){
@@ -152,7 +153,7 @@ public abstract class Hero extends Character {
 	 * @return boolean indicating the answer
 	 */
 
-	private static boolean isValidLocation(int x , int y){
+	static boolean isValidLocation(int x , int y){
 		return (x >= 0 && x <= 14 && y >= 0 && y <= 14) ;
 	}
 
@@ -209,6 +210,15 @@ public abstract class Hero extends Character {
 	public void onCharacterDeath() {
 		super.onCharacterDeath();
 		Game.heroes.remove(this);
+	}
+	
+	/**
+	 * resets each hero’s actions, target, and special
+	 */
+	public void reset() {
+		this.actionsAvailable = maxActions;
+		setTarget(null);
+		this.specialAction = false;
 	}
 
 	/**

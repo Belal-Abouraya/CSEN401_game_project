@@ -6,19 +6,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+
+import exceptions.InvalidTargetException;
+import exceptions.NotEnoughActionsException;
 import model.characters.Explorer;
 import model.characters.Fighter;
 import model.characters.Medic;
 import model.characters.Hero;
 import model.characters.Zombie;
+import model.collectibles.Supply;
+import model.collectibles.Vaccine;
 import model.world.Cell;
 import model.world.CharacterCell;
+import model.world.CollectibleCell;
+import model.world.TrapCell;
 
 /**
  * The Game class represents the main engine of the game, and ensures all game
  * rules are followed
  * 
  * @author Belal Abouraya
+ * @author Rafael Smauel
  */
 public class Game {
 	public static ArrayList<Hero> availableHeroes = new ArrayList<>();
@@ -82,15 +90,98 @@ public class Game {
 	}
 
 	/**
-	 * Spawns a new zombie at a random location on the map.
+	 * Spawns  Cells at a random location on the map.
+	 * 
+	 * @param c the type of the cell to be spawn
 	 */
-	public static void spawnZombie() {
-		if (emptyCells.isEmpty())
-			return;
-		int idx = (int) (Math.random() * emptyCells.size());
-		int x = emptyCells.get(idx).get(0);
-		int y = emptyCells.get(idx).get(1);
-		map[x][y] = new CharacterCell(new Zombie());
-		emptyCells.remove(idx);
+	public static void spawnCell(Cell c) {
+			if (emptyCells.isEmpty())
+				return;
+			int idx = (int) (Math.random() * emptyCells.size());
+			int x = emptyCells.get(idx).get(0);
+			int y = emptyCells.get(idx).get(1);
+			map[x][y] = c;
+			emptyCells.remove(idx);
+	}
+	
+	
+	/**
+	 * This method is called to handle the initial game
+	 * setup, as such, it should spawn the necessary collectibles (5 Vaccines, 5 Supplies), spawn 5 traps
+	 * randomly around the map, spawn 10 zombies randomly around the map, add the hero to the
+	 * controllable heroes pool and removing from the availableHeroes, and finally allocating the hero to
+	 * the bottom left corner of the map.
+	 * 
+	 * @param h
+	 */
+	public static void startGame(Hero h) {
+		map[0][0] = new CharacterCell(h) ;
+		availableHeroes.remove(h);
+		heroes.add(h);
+		for(int i = 0 ; i < 5 ; i++) {
+			spawnCell(new CollectibleCell(new Vaccine()));
+			spawnCell(new CollectibleCell(new Supply()));
+			spawnCell(new TrapCell());
+		}
+		for(int i = 0 ; i <10 ; i++) {
+			spawnCell(new CharacterCell(new Zombie()));
+		}
+	}
+	
+	/**
+	 * This method checks the win conditions for the game.
+	 */
+	public static boolean checkWin() {
+		return (Vaccine.usedVaccines == 5 && heroes.size()  >= 5);
+	}
+	
+	/**
+	 * 	This method checks the conditions for the game to end.
+	 */
+	public static boolean checkGameOver() {
+		
+		return (heroes.size() == 0 || Vaccine.usedVaccines == 5 && heroes.size() < 5);
+	}
+	
+	/**
+	 * This method is called when the player decides to end the turn.
+	 * it make all the zombies in the game attack an adjacent Hero(if exists, and
+	 * 	reset each  hero’s actions, target, and special, end
+	 * update the map visibility.
+	 * 
+	 * @throws NotEnoughActionsException 
+	 * @throws InvalidTargetException 
+	 */
+	public static void endTurn() throws InvalidTargetException, NotEnoughActionsException {
+		
+		for(Zombie z : zombies) {
+			if( z.getAdjacentTarget() != null) {
+				Hero h =  z.getAdjacentTarget() ;
+				z.setTarget(h);
+				z.attack();
+			}
+		}
+		
+		for(Hero h: heroes) {
+			h.reset();
+		}
+		updateMapVisibility();
+		spawnCell(new CharacterCell(new Zombie()));
+	}
+	
+	/**
+	 * a helper ,method that updates the map visibility in the game such that only
+	 * cells adjacent to heroes are visible
+	 */
+	private static void updateMapVisibility() {
+		for(int i = 0 ; i < 15 ; i++) {
+			for(int j = 0 ; j < 15 ; j ++) {
+				Game.map[i][j].setVisible(false);
+			}
+		}
+		
+		for(Hero h :Game.heroes) {
+			Hero.makeAllAdjacentVisible((int)h.getLocation().getX(), (int)h.getLocation().getY());
+		}
 	}
 }

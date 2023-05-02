@@ -1,6 +1,7 @@
 package model.characters;
 
 import engine.Game;
+import model.world.CharacterCell;
 
 /**
  * Zobmbie is is a class that represents the zombies int the game it contains
@@ -34,7 +35,25 @@ public class Zombie extends Character {
 	public void onCharacterDeath() {
 		super.onCharacterDeath();
 		Game.zombies.remove(this);
-		Game.spawnZombie();
+		Game.spawnCell(new CharacterCell(new Zombie()));
+	}
+	
+	/**
+	 * a helper method that looks for heros in the adjacent cells (if exist) to set them as target
+	 * @return Character to be set as target for the zombie.
+	 */
+	public Hero getAdjacentTarget() {
+		int x =(int) getLocation().getX();
+		int y = (int) getLocation().getY();
+		
+		for(int i = x  -1 ; i < x +2 ; i++) {
+			for(int j = y - 1 ; j < y +2 ; j++) {
+				if(Hero.isValidLocation(i, j) &&  Game.map[i][j] instanceof CharacterCell && ((CharacterCell)Game.map[i][j]).getCharacter() instanceof Hero )
+					return (Hero)((CharacterCell)Game.map[i][j]).getCharacter();
+			}
+		}
+		// if no adjacent hero was found return null.
+		return null ;
 	}
 
 }
