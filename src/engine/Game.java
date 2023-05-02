@@ -1,5 +1,6 @@
 package engine;
 
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -27,6 +28,7 @@ import model.world.TrapCell;
  * 
  * @author Belal Abouraya
  * @author Rafael Smauel
+ * @author Ahmed Hussein
  */
 public class Game {
 	public static ArrayList<Hero> availableHeroes = new ArrayList<>();
@@ -101,6 +103,9 @@ public class Game {
 			int x = emptyCells.get(idx).get(0);
 			int y = emptyCells.get(idx).get(1);
 			map[x][y] = c;
+			if(c instanceof CharacterCell){
+				((CharacterCell)c).getCharacter().setLocation(new Point(x,y));
+			}
 			emptyCells.remove(idx);
 	}
 	
@@ -116,12 +121,14 @@ public class Game {
 	 */
 	public static void startGame(Hero h) {
 		
-		for(int i = 1 ; i < 15 ; i++) {
-			for(int j = 1 ; j < 15 ; j++) {
+		for(int i = 0 ; i < 15 ; i++) {
+			for(int j = 0 ; j < 15 ; j++) {
 				emptyCells.add(new ArrayList<>(Arrays.asList(i,j)));
 			}
 		}
+		emptyCells.remove(new ArrayList<>(Arrays.asList(0,0)));
 		map[0][0] = new CharacterCell(h) ;
+		h.setLocation(new Point(0,0));
 		availableHeroes.remove(h);
 		heroes.add(h);
 		for(int i = 0 ; i < 5 ; i++) {
@@ -151,13 +158,14 @@ public class Game {
 	
 	/**
 	 * This method is called when the player decides to end the turn.
-	 * it make all the zombies in the game attack an adjacent Hero(if exists, and
-	 * 	reset each  hero’s actions, target, and special, end
+	 * it makes all the zombies in the game attack an adjacent Hero ( if exists ) , and
+	 * reset each  hero’s actions, target, and special, end
 	 * update the map visibility.
 	 * 
 	 * @throws NotEnoughActionsException 
 	 * @throws InvalidTargetException 
 	 */
+
 	public static void endTurn() throws InvalidTargetException, NotEnoughActionsException {
 		
 		for(Zombie z : zombies) {
@@ -177,9 +185,10 @@ public class Game {
 	}
 	
 	/**
-	 * a helper ,method that updates the map visibility in the game such that only
+	 * ِِِA helper method that updates the map visibility in the game such that only
 	 * cells adjacent to heroes are visible
 	 */
+
 	private static void updateMapVisibility() {
 		for(int i = 0 ; i < 15 ; i++) {
 			for(int j = 0 ; j < 15 ; j ++) {

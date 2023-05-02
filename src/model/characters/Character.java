@@ -20,6 +20,7 @@ import engine.Game;
  * </ul>
  * 
  * @author Belal Abouraya
+ * @author Ahmed Hussein
  */
 public abstract class Character {
 	private String name;
