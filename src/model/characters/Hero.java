@@ -197,6 +197,7 @@ public abstract class Hero extends Character {
 		Game.zombies.remove((Zombie) getTarget());
 		int x = targetLocation.x , y = targetLocation.y ;
 		Hero newHero = Game.availableHeroes.get(0);
+		newHero.setLocation(new Point(x,y));
 		Game.availableHeroes.remove(newHero);
 		Game.heroes.add(newHero);
 		((CharacterCell)Game.map[x][y]).setCharacter(newHero);
