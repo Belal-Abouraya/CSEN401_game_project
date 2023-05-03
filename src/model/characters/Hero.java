@@ -77,54 +77,51 @@ public abstract class Hero extends Character {
 	}
 
 	/**
-	 * A method that is called when the current hero wishes to move in a
-	 * particular direction.
+	 * A method that is called when the current hero wishes to move in a particular
+	 * direction.
 	 *
 	 *
 	 * @param direction
-	 *
 	 * @throws MovementException
 	 * @throws NotEnoughActionsException
 	 */
-	public void move(Direction direction) throws MovementException , NotEnoughActionsException{
-		if(actionsAvailable <= 0){
-			throw new NotEnoughActionsException() ;
+	public void move(Direction direction) throws MovementException, NotEnoughActionsException {
+		if (actionsAvailable <= 0) {
+			throw new NotEnoughActionsException();
 		}
 		int x = getLocation().x;
 		int y = getLocation().y;
-		int oldX = x , oldY = y ;
-		switch (direction){
-			case UP -> y +=1 ;
-			case DOWN -> y -=1 ;
-			case LEFT -> x -= 1 ;
-			case RIGHT -> x += 1 ;
+		int oldX = x, oldY = y;
+		switch (direction) {
+		case UP -> y += 1;
+		case DOWN -> y -= 1;
+		case LEFT -> x -= 1;
+		case RIGHT -> x += 1;
 		}
-		if(!isValidLocation(x,y))
+		if (!isValidLocation(x, y))
 			throw new MovementException();
-		if (Game.map[x][y] instanceof CharacterCell){
-			if(((CharacterCell) Game.map[x][y]).getCharacter() != null)
+		if (Game.map[x][y] instanceof CharacterCell) {
+			if (((CharacterCell) Game.map[x][y]).getCharacter() != null)
 				throw new MovementException();
 			((CharacterCell) Game.map[x][y]).setCharacter(this);
-		}
-		else if (Game.map[x][y] instanceof TrapCell){
+		} else if (Game.map[x][y] instanceof TrapCell) {
 			int currHP = getCurrentHp();
-			int damage = ((TrapCell)(Game.map[x][y])).getTrapDamage();
+			int damage = ((TrapCell) (Game.map[x][y])).getTrapDamage();
 			Game.map[x][y] = new CharacterCell();
-			if(currHP > damage) {
-				setCurrentHp(currHP-damage);
+			setCurrentHp(currHP - damage);
+			if (currHP > damage) {
 				((CharacterCell) Game.map[x][y]).setCharacter(this);
 			}
-		}
-		else{ // CollectibleCell case
-			((CollectibleCell)Game.map[x][y]).getCollectible().pickUp(this);
+		} else { // CollectibleCell case
+			((CollectibleCell) Game.map[x][y]).getCollectible().pickUp(this);
 			Game.map[x][y] = new CharacterCell();
-			((CharacterCell)Game.map[x][y]).setCharacter(this);
+			((CharacterCell) Game.map[x][y]).setCharacter(this);
 		}
 		actionsAvailable--;
-		Game.emptyCells.remove(new ArrayList<>(Arrays.asList(x,y)));
-		Game.clearCell(oldX,oldY);
-		makeAllAdjacentVisible(x,y);
-		setLocation(new Point(x,y));
+		Game.emptyCells.remove(new ArrayList<>(Arrays.asList(x, y)));
+		Game.clearCell(oldX, oldY);
+		makeAllAdjacentVisible(x, y);
+		setLocation(new Point(x, y));
 	}
 
 	/**
@@ -134,10 +131,10 @@ public abstract class Hero extends Character {
 	 * @param y the y component of the location
 	 */
 
-	public  static void makeAllAdjacentVisible(int x , int y){
-		for(int i = x-1 ; i < x+2 ; i++ ){
-			for(int j = y-1 ; j < y+2 ; j++){
-				if(isValidLocation(i,j)){
+	public static void makeAllAdjacentVisible(int x, int y) {
+		for (int i = x - 1; i < x + 2; i++) {
+			for (int j = y - 1; j < y + 2; j++) {
+				if (isValidLocation(i, j)) {
 					Game.map[i][j].setVisible(true);
 				}
 			}
@@ -153,41 +150,44 @@ public abstract class Hero extends Character {
 	 * @return boolean indicating the answer
 	 */
 
-	static boolean isValidLocation(int x , int y){
-		return (x >= 0 && x <= 14 && y >= 0 && y <= 14) ;
+	static boolean isValidLocation(int x, int y) {
+		return (x >= 0 && x <= 14 && y >= 0 && y <= 14);
 	}
 
 	/**
-	 * A method that is called when the current hero wants to use
-	 * its special action.
+	 * A method that is called when the current hero wants to use its special
+	 * action.
 	 *
 	 * @throws NoAvailableResourcesException
+	 * @throws InvalidTargetException
 	 */
-	public void useSpecial() throws NoAvailableResourcesException {
-		if(supplyInventory.isEmpty()){
+	public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException {
+		if (specialAction)
+			return;
+		if (supplyInventory.isEmpty()) {
 			throw new NoAvailableResourcesException();
 		}
 		Supply supply = supplyInventory.get(0);
 		supply.use(this);
-		specialAction = true ;
+		specialAction = true;
 	}
 
 	/**
-	 * A method that is called when the current hero wants to cure
-	 * a zombie target using a vaccine.
+	 * A method that is called when the current hero wants to cure a zombie target
+	 * using a vaccine.
 	 *
 	 * @throws InvalidTargetException
 	 * @throws NotEnoughActionsException
 	 * @throws NoAvailableResourcesException
 	 */
 
-	public void cure() throws InvalidTargetException , NotEnoughActionsException , NoAvailableResourcesException{
-		if(actionsAvailable <= 0)
+	public void cure() throws InvalidTargetException, NotEnoughActionsException, NoAvailableResourcesException {
+		if (actionsAvailable <= 0)
 			throw new NotEnoughActionsException();
-		if(!(getTarget() instanceof Zombie) || !isAdjacent(getTarget())){
+		if (!(getTarget() instanceof Zombie) || !isAdjacent(getTarget())) {
 			throw new InvalidTargetException();
 		}
-		if(vaccineInventory.isEmpty()){
+		if (vaccineInventory.isEmpty()) {
 			throw new NoAvailableResourcesException();
 		}
 		actionsAvailable--;
@@ -195,12 +195,13 @@ public abstract class Hero extends Character {
 		vaccine.use(this);
 		Point targetLocation = getTarget().getLocation();
 		Game.zombies.remove((Zombie) getTarget());
-		int x = targetLocation.x , y = targetLocation.y ;
+		int x = targetLocation.x, y = targetLocation.y;
 		Hero newHero = Game.availableHeroes.get(0);
-		newHero.setLocation(new Point(x,y));
+		makeAllAdjacentVisible(x, y);
+		newHero.setLocation(new Point(x, y));
 		Game.availableHeroes.remove(newHero);
 		Game.heroes.add(newHero);
-		((CharacterCell)Game.map[x][y]).setCharacter(newHero);
+		((CharacterCell) Game.map[x][y]).setCharacter(newHero);
 		setTarget(null);
 	}
 
@@ -212,7 +213,7 @@ public abstract class Hero extends Character {
 		super.onCharacterDeath();
 		Game.heroes.remove(this);
 	}
-	
+
 	/**
 	 * resets each hero’s actions, target, and special
 	 */

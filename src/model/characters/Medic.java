@@ -1,5 +1,6 @@
 package model.characters;
 
+import exceptions.InvalidTargetException;
 import exceptions.NoAvailableResourcesException;
 
 /**
@@ -8,28 +9,29 @@ import exceptions.NoAvailableResourcesException;
  * @author Ahmed Hussein
  */
 
-public class Medic extends Hero{
+public class Medic extends Hero {
 
+	/**
+	 * constructor for the medic class that initializes the name, the maximum Hp,
+	 * the attack damage and the maximum number of actions in a turn.
+	 *
+	 * @param name
+	 * @param maxHp
+	 * @param attackDmg
+	 * @param maxActions
+	 */
 
-    /**
-     * constructor for the medic class that initializes the name, the maximum Hp, the attack damage
-     * and the maximum number of actions in a turn.
-     *
-     * @param name
-     * @param maxHp
-     * @param attackDmg
-     * @param maxActions
-     */
-	
-    public Medic(String name , int maxHp , int attackDmg , int maxActions){
-        super(name , maxHp , attackDmg , maxActions);
-    }
+	public Medic(String name, int maxHp, int attackDmg, int maxActions) {
+		super(name, maxHp, attackDmg, maxActions);
+	}
 
-    @Override
-    public void useSpecial() throws NoAvailableResourcesException {
-        super.useSpecial();
-        getTarget().setCurrentHp(getTarget().getMaxHp());
-    }
-
+	@Override
+	public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException {
+		if (getTarget() == this || isAdjacent(getTarget())) {
+			super.useSpecial();
+			getTarget().setCurrentHp(getTarget().getMaxHp());
+		} else
+			throw new InvalidTargetException();
+	}
 
 }
