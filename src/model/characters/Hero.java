@@ -93,10 +93,10 @@ public abstract class Hero extends Character {
 		int y = getLocation().y;
 		int oldX = x, oldY = y;
 		switch (direction) {
-		case UP -> y += 1;
-		case DOWN -> y -= 1;
-		case LEFT -> x -= 1;
-		case RIGHT -> x += 1;
+		case RIGHT -> y += 1;
+		case LEFT -> y -= 1;
+		case DOWN -> x -= 1;
+		case UP -> x += 1;
 		}
 		if (!isValidLocation(x, y))
 			throw new MovementException();
@@ -118,7 +118,7 @@ public abstract class Hero extends Character {
 			((CharacterCell) Game.map[x][y]).setCharacter(this);
 		}
 		actionsAvailable--;
-		Game.emptyCells.remove(new ArrayList<>(Arrays.asList(x, y)));
+		Game.getEmptyCells().remove(new ArrayList<>(Arrays.asList(x, y)));
 		Game.clearCell(oldX, oldY);
 		makeAllAdjacentVisible(x, y);
 		setLocation(new Point(x, y));
@@ -134,7 +134,7 @@ public abstract class Hero extends Character {
 	public static void makeAllAdjacentVisible(int x, int y) {
 		for (int i = x - 1; i < x + 2; i++) {
 			for (int j = y - 1; j < y + 2; j++) {
-				if (isValidLocation(i, j)) {
+				if (isValidLocation(i, j) && Game.map[i][j] != null) {
 					Game.map[i][j].setVisible(true);
 				}
 			}

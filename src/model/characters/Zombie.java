@@ -1,6 +1,8 @@
 package model.characters;
 
 import engine.Game;
+import exceptions.InvalidTargetException;
+import exceptions.NotEnoughActionsException;
 import model.world.CharacterCell;
 
 /**
@@ -14,8 +16,8 @@ public class Zombie extends Character {
 	private static int ZOMBIES_COUNT;
 
 	/**
-	 * Constructor that initializes the name, maximum Hp, and attack damage
-	 * and adds it to zombies arrayList in the Game.
+	 * Constructor that initializes the name, maximum Hp, and attack damage and adds
+	 * it to zombies arrayList in the Game.
 	 *
 	 * @pram name
 	 * @pram maxHp
@@ -23,8 +25,21 @@ public class Zombie extends Character {
 	 */
 	public Zombie() {
 		super("Zombie " + (ZOMBIES_COUNT + 1), 40, 10);
-		Game.zombies.add(this);
 		ZOMBIES_COUNT++;
+	}
+
+	/**
+	 * sets the target automatically for the zombie then calls the super class
+	 * method.
+	 * 
+	 * @throws NotEnoughActionsException
+	 * @throws InvalidTargetException
+	 */
+	@Override
+	public void attack() throws InvalidTargetException, NotEnoughActionsException {
+		setTarget(getAdjacentTarget());
+		super.attack();
+		setTarget(null);
 	}
 
 	/**
@@ -35,25 +50,30 @@ public class Zombie extends Character {
 	public void onCharacterDeath() {
 		super.onCharacterDeath();
 		Game.zombies.remove(this);
-		Game.spawnCell(new CharacterCell(new Zombie()));
+		Zombie z = new Zombie();
+		Game.zombies.add(z);
+		Game.spawnCell(new CharacterCell(z));
 	}
-	
+
 	/**
-	 * a helper method that looks for heros in the adjacent cells (if exist) to set them as target
+	 * a helper method that looks for heros in the adjacent cells (if exist) to set
+	 * them as target
+	 * 
 	 * @return Character to be set as target for the zombie.
 	 */
 	public Hero getAdjacentTarget() {
-		int x =(int) getLocation().getX();
+		int x = (int) getLocation().getX();
 		int y = (int) getLocation().getY();
-		
-		for(int i = x  -1 ; i < x +2 ; i++) {
-			for(int j = y - 1 ; j < y +2 ; j++) {
-				if(Hero.isValidLocation(i, j) &&  Game.map[i][j] instanceof CharacterCell && ((CharacterCell)Game.map[i][j]).getCharacter() instanceof Hero )
-					return (Hero)((CharacterCell)Game.map[i][j]).getCharacter();
+
+		for (int i = x - 1; i < x + 2; i++) {
+			for (int j = y - 1; j < y + 2; j++) {
+				if (Hero.isValidLocation(i, j) && Game.map[i][j] instanceof CharacterCell
+						&& ((CharacterCell) Game.map[i][j]).getCharacter() instanceof Hero)
+					return (Hero) ((CharacterCell) Game.map[i][j]).getCharacter();
 			}
 		}
 		// if no adjacent hero was found return null.
-		return null ;
+		return null;
 	}
 
 }

@@ -35,7 +35,8 @@ public class Game {
 	public static ArrayList<Hero> availableHeroes = new ArrayList<>();
 	public static ArrayList<Hero> heroes = new ArrayList<>();
 	public static ArrayList<Zombie> zombies = new ArrayList<>();
-	public static ArrayList<ArrayList<Integer>> emptyCells = new ArrayList<>();
+	private static ArrayList<ArrayList<Integer>> emptyCells = new ArrayList<>();
+	private static ArrayList<Vaccine> vaccines = new ArrayList<>();
 	public static Cell[][] map = new Cell[15][15];
 
 	/**
@@ -121,6 +122,11 @@ public class Game {
 	 * @param h
 	 */
 	public static void startGame(Hero h) {
+//		heroes = new ArrayList<>();
+//		zombies = new ArrayList<>();
+//		emptyCells = new ArrayList<>();
+//		vaccines = new ArrayList<>();
+//		Cell[][] map = new Cell[15][15];
 		for (int i = 0; i < 15; i++) {
 			for (int j = 0; j < 15; j++) {
 				emptyCells.add(new ArrayList<>(Arrays.asList(i, j)));
@@ -134,12 +140,16 @@ public class Game {
 		heroes.add(h);
 		Hero.makeAllAdjacentVisible(0, 0);
 		for (int i = 0; i < 5; i++) {
-			spawnCell(new CollectibleCell(new Vaccine()));
+			Vaccine v = new Vaccine();
+			spawnCell(new CollectibleCell(v));
+			// vaccines.add(v);
 			spawnCell(new CollectibleCell(new Supply()));
 			spawnCell(new TrapCell());
 		}
 		for (int i = 0; i < 10; i++) {
-			spawnCell(new CharacterCell(new Zombie()));
+			Zombie z = new Zombie();
+			zombies.add(z);
+			spawnCell(new CharacterCell(z));
 		}
 	}
 
@@ -147,14 +157,14 @@ public class Game {
 	 * This method checks the win conditions for the game.
 	 */
 	public static boolean checkWin() {
-		return (Vaccine.getUsedVaccine() == 5 && heroes.size() >= 5);
+		return (vaccines.size() == 0 && heroes.size() >= 5);
 	}
 
 	/**
 	 * This method checks the conditions for the game to end.
 	 */
 	public static boolean checkGameOver() {
-		return (heroes.size() == 0 || Vaccine.getUsedVaccine() == 5 && heroes.size() < 5);
+		return (heroes.size() == 0 || vaccines.size() == 0 && heroes.size() < 5);
 	}
 
 	/**
@@ -167,24 +177,25 @@ public class Game {
 	 */
 
 	public static void endTurn() {
-
 		for (Zombie z : zombies) {
 			if (z.getAdjacentTarget() != null) {
-				Hero h = z.getAdjacentTarget();
-				z.setTarget(h);
 				try {
 					z.attack();
 				} catch (GameActionException e) {
 					System.out.println("Balabizo");
 				}
-				z.setTarget(null);
 			}
+			z.setTarget(null);
 		}
 		for (Hero h : heroes) {
 			h.reset();
 		}
 		updateMapVisibility();
-		spawnCell(new CharacterCell(new Zombie()));
+		if (zombies.size() < 10) {
+			Zombie z = new Zombie();
+			spawnCell(new CharacterCell(z));
+			zombies.add(z);
+		}
 	}
 
 	/**
@@ -202,5 +213,13 @@ public class Game {
 		for (Hero h : Game.heroes) {
 			Hero.makeAllAdjacentVisible((int) h.getLocation().getX(), (int) h.getLocation().getY());
 		}
+	}
+
+	public static ArrayList<ArrayList<Integer>> getEmptyCells() {
+		return emptyCells;
+	}
+
+	public static ArrayList<Vaccine> getVaccines() {
+		return vaccines;
 	}
 }

@@ -13,12 +13,12 @@ import model.characters.Zombie;
  */
 
 public class Vaccine implements Collectible {
-	private static int usedVaccines = 0;
 
 	/**
 	 * Default constructor for the class.
 	 */
 	public Vaccine() {
+		Game.getVaccines().add(this);
 	}
 
 	@Override
@@ -28,11 +28,7 @@ public class Vaccine implements Collectible {
 
 	@Override
 	public void use(Hero owner) {
-		usedVaccines++;
 		owner.getVaccineInventory().remove(this);
-	}
-
-	public static int getUsedVaccine() {
-		return usedVaccines;
+		Game.getVaccines().remove(this);
 	}
 }
