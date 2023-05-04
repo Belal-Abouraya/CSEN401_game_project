@@ -124,6 +124,7 @@ public class Game {
 		for (int i = 0; i < 15; i++) {
 			for (int j = 0; j < 15; j++) {
 				emptyCells.add(new ArrayList<>(Arrays.asList(i, j)));
+				map[i][j] = new CharacterCell();
 			}
 		}
 		emptyCells.remove(new ArrayList<>(Arrays.asList(0, 0)));

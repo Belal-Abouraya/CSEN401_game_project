@@ -162,8 +162,6 @@ public abstract class Hero extends Character {
 	 * @throws InvalidTargetException
 	 */
 	public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException {
-		if (specialAction)
-			return;
 		if (supplyInventory.isEmpty()) {
 			throw new NoAvailableResourcesException();
 		}
@@ -196,10 +194,11 @@ public abstract class Hero extends Character {
 		Point targetLocation = getTarget().getLocation();
 		Game.zombies.remove((Zombie) getTarget());
 		int x = targetLocation.x, y = targetLocation.y;
-		Hero newHero = Game.availableHeroes.get(0);
+		int idx = (int) (Math.random() * Game.heroes.size());
+		Hero newHero = Game.availableHeroes.get(idx);
 		makeAllAdjacentVisible(x, y);
 		newHero.setLocation(new Point(x, y));
-		Game.availableHeroes.remove(newHero);
+		Game.availableHeroes.remove(idx);
 		Game.heroes.add(newHero);
 		((CharacterCell) Game.map[x][y]).setCharacter(newHero);
 		setTarget(null);
