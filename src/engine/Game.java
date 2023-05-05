@@ -34,9 +34,9 @@ import model.world.TrapCell;
 public class Game {
 	public static ArrayList<Hero> availableHeroes = new ArrayList<>();
 	public static ArrayList<Hero> heroes = new ArrayList<>();
-	public static ArrayList<Zombie> zombies = new ArrayList<>();
+	public static ArrayList<Zombie> zombies = new ArrayList<>(10);
 	private static ArrayList<ArrayList<Integer>> emptyCells = new ArrayList<>();
-	private static ArrayList<Vaccine> vaccines = new ArrayList<>();
+	private static ArrayList<Vaccine> vaccines = new ArrayList<>(5);
 	public static Cell[][] map = new Cell[15][15];
 
 	/**
@@ -46,10 +46,10 @@ public class Game {
 	 * <li>Each line represents the information of a single Hero.
 	 * <li>The data has no header, i.e. the first line represents the first Hero.
 	 * <li>The parameters are separated by a comma (,).
-	 * <li>The line represents the Heroes’s data as follows: name, type, max Hp, max
+	 * <li>The line represents the Heroesâ€™s data as follows: name, type, max Hp, max
 	 * actions, attack damage .
-	 * <li>The type represents the type of Hero:- • FIGH for Fighter • EXP for
-	 * Explorer • MED for Medic
+	 * <li>The type represents the type of Hero:- â€¢ FIGH for Fighter â€¢ EXP for
+	 * Explorer â€¢ MED for Medic
 	 * </ul>
 	 * 
 	 * @param filePath The path of the file containg the heros' information.
@@ -142,7 +142,7 @@ public class Game {
 		for (int i = 0; i < 5; i++) {
 			Vaccine v = new Vaccine();
 			spawnCell(new CollectibleCell(v));
-			// vaccines.add(v);
+			vaccines.add(v);
 			spawnCell(new CollectibleCell(new Supply()));
 			spawnCell(new TrapCell());
 		}
@@ -157,20 +157,20 @@ public class Game {
 	 * This method checks the win conditions for the game.
 	 */
 	public static boolean checkWin() {
-		return (vaccines.size() == 0 && heroes.size() >= 5);
+		return ((vaccines.size() == 0 && heroes.size() >= 5) );
 	}
 
 	/**
 	 * This method checks the conditions for the game to end.
 	 */
 	public static boolean checkGameOver() {
-		return (heroes.size() == 0 || vaccines.size() == 0 && heroes.size() < 5);
+		return (heroes.size() == 0 || (vaccines.size() == 0 && heroes.size() < 5 && zombies.size() > 0) || (availableHeroes.size()==0 && heroes.size()<5));
 	}
 
 	/**
 	 * This method is called when the player decides to end the turn. it makes all
 	 * the zombies in the game attack an adjacent Hero ( if exists ) , and reset
-	 * each hero’s actions, target, and special, end update the map visibility.
+	 * each heroâ€™s actions, target, and special, end update the map visibility.
 	 * 
 	 * @throws NotEnoughActionsException
 	 * @throws InvalidTargetException
@@ -199,7 +199,7 @@ public class Game {
 	}
 
 	/**
-	 * ِِِA helper method that updates the map visibility in the game such that only
+	 * Ù�Ù�Ù�A helper method that updates the map visibility in the game such that only
 	 * cells adjacent to heroes are visible
 	 */
 

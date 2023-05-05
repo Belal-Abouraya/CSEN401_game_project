@@ -150,7 +150,7 @@ public abstract class Hero extends Character {
 	 * @return boolean indicating the answer
 	 */
 
-	static boolean isValidLocation(int x, int y) {
+	public static boolean isValidLocation(int x, int y) {
 		return (x >= 0 && x <= 14 && y >= 0 && y <= 14);
 	}
 
@@ -191,17 +191,6 @@ public abstract class Hero extends Character {
 		actionsAvailable--;
 		Vaccine vaccine = vaccineInventory.get(0);
 		vaccine.use(this);
-		Point targetLocation = getTarget().getLocation();
-		Game.zombies.remove((Zombie) getTarget());
-		int x = targetLocation.x, y = targetLocation.y;
-		int idx = (int) (Math.random() * Game.heroes.size());
-		Hero newHero = Game.availableHeroes.get(idx);
-		makeAllAdjacentVisible(x, y);
-		newHero.setLocation(new Point(x, y));
-		Game.availableHeroes.remove(idx);
-		Game.heroes.add(newHero);
-		((CharacterCell) Game.map[x][y]).setCharacter(newHero);
-		setTarget(null);
 	}
 
 	/**

@@ -27,7 +27,7 @@ public class Medic extends Hero {
 
 	@Override
 	public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException {
-		if (getTarget() instanceof Hero) {
+		if (getTarget() instanceof Hero && isAdjacent(getTarget())) {
 			super.useSpecial();
 			getTarget().setCurrentHp(getTarget().getMaxHp());
 			setSpecialAction(false);
