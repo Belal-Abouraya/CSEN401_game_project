@@ -48,11 +48,11 @@ public class Zombie extends Character {
 	 */
 	@Override
 	public void onCharacterDeath() {
-		super.onCharacterDeath();
 		Game.zombies.remove(this);
 		Zombie z = new Zombie();
 		Game.zombies.add(z);
 		Game.spawnCell(new CharacterCell(z));
+		super.onCharacterDeath();
 	}
 
 	/**
