@@ -35,8 +35,6 @@ public class Game {
 	public static ArrayList<Hero> availableHeroes = new ArrayList<>();
 	public static ArrayList<Hero> heroes = new ArrayList<>();
 	public static ArrayList<Zombie> zombies = new ArrayList<>(10);
-	private static ArrayList<ArrayList<Integer>> emptyCells = new ArrayList<>();
-//	private static ArrayList<Vaccine> vaccines = new ArrayList<>(5);
 	public static Cell[][] map = new Cell[15][15];
 
 	public static void main(String[] args) {
@@ -93,7 +91,6 @@ public class Game {
 	 */
 	public static void clearCell(int x, int y) {
 		map[x][y] = new CharacterCell();
-		emptyCells.add(new ArrayList<>(Arrays.asList(x, y)));
 	}
 
 	/**
@@ -102,8 +99,14 @@ public class Game {
 	 * @param c the type of the cell to be spawn
 	 */
 	public static void spawnCell(Cell c) {
-		if (emptyCells.isEmpty())
-			return;
+		ArrayList<ArrayList<Integer>> emptyCells = new ArrayList<>();
+		for (int i = 0; i < map.length; i++)
+			for (int j = 0; j < map[i].length; j++)
+				if (map[i][j] == null)
+					emptyCells.add(new ArrayList<>(Arrays.asList(i, j)));
+				else if (map[i][j] instanceof CharacterCell && ((CharacterCell) map[i][j]).getCharacter() == null) {
+					emptyCells.add(new ArrayList<>(Arrays.asList(i, j)));
+				}
 
 		int idx = (int) (Math.random() * emptyCells.size());
 		int x = emptyCells.get(idx).get(0);
@@ -112,8 +115,6 @@ public class Game {
 		if (c instanceof CharacterCell) {
 			((CharacterCell) c).getCharacter().setLocation(new Point(x, y));
 		}
-		System.out.println(emptyCells.size());
-		emptyCells.remove(idx);
 	}
 
 	/**
@@ -127,14 +128,11 @@ public class Game {
 	 * @param h
 	 */
 	public static void startGame(Hero h) {
-		emptyCells = new ArrayList<>();
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[i].length; j++) {
-				emptyCells.add(new ArrayList<>(Arrays.asList(i, j)));
 				map[i][j] = new CharacterCell();
 			}
 		}
-		emptyCells.remove(new ArrayList<>(Arrays.asList(0, 0)));
 		map[0][0] = new CharacterCell(h);
 		h.setLocation(new Point(0, 0));
 		availableHeroes.remove(h);
@@ -224,8 +222,8 @@ public class Game {
 	}
 
 	/**
-	 * Ù�Ù�Ù�A helper method that updates the map visibility in the game such that
-	 * only cells adjacent to heroes are visible
+	 * A helper method that updates the map visibility in the game such that only
+	 * cells adjacent to heroes are visible
 	 */
 
 	private static void updateMapVisibility() {
@@ -240,11 +238,4 @@ public class Game {
 		}
 	}
 
-	public static ArrayList<ArrayList<Integer>> getEmptyCells() {
-		return emptyCells;
-	}
-
-//	public static ArrayList<Vaccine> getVaccines() {
-//		return vaccines;
-//	}
 }

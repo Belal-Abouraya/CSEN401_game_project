@@ -44,6 +44,5 @@ public class Vaccine implements Collectible {
 		((CharacterCell) Game.map[x][y]).setCharacter(newHero);
 		Game.zombies.remove((Zombie) owner.getTarget());
 		owner.setTarget(null);
-		// Game.getVaccines().remove(this);
 	}
 }

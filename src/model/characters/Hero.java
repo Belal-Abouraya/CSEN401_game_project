@@ -122,7 +122,6 @@ public abstract class Hero extends Character {
 			((CharacterCell) Game.map[x][y]).setCharacter(this);
 		}
 		actionsAvailable--;
-		Game.getEmptyCells().remove(new ArrayList<>(Arrays.asList(x, y)));
 		Game.clearCell(oldX, oldY);
 		makeAllAdjacentVisible(x, y);
 		setLocation(new Point(x, y));
