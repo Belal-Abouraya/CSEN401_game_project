@@ -200,6 +200,11 @@ public class Game {
 	 */
 
 	public static void endTurn() {
+		if (zombies.size() < 10) {
+			Zombie z = new Zombie();
+			spawnCell(new CharacterCell(z));
+			zombies.add(z);
+		}
 		for (Zombie z : zombies) {
 			if (z.getAdjacentTarget() != null) {
 				try {
@@ -212,11 +217,6 @@ public class Game {
 		}
 		for (Hero h : heroes) {
 			h.reset();
-		}
-		if (zombies.size() < 10) {
-			Zombie z = new Zombie();
-			spawnCell(new CharacterCell(z));
-			zombies.add(z);
 		}
 		updateMapVisibility();
 	}
