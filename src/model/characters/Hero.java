@@ -86,6 +86,10 @@ public abstract class Hero extends Character {
 	 * @throws NotEnoughActionsException
 	 */
 	public void move(Direction direction) throws MovementException, NotEnoughActionsException {
+		if (this.getCurrentHp() <= 0) {
+			onCharacterDeath();
+			return ;
+		}
 		if (actionsAvailable <= 0) {
 			throw new NotEnoughActionsException();
 		}
