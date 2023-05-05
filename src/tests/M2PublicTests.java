@@ -3944,7 +3944,7 @@ public class M2PublicTests {
 			}
 		}
 
-		assertTrue("The game map should be initalized with the correct number of vaccines", count == 5);
+		assertTrue("The game map should be initalized with the correct number of vaccines " + count, count == 5);
 	}
 
 	@Test(timeout = 10000)
@@ -3974,7 +3974,7 @@ public class M2PublicTests {
 				}
 			}
 		}
-		assertFalse("The game map should be initalized with the correct number of vaccines", count != 5);
+		assertFalse("The game map should be initalized with the correct number of vaccines " + count, count != 5);
 	}
 
 	@Test(timeout = 10000)
@@ -4411,7 +4411,7 @@ public class M2PublicTests {
 		Method m = Class.forName(gamePath).getMethod("checkGameOver");
 		assertTrue(
 				"The game should end when all vaccines are collected and used even if there still exist uncollected supplies "
-						+ Game.getVaccines().size(),
+						+ (boolean) m.invoke(null),
 				(boolean) m.invoke(null));
 	}
 

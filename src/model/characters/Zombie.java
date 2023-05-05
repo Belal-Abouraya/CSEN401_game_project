@@ -68,7 +68,8 @@ public class Zombie extends Character {
 		for (int i = x - 1; i < x + 2; i++) {
 			for (int j = y - 1; j < y + 2; j++) {
 				if (Hero.isValidLocation(i, j) && Game.map[i][j] instanceof CharacterCell
-						&& ((CharacterCell) Game.map[i][j]).getCharacter() instanceof Hero)
+						&& ((CharacterCell) Game.map[i][j]).getCharacter() instanceof Hero
+						&& ((CharacterCell) Game.map[i][j]).getCharacter() != null)
 					return (Hero) ((CharacterCell) Game.map[i][j]).getCharacter();
 			}
 		}

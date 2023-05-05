@@ -13,6 +13,7 @@ import model.world.CharacterCell;
  * represents Vaccines in the game
  *
  * @author Ahmed Hussein
+ * @author Belal Abouraya
  */
 
 public class Vaccine implements Collectible {
@@ -21,7 +22,7 @@ public class Vaccine implements Collectible {
 	 * Default constructor for the class.
 	 */
 	public Vaccine() {
-		Game.getVaccines().add(this);
+		// Game.getVaccines().add(this);
 	}
 
 	@Override
@@ -43,6 +44,6 @@ public class Vaccine implements Collectible {
 		((CharacterCell) Game.map[x][y]).setCharacter(newHero);
 		Game.zombies.remove((Zombie) owner.getTarget());
 		owner.setTarget(null);
-		Game.getVaccines().remove(this);
+		// Game.getVaccines().remove(this);
 	}
 }

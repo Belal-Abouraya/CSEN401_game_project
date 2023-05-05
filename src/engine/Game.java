@@ -36,8 +36,11 @@ public class Game {
 	public static ArrayList<Hero> heroes = new ArrayList<>();
 	public static ArrayList<Zombie> zombies = new ArrayList<>(10);
 	private static ArrayList<ArrayList<Integer>> emptyCells = new ArrayList<>();
-	private static ArrayList<Vaccine> vaccines = new ArrayList<>(5);
+//	private static ArrayList<Vaccine> vaccines = new ArrayList<>(5);
 	public static Cell[][] map = new Cell[15][15];
+
+	public static void main(String[] args) {
+	}
 
 	/**
 	 * Reads the CSV file with filePath and loads the Heroes into the
@@ -46,8 +49,8 @@ public class Game {
 	 * <li>Each line represents the information of a single Hero.
 	 * <li>The data has no header, i.e. the first line represents the first Hero.
 	 * <li>The parameters are separated by a comma (,).
-	 * <li>The line represents the Heroesâ€™s data as follows: name, type, max Hp, max
-	 * actions, attack damage .
+	 * <li>The line represents the Heroesâ€™s data as follows: name, type, max Hp,
+	 * max actions, attack damage .
 	 * <li>The type represents the type of Hero:- â€¢ FIGH for Fighter â€¢ EXP for
 	 * Explorer â€¢ MED for Medic
 	 * </ul>
@@ -101,6 +104,7 @@ public class Game {
 	public static void spawnCell(Cell c) {
 		if (emptyCells.isEmpty())
 			return;
+
 		int idx = (int) (Math.random() * emptyCells.size());
 		int x = emptyCells.get(idx).get(0);
 		int y = emptyCells.get(idx).get(1);
@@ -108,6 +112,7 @@ public class Game {
 		if (c instanceof CharacterCell) {
 			((CharacterCell) c).getCharacter().setLocation(new Point(x, y));
 		}
+		System.out.println(emptyCells.size());
 		emptyCells.remove(idx);
 	}
 
@@ -122,13 +127,9 @@ public class Game {
 	 * @param h
 	 */
 	public static void startGame(Hero h) {
-//		heroes = new ArrayList<>();
-//		zombies = new ArrayList<>();
-//		emptyCells = new ArrayList<>();
-//		vaccines = new ArrayList<>();
-//		Cell[][] map = new Cell[15][15];
-		for (int i = 0; i < 15; i++) {
-			for (int j = 0; j < 15; j++) {
+		emptyCells = new ArrayList<>();
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[i].length; j++) {
 				emptyCells.add(new ArrayList<>(Arrays.asList(i, j)));
 				map[i][j] = new CharacterCell();
 			}
@@ -138,11 +139,8 @@ public class Game {
 		h.setLocation(new Point(0, 0));
 		availableHeroes.remove(h);
 		heroes.add(h);
-		Hero.makeAllAdjacentVisible(0, 0);
 		for (int i = 0; i < 5; i++) {
-			Vaccine v = new Vaccine();
-			spawnCell(new CollectibleCell(v));
-			vaccines.add(v);
+			spawnCell(new CollectibleCell(new Vaccine()));
 			spawnCell(new CollectibleCell(new Supply()));
 			spawnCell(new TrapCell());
 		}
@@ -151,26 +149,53 @@ public class Game {
 			zombies.add(z);
 			spawnCell(new CharacterCell(z));
 		}
+		Hero.makeAllAdjacentVisible(0, 0);
 	}
 
 	/**
 	 * This method checks the win conditions for the game.
 	 */
 	public static boolean checkWin() {
-		return ((vaccines.size() == 0 && heroes.size() >= 5) );
+		if (heroes.size() >= 5) {
+			for (int i = 0; i < map.length; i++)
+				for (int j = 0; j < map[i].length; j++)
+					if (map[i][j] instanceof CollectibleCell) {
+						if (((CollectibleCell) map[i][j]).getCollectible() instanceof Vaccine)
+							return false;
+					}
+			for (Hero h : heroes)
+				if (h.getVaccineInventory().size() > 0)
+					return false;
+			return true;
+		}
+		return false;
 	}
 
 	/**
 	 * This method checks the conditions for the game to end.
 	 */
 	public static boolean checkGameOver() {
-		return (heroes.size() == 0 || (vaccines.size() == 0 && heroes.size() < 5 && zombies.size() > 0) || (availableHeroes.size()==0 && heroes.size()<5));
+		if (heroes.size() == 0)
+			return true;
+		if (heroes.size() < 5) {
+			for (int i = 0; i < map.length; i++)
+				for (int j = 0; j < map[i].length; j++)
+					if (map[i][j] instanceof CollectibleCell) {
+						if (((CollectibleCell) map[i][j]).getCollectible() instanceof Vaccine)
+							return false;
+					}
+			for (Hero h : heroes)
+				if (h.getVaccineInventory().size() > 0)
+					return false;
+			return true;
+		} else
+			return (availableHeroes.size() == 0 && heroes.size() < 5);
 	}
 
 	/**
 	 * This method is called when the player decides to end the turn. it makes all
 	 * the zombies in the game attack an adjacent Hero ( if exists ) , and reset
-	 * each heroâ€™s actions, target, and special, end update the map visibility.
+	 * each hero's actions, target, and special, end update the map visibility.
 	 * 
 	 * @throws NotEnoughActionsException
 	 * @throws InvalidTargetException
@@ -190,17 +215,17 @@ public class Game {
 		for (Hero h : heroes) {
 			h.reset();
 		}
-		updateMapVisibility();
 		if (zombies.size() < 10) {
 			Zombie z = new Zombie();
 			spawnCell(new CharacterCell(z));
 			zombies.add(z);
 		}
+		updateMapVisibility();
 	}
 
 	/**
-	 * Ù�Ù�Ù�A helper method that updates the map visibility in the game such that only
-	 * cells adjacent to heroes are visible
+	 * Ù�Ù�Ù�A helper method that updates the map visibility in the game such that
+	 * only cells adjacent to heroes are visible
 	 */
 
 	private static void updateMapVisibility() {
@@ -219,7 +244,7 @@ public class Game {
 		return emptyCells;
 	}
 
-	public static ArrayList<Vaccine> getVaccines() {
-		return vaccines;
-	}
+//	public static ArrayList<Vaccine> getVaccines() {
+//		return vaccines;
+//	}
 }
