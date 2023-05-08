@@ -166,6 +166,8 @@ public abstract class Hero extends Character {
 	 * @throws InvalidTargetException
 	 */
 	public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException {
+		if (specialAction)
+			return;
 		if (supplyInventory.isEmpty()) {
 			throw new NoAvailableResourcesException();
 		}

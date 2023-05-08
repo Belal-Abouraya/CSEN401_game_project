@@ -85,7 +85,6 @@ public abstract class Character {
 	 */
 	public void attack() throws InvalidTargetException, NotEnoughActionsException {
 		if (!isAdjacent(target)) {
-			// System.out.println(name + " " + target);
 			throw new InvalidTargetException();
 		}
 		if ((this instanceof Hero && target instanceof Hero) || (this instanceof Zombie && target instanceof Zombie))

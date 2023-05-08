@@ -2400,6 +2400,7 @@ public class M2PublicTests {
 			fail(e.getCause().getClass() + " occurred while trying to get Map variable from the Game Class");
 		}
 
+
 		Method attackMethod = fighterClass.getMethod("attack");
 		Method setSpecialActionMethod = fighterClass.getMethod("setSpecialAction", boolean.class);
 
@@ -3835,9 +3836,9 @@ public class M2PublicTests {
 		fd = Class.forName(gamePath).getDeclaredField("zombies");
 		fd.setAccessible(true);
 		ArrayList<Object> actualZombies = (ArrayList<Object>) fd.get(null);
-		assertTrue("The zombies should be added to the zombie ArrayList " + actualZombies.size(),
-				actualZombies.size() == 10);
+		assertTrue("The zombies should be added to the zombie ArrayList", actualZombies.size() == 10);
 	}
+
 
 	@Test(timeout = 100000)
 	public void testStartGameVaccinesRandomlyPlaced() throws Exception {
@@ -3944,7 +3945,7 @@ public class M2PublicTests {
 			}
 		}
 
-		assertTrue("The game map should be initalized with the correct number of vaccines " + count, count == 5);
+		assertTrue("The game map should be initalized with the correct number of vaccines", count == 5);
 	}
 
 	@Test(timeout = 10000)
@@ -3974,7 +3975,7 @@ public class M2PublicTests {
 				}
 			}
 		}
-		assertFalse("The game map should be initalized with the correct number of vaccines " + count, count != 5);
+		assertFalse("The game map should be initalized with the correct number of vaccines", count != 5);
 	}
 
 	@Test(timeout = 10000)
@@ -4064,6 +4065,7 @@ public class M2PublicTests {
 		heros = (ArrayList<Object>) fd.get(null);
 		assertTrue("Starting Hero should  be removed from the availableHeroes list", !heros.contains(fighter));
 	}
+
 
 	@Test(timeout = 10000)
 	public void testStartGameEmptyCells() throws Exception {
@@ -4410,8 +4412,7 @@ public class M2PublicTests {
 
 		Method m = Class.forName(gamePath).getMethod("checkGameOver");
 		assertTrue(
-				"The game should end when all vaccines are collected and used even if there still exist uncollected supplies "
-						+ (boolean) m.invoke(null),
+				"The game should end when all vaccines are collected and used even if there still exist uncollected supplies",
 				(boolean) m.invoke(null));
 	}
 
