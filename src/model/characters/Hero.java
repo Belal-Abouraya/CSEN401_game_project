@@ -73,7 +73,7 @@ public abstract class Hero extends Character {
 			super.attack();
 			actionsAvailable--;
 		} else
-			throw new NotEnoughActionsException();
+			throw new NotEnoughActionsException("Not enough actions.");
 	}
 
 	/**
@@ -91,7 +91,7 @@ public abstract class Hero extends Character {
 			return;
 		}
 		if (actionsAvailable <= 0) {
-			throw new NotEnoughActionsException();
+			throw new NotEnoughActionsException("Not enough actions.");
 		}
 		int x = getLocation().x;
 		int y = getLocation().y;
@@ -103,7 +103,7 @@ public abstract class Hero extends Character {
 		case UP -> x += 1;
 		}
 		if (!isValidLocation(x, y))
-			throw new MovementException();
+			throw new MovementException("Invalid direction.");
 		if (Game.map[x][y] instanceof CharacterCell) {
 			if (((CharacterCell) Game.map[x][y]).getCharacter() != null)
 				throw new MovementException();

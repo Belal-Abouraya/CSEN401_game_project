@@ -32,7 +32,7 @@ public class Medic extends Hero {
 			getTarget().setCurrentHp(getTarget().getMaxHp());
 			setSpecialAction(false);
 		} else
-			throw new InvalidTargetException();
+			throw new InvalidTargetException("Cannot heal a zombie.");
 	}
 
 }
