@@ -145,8 +145,7 @@ public abstract class Hero extends Character {
 			for (int j = y - 1; j < y + 2; j++) {
 				if (isValidLocation(i, j) && Game.map[i][j] != null) {
 					Game.map[i][j].setVisible(true);
-				} else if (isValidLocation(i, j) && Game.map[i][j] == null)
-					System.err.println(i + " " + j);
+				} 
 			}
 		}
 	}

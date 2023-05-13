@@ -39,6 +39,7 @@ public class Zombie extends Character {
 	public void attack() throws InvalidTargetException, NotEnoughActionsException {
 		setTarget(getAdjacentTarget());
 		super.attack();
+		setTarget(null);
 	}
 
 	/**
