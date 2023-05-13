@@ -1,5 +1,6 @@
 package model.characters;
 
+import java.awt.Point;
 import exceptions.InvalidTargetException;
 import exceptions.NoAvailableResourcesException;
 
@@ -27,12 +28,27 @@ public class Medic extends Hero {
 
 	@Override
 	public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException {
-		if (getTarget() instanceof Hero && isAdjacent(getTarget())) {
-			super.useSpecial();
-			getTarget().setCurrentHp(getTarget().getMaxHp());
-			setSpecialAction(false);
-		} else
-			throw new InvalidTargetException("Cannot heal a zombie.");
+		if (getTarget() instanceof Zombie)
+			throw new InvalidTargetException("Cannot heal a zombie!");
+		if(!isAdjacent(getTarget()) && !sameCell(getTarget()))
+			throw new InvalidTargetException("The Hero is not close enough!");
+		if(getTarget() == null)
+			throw new InvalidTargetException("Target is not set yet!");
+		super.useSpecial();
+		getTarget().setCurrentHp(getTarget().getMaxHp());
+		setSpecialAction(false);
+	}
+	
+	/**
+	 * A helper method checks whether two characters share the same cell
+	 * 
+	 * @param c a character
+	 * @return true if the two characters are in the same cell and false otherwise
+	 */
+	private boolean sameCell(Character c) {
+		Point cellLocation = c.getLocation();
+		return cellLocation.x == this.getLocation().x &&
+				cellLocation.y == this.getLocation().y ;
 	}
 
 }

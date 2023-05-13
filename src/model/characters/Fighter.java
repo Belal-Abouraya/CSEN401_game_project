@@ -1,7 +1,6 @@
 package model.characters;
 
 import exceptions.InvalidTargetException;
-import exceptions.NoAvailableResourcesException;
 import exceptions.NotEnoughActionsException;
 
 /**

@@ -50,7 +50,7 @@ public abstract class Character {
 	}
 
 	/**
-	 * Checks wether a character is adjacent to another one
+	 * Checks whether a character is adjacent to another one
 	 */
 	public boolean isAdjacent(Character c) {
 		if (c == null)
@@ -84,11 +84,8 @@ public abstract class Character {
 	 * @throws NotEnoughActionsException
 	 */
 	public void attack() throws InvalidTargetException, NotEnoughActionsException {
-		if (!isAdjacent(target)) {
-			throw new InvalidTargetException("The target is not adjacent.");
-		}
-		if ((this instanceof Hero && target instanceof Hero) || (this instanceof Zombie && target instanceof Zombie))
-			throw new InvalidTargetException("A hero cannot attack another hero.");
+		if(target == null)
+			throw new InvalidTargetException("Target is not set yet!");
 		target.defend(this);
 		target.setCurrentHp(target.getCurrentHp() - attackDmg);
 		if (target.getCurrentHp() == 0)

@@ -187,7 +187,7 @@ public class Game {
 					return false;
 			return true;
 		} else
-			return (availableHeroes.size() == 0 && heroes.size() < 5);
+			return false;
 	}
 
 	/**

@@ -69,11 +69,17 @@ public abstract class Hero extends Character {
 	 */
 	@Override
 	public void attack() throws InvalidTargetException, NotEnoughActionsException {
-		if (actionsAvailable > 0) {
-			super.attack();
-			actionsAvailable--;
-		} else
-			throw new NotEnoughActionsException("Not enough actions.");
+		if (actionsAvailable <= 0) {
+			throw new NotEnoughActionsException("Not enough actions!");
+		}
+		if(!isAdjacent(getTarget())) {
+			throw new InvalidTargetException("The target is not close enough!");
+		}
+		if(getTarget() instanceof Hero) {
+			throw new InvalidTargetException("Heroes can not attack each other!");
+		}
+		super.attack();
+		actionsAvailable--;
 	}
 
 	/**
@@ -106,7 +112,7 @@ public abstract class Hero extends Character {
 			throw new MovementException("Invalid direction.");
 		if (Game.map[x][y] instanceof CharacterCell) {
 			if (((CharacterCell) Game.map[x][y]).getCharacter() != null)
-				throw new MovementException();
+				throw new MovementException("Cell is occupied!");
 			((CharacterCell) Game.map[x][y]).setCharacter(this);
 		} else if (Game.map[x][y] instanceof TrapCell) {
 			int currHP = getCurrentHp();
@@ -169,11 +175,10 @@ public abstract class Hero extends Character {
 		if (specialAction)
 			return;
 		if (supplyInventory.isEmpty()) {
-			throw new NoAvailableResourcesException();
+			throw new NoAvailableResourcesException("The Supply inventory is empty!");
 		}
 		Supply supply = supplyInventory.get(0);
 		supply.use(this);
-		specialAction = true;
 	}
 
 	/**
@@ -186,14 +191,16 @@ public abstract class Hero extends Character {
 	 */
 
 	public void cure() throws InvalidTargetException, NotEnoughActionsException, NoAvailableResourcesException {
+		if(getTarget() == null) 
+			throw new InvalidTargetException("Target is not set yet!");
 		if (actionsAvailable <= 0)
-			throw new NotEnoughActionsException();
-		if (!(getTarget() instanceof Zombie) || !isAdjacent(getTarget())) {
-			throw new InvalidTargetException();
-		}
-		if (vaccineInventory.isEmpty()) {
-			throw new NoAvailableResourcesException();
-		}
+			throw new NotEnoughActionsException("Not enough actions!");
+		if (!(getTarget() instanceof Zombie)) 
+			throw new InvalidTargetException("Heroes can only cure Zombies!");
+		if(!isAdjacent(getTarget()))
+			throw new InvalidTargetException("The target is not close enough!");
+		if (vaccineInventory.isEmpty())
+			throw new NoAvailableResourcesException("No vaccines are availabe!");
 		actionsAvailable--;
 		Vaccine vaccine = vaccineInventory.get(0);
 		vaccine.use(this);

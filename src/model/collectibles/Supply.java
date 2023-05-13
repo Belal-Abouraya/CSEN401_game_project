@@ -1,6 +1,5 @@
 package model.collectibles;
 
-import exceptions.NoAvailableResourcesException;
 import model.characters.Hero;
 
 /**
@@ -26,5 +25,6 @@ public class Supply implements Collectible {
 	@Override
 	public void use(Hero owner){
 		owner.getSupplyInventory().remove(this);
+		owner.setSpecialAction(true);
 	}
 }
