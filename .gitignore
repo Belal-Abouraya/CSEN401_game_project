@@ -4,6 +4,7 @@
 .project
 .settings/
 bin/
+build.fxbuild
 
 #intelliJ files
 .name
