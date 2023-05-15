@@ -11,12 +11,27 @@ import java.util.Scanner;
 import exceptions.GameActionException;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughActionsException;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.stage.Stage;
-import javafx.scene.*;
+import javafx.util.Duration;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.image.*;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.text.Font;
 import model.characters.Explorer;
 import model.characters.Fighter;
 import model.characters.Medic;
@@ -251,9 +266,33 @@ public class Game extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
+		stage.setTitle("Last of US : Legacy");
 		//firstScene is nothing but an image and a text waiting for the user to press Enter
-		VBox vbox = new VBox(8);
-		Image wallpaper = new Image("") ;
+		StackPane stackPane = new StackPane();
+		Image wallpaper = new Image("images\\FirstScene.jpg") ;
+		ImageView imageView = new ImageView(wallpaper);
+		imageView.setFitHeight(720);
+		imageView.setFitWidth(1280);
+		Label waitingMessage = new Label("Press Enter to Start");
+		waitingMessage.setFont(new Font("Impact" , 35));
+		waitingMessage.setTextFill(Color.CORAL);
+		waitingMessage.setTranslateY(265);
+		Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(waitingMessage.opacityProperty(), 0)),
+                new KeyFrame(Duration.seconds(1), new KeyValue(waitingMessage.opacityProperty(), 1)),
+                new KeyFrame(Duration.seconds(2), new KeyValue(waitingMessage.opacityProperty(), 0))
+        );
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+		stackPane.getChildren().add(imageView);
+		stackPane.getChildren().add(waitingMessage);
+		Scene firstScene = new Scene(stackPane,1280,720);
+		stage.setScene(firstScene);
+		firstScene.setOnKeyPressed(e -> {
+			if(e.getCode() == KeyCode.ENTER)
+				stage.setScene(new Scene(new Group() , 1280 , 720));
+		});
+		stage.show();
 	}
 
 }
