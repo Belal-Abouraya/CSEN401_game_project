@@ -11,6 +11,12 @@ import java.util.Scanner;
 import exceptions.GameActionException;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughActionsException;
+import javafx.application.Application;
+import javafx.stage.Stage;
+import javafx.scene.*;
+import javafx.scene.layout.VBox;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import model.characters.Explorer;
 import model.characters.Fighter;
 import model.characters.Medic;
@@ -31,13 +37,16 @@ import model.world.TrapCell;
  * @author Rafael Smauel
  * @author Ahmed Hussein
  */
-public class Game {
+public class Game extends Application {
 	public static ArrayList<Hero> availableHeroes = new ArrayList<>();
 	public static ArrayList<Hero> heroes = new ArrayList<>();
 	public static ArrayList<Zombie> zombies = new ArrayList<>(10);
 	public static Cell[][] map = new Cell[15][15];
+	public static Hero currentHero ;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		loadHeroes("src\\test_heros.csv");
+		launch(args);
 	}
 
 	/**
@@ -238,6 +247,13 @@ public class Game {
 		for (Hero h : Game.heroes) {
 			Hero.makeAllAdjacentVisible((int) h.getLocation().getX(), (int) h.getLocation().getY());
 		}
+	}
+
+	@Override
+	public void start(Stage stage) throws Exception {
+		//firstScene is nothing but an image and a text waiting for the user to press Enter
+		VBox vbox = new VBox(8);
+		Image wallpaper = new Image("") ;
 	}
 
 }
