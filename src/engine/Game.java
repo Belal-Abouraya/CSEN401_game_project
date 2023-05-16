@@ -1,6 +1,6 @@
 package engine;
 
-import java.awt.*;
+import java.awt.Point;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,16 +20,17 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.image.*;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Font;
 import model.characters.Explorer;
@@ -288,6 +289,23 @@ public class Game extends Application {
 		stackPane.getChildren().add(waitingMessage);
 		Scene firstScene = new Scene(stackPane,1280,720);
 		stage.setScene(firstScene);
+		//secondScene is the scene where the player chooses his first hero
+		ImageView viewer = new ImageView();
+		viewer.setFitHeight(720);
+		viewer.setFitWidth(1280);
+		StackPane pane = new StackPane();
+		pane.getChildren().add(viewer);
+		GridPane grid = new GridPane();
+		for(int i = 0 ; i < 4 ; i++) {
+			for(int j = 0 ; j < 4 ; j++) {
+				Button button = new Button();
+				Image tmp = availableHeroes.get(i+j).getImage();
+				ImageView heroFace = new ImageView(tmp);
+				heroFace.setFitHeight(60);
+				heroFace.setFitWidth(60);
+				button.setGraphic(heroFace);
+			}
+		}
 		firstScene.setOnKeyPressed(e -> {
 			if(e.getCode() == KeyCode.ENTER)
 				stage.setScene(new Scene(new Group() , 1280 , 720));

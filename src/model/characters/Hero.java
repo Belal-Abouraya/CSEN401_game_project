@@ -11,6 +11,7 @@ import java.util.Arrays;
 import engine.Game;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughActionsException;
+import javafx.scene.image.Image;
 import model.world.CharacterCell;
 import model.world.CollectibleCell;
 import model.world.TrapCell;
@@ -38,6 +39,9 @@ public abstract class Hero extends Character {
 	private boolean specialAction;
 	private ArrayList<Vaccine> vaccineInventory;
 	private ArrayList<Supply> supplyInventory;
+	private Image image ;
+	private Image wallpaper ;
+
 
 	/**
 	 * Constructor that initializes the name, maximum Hp, attack damage and maximum
@@ -57,6 +61,8 @@ public abstract class Hero extends Character {
 		this.specialAction = false;
 		this.vaccineInventory = new ArrayList<>();
 		this.supplyInventory = new ArrayList<>();
+//		this.image = new Image("src\\images\\"+name);
+//		this.wallpaper = new Image("src\\images\\"+name+"_w");
 	}
 
 	/**
@@ -272,6 +278,20 @@ public abstract class Hero extends Character {
 	 */
 	public ArrayList<Supply> getSupplyInventory() {
 		return supplyInventory;
+	}
+	
+	/**
+	 * @return the image of the hero
+	 */
+	public Image getImage() {
+		return image;
+	}
+	
+	/**
+	 * @return the wallpaper of the hero
+	 */
+	public Image getWallpaper() {
+		return wallpaper;
 	}
 
 }
