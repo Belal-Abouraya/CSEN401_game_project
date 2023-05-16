@@ -27,16 +27,8 @@ import model.characters.Hero;
  * 
  */
 public class Main extends Application {
-
 	static Stage window;
 	static Scene firstScene;
-	static Scene secondScene;
-	static ImageView secondSceneWallpaper;
-
-	@Override
-	public void init() {
-
-	}
 
 	@Override
 	public void start(Stage primaryStage) throws MalformedURLException {
@@ -82,12 +74,10 @@ public class Main extends Application {
 		firstScene = new Scene(stackPane, 1280, 720);
 		firstScene.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.ENTER) {
-				window.setScene(secondScene);
 				window.setScene((new SecondScene()).getScene());
 			}
 		});
 	}
-
 }
 //package views;
 //
