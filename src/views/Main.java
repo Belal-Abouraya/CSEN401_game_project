@@ -43,7 +43,6 @@ public class Main extends Application {
 		window = primaryStage;
 		window.setTitle("Last of Us : Legacy");
 		createFirstScene();
-		createSecondScene();
 		window.setScene(firstScene);
 		window.show();
 	}
@@ -84,46 +83,12 @@ public class Main extends Application {
 		firstScene.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.ENTER) {
 				window.setScene(secondScene);
+				window.setScene((new SecondScene()).getScene());
 			}
 		});
 	}
 
-	private static void createSecondScene() {
-		StackPane pane = new StackPane();
-		secondSceneWallpaper = new ImageView();
-		secondSceneWallpaper.setFitHeight(720);
-		secondSceneWallpaper.setFitWidth(1280);
-		GridPane gridPane = new GridPane();
-		gridPane.setHgap(8);
-		gridPane.setVgap(8);
-		int size = Game.availableHeroes.size();
-		int count = 0;
-		for (int i = 0; i < size / 2; i++) {
-			gridPane.add(hero(Game.availableHeroes.get(count++)), i, 0);
-		}
-		for (int i = 0; i < size / 2 + size % 2; i++) {
-			gridPane.add(hero(Game.availableHeroes.get(count++)), i, 1);
-		}
-		gridPane.setAlignment(Pos.BOTTOM_CENTER);
-		pane.getChildren().addAll(secondSceneWallpaper, gridPane);
-		secondScene = new Scene(pane, 1280, 720);
-	}
-
-	private static StackPane hero(Hero h) {
-		StackPane res = new StackPane();
-		ImageView tmp = new ImageView(h.getImage());
-		tmp.setFitHeight(100);
-		tmp.setFitWidth(100);
-		res.getChildren().add(tmp);
-		res.setOnMouseEntered(e -> secondSceneWallpaper.setImage(h.getWallpaper()));
-		res.setOnMouseClicked(e -> {
-			Game.startGame(h);
-			window.setScene((new GameScene()).gameScene());
-		});
-		return res;
-	}
 }
-
 //package views;
 //
 //import java.io.File;
