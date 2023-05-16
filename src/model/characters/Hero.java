@@ -6,6 +6,7 @@ import model.collectibles.Supply;
 import model.collectibles.Vaccine;
 import java.util.ArrayList;
 import java.awt.Point;
+import java.io.File;
 
 import engine.Game;
 import exceptions.InvalidTargetException;
@@ -38,9 +39,8 @@ public abstract class Hero extends Character {
 	private boolean specialAction;
 	private ArrayList<Vaccine> vaccineInventory;
 	private ArrayList<Supply> supplyInventory;
-	private Image image ;
-	private Image wallpaper ;
-
+	private Image image;
+	private Image wallpaper;
 
 	/**
 	 * Constructor that initializes the name, maximum Hp, attack damage and maximum
@@ -60,8 +60,12 @@ public abstract class Hero extends Character {
 		this.specialAction = false;
 		this.vaccineInventory = new ArrayList<>();
 		this.supplyInventory = new ArrayList<>();
-		this.image = new Image(getClass().getResourceAsStream("/images/" + name + ".jpg"));
-		this.wallpaper = new Image(getClass().getResourceAsStream("/images/" + name + "_w.jpg"));
+		try {
+			this.image = new Image(new File("src\\images\\" + name + ".jpg").toURI().toURL().toExternalForm());
+			this.wallpaper = new Image(new File("src\\images\\" + name + "_w.jpg").toURI().toURL().toExternalForm());
+		} catch (Exception e) {
+			System.out.println(name + "'s images are missing");
+		}
 	}
 
 	/**
@@ -77,10 +81,12 @@ public abstract class Hero extends Character {
 		if (actionsAvailable <= 0) {
 			throw new NotEnoughActionsException("Not enough actions!");
 		}
-		if(!isAdjacent(getTarget())) {
+		if (getTarget() == null)
+			throw new InvalidTargetException("Target is not set yet!");
+		if (!isAdjacent(getTarget())) {
 			throw new InvalidTargetException("The target is not close enough!");
 		}
-		if(getTarget() instanceof Hero) {
+		if (getTarget() instanceof Hero) {
 			throw new InvalidTargetException("Heroes can not attack each other!");
 		}
 		super.attack();
@@ -150,7 +156,7 @@ public abstract class Hero extends Character {
 			for (int j = y - 1; j < y + 2; j++) {
 				if (isValidLocation(i, j) && Game.map[i][j] != null) {
 					Game.map[i][j].setVisible(true);
-				} 
+				}
 			}
 		}
 	}
@@ -195,13 +201,13 @@ public abstract class Hero extends Character {
 	 */
 
 	public void cure() throws InvalidTargetException, NotEnoughActionsException, NoAvailableResourcesException {
-		if(getTarget() == null) 
+		if (getTarget() == null)
 			throw new InvalidTargetException("Target is not set yet!");
 		if (actionsAvailable <= 0)
 			throw new NotEnoughActionsException("Not enough actions!");
-		if (!(getTarget() instanceof Zombie)) 
+		if (!(getTarget() instanceof Zombie))
 			throw new InvalidTargetException("Heroes can only cure Zombies!");
-		if(!isAdjacent(getTarget()))
+		if (!isAdjacent(getTarget()))
 			throw new InvalidTargetException("The target is not close enough!");
 		if (vaccineInventory.isEmpty())
 			throw new NoAvailableResourcesException("No vaccines are availabe!");
@@ -278,14 +284,14 @@ public abstract class Hero extends Character {
 	public ArrayList<Supply> getSupplyInventory() {
 		return supplyInventory;
 	}
-	
+
 	/**
 	 * @return the image of the hero
 	 */
 	public Image getImage() {
 		return image;
 	}
-	
+
 	/**
 	 * @return the wallpaper of the hero
 	 */

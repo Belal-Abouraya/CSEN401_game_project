@@ -36,7 +36,7 @@ public class Game {
 	public static ArrayList<Hero> heroes = new ArrayList<>();
 	public static ArrayList<Zombie> zombies = new ArrayList<>(10);
 	public static Cell[][] map = new Cell[15][15];
-	public static Hero currentHero ;
+	public static Hero currentHero;
 
 	public static void main(String[] args) throws Exception {
 	}
@@ -206,7 +206,8 @@ public class Game {
 			z1 = new Zombie();
 			spawnCell(new CharacterCell(z1));
 		}
-		for (Zombie z : zombies) {
+		for (int i = 0; i < zombies.size(); i++) {
+			Zombie z = zombies.get(i);
 			if (z.getAdjacentTarget() != null) {
 				try {
 					z.attack();
@@ -236,7 +237,8 @@ public class Game {
 			}
 		}
 
-		for (Hero h : Game.heroes) {
+		for (int i = 0; i < heroes.size(); i++) {
+			Hero h = heroes.get(i);
 			Hero.makeAllAdjacentVisible((int) h.getLocation().getX(), (int) h.getLocation().getY());
 		}
 	}
