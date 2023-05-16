@@ -11,28 +11,6 @@ import java.util.Scanner;
 import exceptions.GameActionException;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughActionsException;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.application.Application;
-import javafx.geometry.Pos;
-import javafx.stage.Stage;
-import javafx.util.Duration;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.effect.Blend;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.image.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.text.Font;
 import model.characters.Explorer;
 import model.characters.Fighter;
 import model.characters.Medic;
@@ -53,7 +31,7 @@ import model.world.TrapCell;
  * @author Rafael Smauel
  * @author Ahmed Hussein
  */
-public class Game extends Application {
+public class Game {
 	public static ArrayList<Hero> availableHeroes = new ArrayList<>();
 	public static ArrayList<Hero> heroes = new ArrayList<>();
 	public static ArrayList<Zombie> zombies = new ArrayList<>(10);
@@ -61,8 +39,6 @@ public class Game extends Application {
 	public static Hero currentHero ;
 
 	public static void main(String[] args) throws Exception {
-		loadHeroes("src\\test_heros.csv");
-		launch(args);
 	}
 
 	/**
@@ -264,53 +240,4 @@ public class Game extends Application {
 			Hero.makeAllAdjacentVisible((int) h.getLocation().getX(), (int) h.getLocation().getY());
 		}
 	}
-
-	@Override
-	public void start(Stage stage) throws Exception {
-		stage.setTitle("Last of US : Legacy");
-		//firstScene is nothing but an image and a text waiting for the user to press Enter
-		StackPane stackPane = new StackPane();
-		Image wallpaper = new Image("images\\FirstScene.jpg") ;
-		ImageView imageView = new ImageView(wallpaper);
-		imageView.setFitHeight(720);
-		imageView.setFitWidth(1280);
-		Label waitingMessage = new Label("Press Enter to Start");
-		waitingMessage.setFont(new Font("Impact" , 35));
-		waitingMessage.setTextFill(Color.CORAL);
-		waitingMessage.setTranslateY(265);
-		Timeline timeline = new Timeline(
-                new KeyFrame(Duration.ZERO, new KeyValue(waitingMessage.opacityProperty(), 0)),
-                new KeyFrame(Duration.seconds(1), new KeyValue(waitingMessage.opacityProperty(), 1)),
-                new KeyFrame(Duration.seconds(2), new KeyValue(waitingMessage.opacityProperty(), 0))
-        );
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
-		stackPane.getChildren().add(imageView);
-		stackPane.getChildren().add(waitingMessage);
-		Scene firstScene = new Scene(stackPane,1280,720);
-		stage.setScene(firstScene);
-		//secondScene is the scene where the player chooses his first hero
-		ImageView viewer = new ImageView();
-		viewer.setFitHeight(720);
-		viewer.setFitWidth(1280);
-		StackPane pane = new StackPane();
-		pane.getChildren().add(viewer);
-		GridPane grid = new GridPane();
-		for(int i = 0 ; i < 4 ; i++) {
-			for(int j = 0 ; j < 4 ; j++) {
-				Button button = new Button();
-				Image tmp = availableHeroes.get(i+j).getImage();
-				ImageView heroFace = new ImageView(tmp);
-				heroFace.setFitHeight(60);
-				heroFace.setFitWidth(60);
-				button.setGraphic(heroFace);
-			}
-		}
-		firstScene.setOnKeyPressed(e -> {
-			if(e.getCode() == KeyCode.ENTER)
-				stage.setScene(new Scene(new Group() , 1280 , 720));
-		});
-		stage.show();
-	}
-
 }

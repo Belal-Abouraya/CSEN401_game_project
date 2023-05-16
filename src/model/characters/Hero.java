@@ -6,7 +6,6 @@ import model.collectibles.Supply;
 import model.collectibles.Vaccine;
 import java.util.ArrayList;
 import java.awt.Point;
-import java.util.Arrays;
 
 import engine.Game;
 import exceptions.InvalidTargetException;
@@ -61,8 +60,8 @@ public abstract class Hero extends Character {
 		this.specialAction = false;
 		this.vaccineInventory = new ArrayList<>();
 		this.supplyInventory = new ArrayList<>();
-//		this.image = new Image("src\\images\\"+name);
-//		this.wallpaper = new Image("src\\images\\"+name+"_w");
+		this.image = new Image(getClass().getResourceAsStream("/images/" + name + ".jpg"));
+		this.wallpaper = new Image(getClass().getResourceAsStream("/images/" + name + "_w.jpg"));
 	}
 
 	/**
