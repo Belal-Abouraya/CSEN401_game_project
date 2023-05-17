@@ -29,6 +29,8 @@ import model.characters.Hero;
 public class Main extends Application {
 	static Stage window;
 	static Scene firstScene;
+	static int width = 1280;
+	static int height = 720;
 
 	@Override
 	public void start(Stage primaryStage) throws MalformedURLException {
@@ -36,6 +38,8 @@ public class Main extends Application {
 		window.setTitle("Last of Us : Legacy");
 		createFirstScene();
 		window.setScene(firstScene);
+		window.addEventHandler(GameEvent.WIN, e-> window.setScene((new WiningScene()).getScene()));
+		window.addEventHandler(GameEvent.GAME_OVER, e-> window.setScene((new LosingScene()).getScene()));
 		window.show();
 	}
 
@@ -59,19 +63,20 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 		ImageView imageView = new ImageView(wallpaper);
-		imageView.setFitHeight(720);
-		imageView.setFitWidth(1280);
+		imageView.setFitHeight(height);
+		imageView.setFitWidth(width);
 		Label label = new Label("Press Enter to Start");
-		label.setFont(new Font("Courier New", 46));
-		label.setTextFill(Color.CORAL);
-		label.setTranslateY(265);
-		Timeline timeLine = new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(label.opacityProperty(), 0)),
+		label.setFont(new Font("Impact", 40));
+		label.setTextFill(Color.CORAL.brighter());
+		label.setTranslateY(Math.floor(0.4 * height));
+		Timeline timeLine = new Timeline(
+				new KeyFrame(Duration.seconds(0), new KeyValue(label.opacityProperty(), 0)),
 				new KeyFrame(Duration.seconds(1), new KeyValue(label.opacityProperty(), 1)),
 				new KeyFrame(Duration.seconds(2), new KeyValue(label.opacityProperty(), 0)));
 		timeLine.setCycleCount(Timeline.INDEFINITE);
 		timeLine.play();
 		stackPane.getChildren().addAll(imageView, label);
-		firstScene = new Scene(stackPane, 1280, 720);
+		firstScene = new Scene(stackPane, width, height);
 		firstScene.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.ENTER) {
 				window.setScene((new SecondScene()).getScene());
