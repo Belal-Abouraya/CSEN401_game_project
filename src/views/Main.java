@@ -41,7 +41,7 @@ public class Main extends Application {
 
 	public static void main(String[] args) {
 		try {
-			Game.loadHeroes("src\\engine\\Heros.csv");
+			Game.loadHeroes("src/engine/Heros.csv");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -53,7 +53,7 @@ public class Main extends Application {
 		StackPane stackPane = new StackPane();
 		Image wallpaper = null;
 		try {
-			wallpaper = new Image(new File("src\\FirstScene.jpg").toURI().toURL().toExternalForm());
+			wallpaper = new Image(new File("src/FirstScene.jpg").toURI().toURL().toExternalForm());
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -61,8 +61,8 @@ public abstract class Hero extends Character {
 		this.vaccineInventory = new ArrayList<>();
 		this.supplyInventory = new ArrayList<>();
 		try {
-			this.image = new Image(new File("src\\images\\" + name + ".jpg").toURI().toURL().toExternalForm());
-			this.wallpaper = new Image(new File("src\\images\\" + name + "_w.jpg").toURI().toURL().toExternalForm());
+			this.image = new Image(new File("src/images/" + name + ".jpg").toURI().toURL().toExternalForm());
+			this.wallpaper = new Image(new File("src/images/" + name + "_w.jpg").toURI().toURL().toExternalForm());
 		} catch (Exception e) {
 			System.out.println(name + "'s images are missing");
 		}
