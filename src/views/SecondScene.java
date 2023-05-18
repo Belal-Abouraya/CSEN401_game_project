@@ -86,6 +86,14 @@ public class SecondScene {
 ////			rectangles[row][column].setFill(Color.BEIGE.brighter());
 //			wallpaper.setImage(map[row][column].getWallpaper());
 //		});
+		scene.widthProperty().addListener((observable , oldWidth , newWidth) -> {
+			Main.width = (double) newWidth ;
+			wallpaper.setFitWidth((double) newWidth);
+		});
+		scene.heightProperty().addListener((observable , oldHeight , newHeight) -> {
+			Main.height = (double) newHeight ;
+			wallpaper.setFitHeight((double) newHeight);
+		});
 		return scene;
 	}
 

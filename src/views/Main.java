@@ -29,8 +29,8 @@ import model.characters.Hero;
 public class Main extends Application {
 	static Stage window;
 	static Scene firstScene;
-	static int width = 1280;
-	static int height = 720;
+	static double width = 1280;
+	static double height = 720;
 
 	@Override
 	public void start(Stage primaryStage) throws MalformedURLException {
@@ -81,6 +81,14 @@ public class Main extends Application {
 			if (e.getCode() == KeyCode.ENTER) {
 				window.setScene((new SecondScene()).getScene());
 			}
+		});
+		firstScene.widthProperty().addListener((observable , oldWidth , newWidth) -> {
+			width = (double) newWidth ;
+			imageView.setFitWidth((double) newWidth);
+		});
+		firstScene.heightProperty().addListener((observable , oldHeight , newHeight) -> {
+			height = (double) newHeight ;
+			imageView.setFitHeight((double) newHeight);
 		});
 	}
 }
