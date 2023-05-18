@@ -298,5 +298,13 @@ public abstract class Hero extends Character {
 	public Image getWallpaper() {
 		return wallpaper;
 	}
+	
+	public String getType() {
+		if(this instanceof Fighter)
+			return "Fighter" ;
+		if(this instanceof Medic)
+			return "Medic" ;
+		return "Explorer" ;
+	}
 
 }
