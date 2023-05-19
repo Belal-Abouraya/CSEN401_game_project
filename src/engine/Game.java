@@ -91,7 +91,7 @@ public class Game {
 	 * @param y the y coordinate of the cell
 	 */
 	public static void clearCell(int x, int y) {
-		map[x][y] = new CharacterCell();
+		((CharacterCell) map[x][y]).setCharacter(null);
 	}
 
 	/**
