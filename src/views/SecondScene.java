@@ -10,9 +10,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -25,7 +27,6 @@ import model.characters.Hero;
  * it has attributes :
  * <ul>
  * <li>wallpaper which represents the wallpaper used in this scene</li>
- * <li>label which contains the info of the hero currently selected</li>
  * <li>selectYourHero label which displays "select your hero" message</li>
  * <li>row and column represent the location of the currently selected hero</li>
  * <li>dimension1 and dimension2 are the dimensions of the grid (used for testing)</li>
@@ -39,19 +40,17 @@ import model.characters.Hero;
 public class SecondScene {
 
 	private static ImageView wallpaper;
-	private static Label label = new Label();
 	private static Label selectYourHero ;
 	private static int row = 0 ;
 	private static int column = 0;
 	private static int dimension1 = 1 ;
 	private static int dimension2 = 8 ;
-	private static StackPane [][] mapPane = new StackPane [dimension1][dimension2] ; 
+	private static StackPane [][] mapPane = new StackPane [dimension1][dimension2] ;
 
 	/**
 	 * the controller method in the class.
 	 * 
 	 * {@link createWallpaper}
-	 * {@link updateLabel}
 	 * {@link createSelectYourHeroLabel}
 	 * {@link createGridAndMap}
 	 * {@link createScene}
@@ -62,14 +61,13 @@ public class SecondScene {
 	public Scene getScene() {
 		
 		createWallpaper();
-		updateLabel(170,170,"San Francisco");
 		
 		//gridPane
 		GridPane gridPane = new GridPane();
 		gridPane.setHgap(6);
 		gridPane.setVgap(4);
 		gridPane.setAlignment(Pos.BOTTOM_CENTER);
-		gridPane.setTranslateY(-0.01*Main.height);
+		gridPane.setTranslateY(0.14*Main.height);
 		
 		//map
 		Hero [][] map = new Hero [dimension1][dimension2];
@@ -77,16 +75,9 @@ public class SecondScene {
 		createSelectYourHeroLabel();
 		createGridAndMap(map,gridPane);
 		
-		BorderPane borderPane = new BorderPane();
-		borderPane.setBottom(gridPane);
-		borderPane.setRight(label);
-		
-		label.setTranslateY(0.8*Main.height);
-		label.setTranslateX(-0.01*Main.width);
-		
 		// the root of the scene
 		StackPane root = new StackPane();
-		root.getChildren().addAll(wallpaper, borderPane , selectYourHero);
+		root.getChildren().addAll(wallpaper, gridPane , selectYourHero);
 		
 		return createScene(root, map);
 	}
@@ -103,24 +94,27 @@ public class SecondScene {
 
 	private static StackPane hero(Hero h , int x , int y) {
 		StackPane res = new StackPane();
-		ImageView tmp = new ImageView(h.getImage());
-		Rectangle back = new Rectangle(85,85);
+		Rectangle back = new Rectangle(90,190);
+		back.setArcHeight(8);
+		back.setArcWidth(8);
 		back.setFill(Color.GRAY);
 		res.getChildren().add(back);
-		tmp.setFitHeight(80);
-		tmp.setFitWidth(80);
-		res.getChildren().add(tmp);
+		VBox vbox = getHeroCell(h);
+		vbox.setAlignment(Pos.BASELINE_CENTER);
+		vbox.setTranslateY(5);
+		res.getChildren().add(vbox);
 		res.setOnMouseEntered(e -> {
-			( (Rectangle) mapPane[row][column].getChildren().get(0) ).setFill(Color.GRAY); 
+			( (Rectangle) mapPane[row][column].getChildren().get(0) ).setFill(Color.GRAY);
+			mapPane[row][column].setTranslateY(0.0009*Main.height);
 			back.setFill(Color.BEIGE.brighter());
 			wallpaper.setImage(h.getWallpaper());
-			label.setText(getHeroInfo(h));
 			row = x ; column = y;
+			res.setTranslateY(-0.14*Main.height);
 		});
-		res.setOnMouseExited(e -> {
-			back.setFill(Color.GRAY);
-			label.setText("");
-		});
+//		res.setOnMouseExited(e -> {
+//			back.setFill(Color.GRAY);
+//			res.setTranslateY(0.0009*Main.height);
+//		});
 		res.setOnMouseClicked(e -> {
 			Game.startGame(h);
 			Main.window.setScene((new GameScene()).gameScene());
@@ -154,25 +148,6 @@ public class SecondScene {
 	}
 	
 	/**
-	 * A helper method called to get the information if a given hero.
-	 * 
-	 * @param h
-	 * @return string contains all required info
-	 */
-	
-	private static String getHeroInfo (Hero h) {
-		String res = "";
-		String name = h.getName();
-		if(name.split(" ").length > 1)
-			name = name.split(" ")[0] ;
-		res = name + " , " + h.getType() + "\n" 
-				+ "Attack Damage : " +  h.getAttackDmg()+ "\n" 
-				+ "Health Points : " + h.getMaxHp() + "\n" 
-				+ "Action Points : " + h.getActionsAvailable() ;
-		return res ;
-	}
-	
-	/**
 	 * An initializer method 
 	 * <p>
 	 * 		initializes and creates the wallpaper imageView and give it the proper
@@ -185,28 +160,6 @@ public class SecondScene {
 		wallpaper.setFitHeight(Main.height);
 		wallpaper.setFitWidth(Main.width);
 		wallpaper.setImage(Game.availableHeroes.get(0).getWallpaper());
-	}
-	
-	/**
-	 * Another initializer method.
-	 * <p>
-	 * 		updates the label size and font.
-	 * </p>
-	 * 
-	 * still requires styling.
-	 * 
-	 * @param width
-	 * @param height
-	 * @param font
-	 */
-	
-	private static void updateLabel (int width , int height , String font) {
-		label.setMaxHeight(width);
-		label.setMaxWidth(height);
-		label.setFont(new Font(font , Math.min(width, height)/9.5));
-		label.setTextFill(Color.GHOSTWHITE);
-		label.setText(getHeroInfo(Game.availableHeroes.get(0)));
-		label.setTextAlignment(TextAlignment.CENTER);
 	}
 	
 	/**
@@ -229,6 +182,28 @@ public class SecondScene {
 	}
 	
 	/**
+	 * A helper method that creates a VBox containing the image of the hero and all attributes
+	 * 
+	 * @param h the hero we want to get its VBox
+	 * @return VBox of hero's information
+	 */
+	
+	private static VBox getHeroCell (Hero h) {
+		ImageView image = new ImageView(h.getImage());
+		image.setFitHeight(80);
+		image.setFitWidth(80);
+		String heroName = h.getName().split(" ").length == 1 ? h.getName() : h.getName().split(" ")[0] ;
+		Label name = new Label(heroName + " : " + h.getType());
+		Label attackDmg = new Label("Attack Damage : " + h.getAttackDmg());
+		Label actionPoints = new Label("Action Points : " + h.getMaxActions());
+		Label health = new Label ("Health Points : " + h.getMaxHp());
+		//TODO styling the labels
+		VBox res = new VBox();
+		res.getChildren().addAll(image , name , attackDmg , health , actionPoints);
+		return res ;
+	}
+	
+	/**
 	 * A helper method used to create the scene and its actions.
 	 * 
 	 * 
@@ -239,22 +214,38 @@ public class SecondScene {
 	
 	private static Scene createScene (StackPane root , Hero [][] map) {
 		Scene scene = new Scene(root, Main.width, Main.height);
-		
+		mapPane[0][0].setTranslateY(-0.14*Main.height);
+		( (Rectangle) mapPane[row][column].getChildren().get(0))
+		.setFill(Color.BEIGE.brighter());
 		scene.setOnKeyPressed(e -> {
 			( (Rectangle) mapPane[row][column].getChildren().get(0)).setFill(Color.GRAY);
+			KeyCode key = e.getCode();
+			boolean isValid = key==KeyCode.W || key==KeyCode.A || 
+					key ==KeyCode.S || key == KeyCode.D ;
+			if(isValid)
+				mapPane[row][column].setTranslateY(0.0009*Main.height);
 			switch(e.getCode()) {
-				case W -> row = Math.max(row-1, 0);
-				case A -> column = Math.max(column-1, 0);
-				case S -> row = Math.min(row+1, dimension1-1);
-				case D -> column = Math.min(column+1, dimension2-1);
+				case W -> {
+					row = Math.max(row-1, 0);
+				}
+				case A -> {
+					column = Math.max(column-1, 0);
+				}
+				case S -> {
+					row = Math.min(row+1, dimension1-1);
+				}
+				case D -> {
+					column = Math.min(column+1, dimension2-1);
+				}
 				case ENTER ->{
 					Game.startGame(map[row][column]);
 					Main.window.setScene((new GameScene()).gameScene());
 				}
 			}
+			if(isValid)
+				mapPane[row][column].setTranslateY(-0.14*Main.height);
 			( (Rectangle) mapPane[row][column].getChildren().get(0))
 			.setFill(Color.BEIGE.brighter());
-			label.setText(getHeroInfo(map[row][column]));
 			wallpaper.setImage(map[row][column].getWallpaper());
 		});
 		
@@ -262,14 +253,12 @@ public class SecondScene {
 			Main.width = (double) newWidth ;
 			wallpaper.setFitWidth((double) newWidth);
 			selectYourHero.setFont(new Font("Impact", 34*Math.min(Main.height , Main.width) / 720));
-			//label.setTranslateX((double)newWidth - (double)oldWidth);
 		});
 		
 		scene.heightProperty().addListener((observable , oldHeight , newHeight) -> {
 			Main.height = (double) newHeight ;
 			wallpaper.setFitHeight((double) newHeight);
 			selectYourHero.setFont(new Font("Impact", 34*Math.min(Main.height , Main.width) / 720));
-			//label.setTranslateY((double)newHeight - (double)oldHeight);
 		});
 		
 		return scene;
