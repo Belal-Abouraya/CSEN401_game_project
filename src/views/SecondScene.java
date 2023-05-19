@@ -46,6 +46,8 @@ public class SecondScene {
 	private static int dimension1 = 1 ;
 	private static int dimension2 = 8 ;
 	private static StackPane [][] mapPane = new StackPane [dimension1][dimension2] ;
+	private static Color brightColor = Color.DARKGRAY.brighter() ;
+	private static Color darkColor = Color.DARKGRAY ;
 
 	/**
 	 * the controller method in the class.
@@ -94,27 +96,27 @@ public class SecondScene {
 
 	private static StackPane hero(Hero h , int x , int y) {
 		StackPane res = new StackPane();
-		Rectangle back = new Rectangle(90,190);
-		back.setArcHeight(8);
-		back.setArcWidth(8);
-		back.setFill(Color.GRAY);
+		Rectangle back = new Rectangle(100,190);
+		back.setArcHeight(10);
+		back.setArcWidth(10);
+		back.setFill(darkColor);
 		res.getChildren().add(back);
 		VBox vbox = getHeroCell(h);
 		vbox.setAlignment(Pos.BASELINE_CENTER);
 		vbox.setTranslateY(5);
 		res.getChildren().add(vbox);
 		res.setOnMouseEntered(e -> {
-			( (Rectangle) mapPane[row][column].getChildren().get(0) ).setFill(Color.GRAY);
+			( (Rectangle) mapPane[row][column].getChildren().get(0) ).setFill(darkColor);
 			mapPane[row][column].setTranslateY(0.0009*Main.height);
-			back.setFill(Color.BEIGE.brighter());
+			back.setFill(brightColor);
 			wallpaper.setImage(h.getWallpaper());
 			row = x ; column = y;
 			res.setTranslateY(-0.14*Main.height);
 		});
-//		res.setOnMouseExited(e -> {
-//			back.setFill(Color.GRAY);
-//			res.setTranslateY(0.0009*Main.height);
-//		});
+		res.setOnMouseExited(e -> {
+			back.setFill(darkColor);
+			res.setTranslateY(0.0009*Main.height);
+		});
 		res.setOnMouseClicked(e -> {
 			Game.startGame(h);
 			Main.window.setScene((new GameScene()).gameScene());
@@ -171,8 +173,7 @@ public class SecondScene {
 	
 	private static void createSelectYourHeroLabel() {
 		selectYourHero = new Label("Select Your Hero");
-		selectYourHero.setFont(new Font("Impact", 34*Main.height*Main.width / (1280*720)));
-		selectYourHero.setTextFill(Color.GAINSBORO);
+		selectYourHero.setId("SelectHeroLabel");
 		Timeline timeLine = new Timeline(
 				new KeyFrame(Duration.seconds(0), new KeyValue(selectYourHero.opacityProperty(), 0)),
 				new KeyFrame(Duration.seconds(1), new KeyValue(selectYourHero.opacityProperty(), 1)),
@@ -191,15 +192,16 @@ public class SecondScene {
 	private static VBox getHeroCell (Hero h) {
 		ImageView image = new ImageView(h.getImage());
 		image.setFitHeight(80);
-		image.setFitWidth(80);
+		image.setFitWidth(90);
 		String heroName = h.getName().split(" ").length == 1 ? h.getName() : h.getName().split(" ")[0] ;
-		Label name = new Label(heroName + " : " + h.getType());
+		Label name = new Label(heroName);
+		name.setId("NameLabel");
+		Label type = new Label(h.getType());
 		Label attackDmg = new Label("Attack Damage : " + h.getAttackDmg());
 		Label actionPoints = new Label("Action Points : " + h.getMaxActions());
 		Label health = new Label ("Health Points : " + h.getMaxHp());
-		//TODO styling the labels
-		VBox res = new VBox();
-		res.getChildren().addAll(image , name , attackDmg , health , actionPoints);
+		VBox res = new VBox(3);
+		res.getChildren().addAll(image , name , type , attackDmg , health , actionPoints);
 		return res ;
 	}
 	
@@ -212,13 +214,13 @@ public class SecondScene {
 	 * @return the final scene
 	 */
 	
-	private static Scene createScene (StackPane root , Hero [][] map) {
+	private Scene createScene (StackPane root , Hero [][] map) {
 		Scene scene = new Scene(root, Main.width, Main.height);
 		mapPane[0][0].setTranslateY(-0.14*Main.height);
 		( (Rectangle) mapPane[row][column].getChildren().get(0))
-		.setFill(Color.BEIGE.brighter());
+		.setFill(brightColor);
 		scene.setOnKeyPressed(e -> {
-			( (Rectangle) mapPane[row][column].getChildren().get(0)).setFill(Color.GRAY);
+			( (Rectangle) mapPane[row][column].getChildren().get(0)).setFill(darkColor);
 			KeyCode key = e.getCode();
 			boolean isValid = key==KeyCode.W || key==KeyCode.A || 
 					key ==KeyCode.S || key == KeyCode.D ;
@@ -245,21 +247,25 @@ public class SecondScene {
 			if(isValid)
 				mapPane[row][column].setTranslateY(-0.14*Main.height);
 			( (Rectangle) mapPane[row][column].getChildren().get(0))
-			.setFill(Color.BEIGE.brighter());
+			.setFill(brightColor);
 			wallpaper.setImage(map[row][column].getWallpaper());
 		});
 		
 		scene.widthProperty().addListener((observable , oldWidth , newWidth) -> {
 			Main.width = (double) newWidth ;
 			wallpaper.setFitWidth((double) newWidth);
-			selectYourHero.setFont(new Font("Impact", 34*Math.min(Main.height , Main.width) / 720));
+			double newSize = 30*Math.min(Main.height , Main.width) / 720 ;
+			selectYourHero.setStyle("-fx-font-size: "+newSize +";");
 		});
 		
 		scene.heightProperty().addListener((observable , oldHeight , newHeight) -> {
 			Main.height = (double) newHeight ;
 			wallpaper.setFitHeight((double) newHeight);
-			selectYourHero.setFont(new Font("Impact", 34*Math.min(Main.height , Main.width) / 720));
+			double newSize = 30*Math.min(Main.height , Main.width) / 720 ;
+			selectYourHero.setStyle("-fx-font-size: "+newSize +";");
 		});
+		
+		scene.getStylesheets().add(getClass().getResource("classic.css").toExternalForm());
 		
 		return scene;
 	}

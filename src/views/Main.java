@@ -14,6 +14,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -34,7 +37,9 @@ public class Main extends Application {
 		window = primaryStage;
 		window.setTitle("Last of Us : Legacy");
 		createFirstScene();
+		firstScene.getStylesheets().add(this.getClass().getResource("classic.css").toExternalForm());
 		window.setScene(firstScene);
+//		window.setScene((new FirstScene()).getScene());
 		window.addEventHandler(GameEvent.WIN, e-> window.setScene((new WiningScene()).getScene()));
 		window.addEventHandler(GameEvent.GAME_OVER, e-> window.setScene((new LosingScene()).getScene()));
 		window.show();
@@ -62,9 +67,9 @@ public class Main extends Application {
 		ImageView imageView = new ImageView(wallpaper);
 		imageView.setFitHeight(height);
 		imageView.setFitWidth(width);
+		
 		Label label = new Label("Press Enter to Start");
-		label.setFont(new Font("Impact", 40));
-		label.setTextFill(Color.CORAL.brighter());
+		label.setId("StartLabel");
 		label.setTranslateY(Math.floor(0.4 * height));
 		Timeline timeLine = new Timeline(
 				new KeyFrame(Duration.seconds(0), new KeyValue(label.opacityProperty(), 0)),
@@ -73,6 +78,7 @@ public class Main extends Application {
 		timeLine.setCycleCount(Timeline.INDEFINITE);
 		timeLine.play();
 		stackPane.getChildren().addAll(imageView, label);
+		
 		firstScene = new Scene(stackPane, width, height);
 		firstScene.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.ENTER) {
@@ -94,13 +100,15 @@ public class Main extends Application {
 		firstScene.widthProperty().addListener((observable , oldWidth , newWidth) -> {
 			width = (double) newWidth ;
 			imageView.setFitWidth((double) newWidth);
-			label.setFont(new Font("Impact", 40 * width * height / (1280*720)));
+			double newSize = 30 * Math.min(width, height) / 720 ;
+			label.setStyle("-fx-font-size: "+newSize+";");
 		});
 		firstScene.heightProperty().addListener((observable , oldHeight , newHeight) -> {
 			height = (double) newHeight ;
 			imageView.setFitHeight((double) newHeight);
+			double newSize = 30 * Math.min(width, height) / 720 ;
+			label.setStyle("-fx-font-size: "+newSize+";");
 			label.setTranslateY(Math.floor(0.4 * height));
-			label.setFont(new Font("Impact", 40 * width * height / (1280*720)));
 		});
 	}
 }

@@ -1,0 +1,75 @@
+@font-face {
+    fx-font-family: "Orbitron" ;
+    fx-src: url('path/to/orbitron.woff2') format('woff2'),
+         url('path/to/orbitron.woff') format('woff'),
+         url('path/to/orbitron.ttf') format('truetype');
+    fx-font-weight: normal;
+    fx-font-style: normal;
+}
+
+@font-face {
+    fx-font-family: "Lobster" ;
+    fx-src: url('path/to/orbitron.woff2') format('woff2'),
+         url('path/to/orbitron.woff') format('woff'),
+         url('path/to/orbitron.ttf') format('truetype');
+    fx-font-weight: normal;
+    fx-font-style: normal;
+}
+
+@font-face {
+    fx-font-family: "BrunoAceSC-Regular" ;
+    fx-src: url('path/to/orbitron.woff2') format('woff2'),
+         url('path/to/orbitron.woff') format('woff'),
+         url('path/to/orbitron.ttf') format('truetype');
+    fx-font-weight: normal;
+    fx-font-style: normal;
+}
+
+@font-face {
+  	fx-font-family: 'Bangers';
+  	fx-src: url('path/to/bangers.woff2') format('woff2'),
+  	     url('path/to/bangers.woff') format('woff'),
+   	     url('path/to/bangers.ttf') format('truetype');
+  	fx-font-weight: normal;
+  	fx-font-style: normal;
+}
+
+@font-face {
+  	fx-font-family: 'Bungee';
+  	fx-src: url('path/to/bungee.woff2') format('woff2'),
+  	     url('path/to/bungee.woff') format('woff'),
+   	     url('path/to/bungee.ttf') format('truetype');
+  	fx-font-weight: normal;
+  	fx-font-style: normal;
+}
+
+.label{
+	
+	-fx-font-family : "Lobster";
+	-fx-font-size : 11px ;
+	-fx-font-weight : 600 ;
+	fx-text-fill : #361512 ;
+	
+}
+
+#StartLabel {
+	
+	-fx-font-family : "Orbitron";
+	-fx-font-size : 30px ;
+	-fx-font-weight: 200 ;
+	-fx-text-fill : linear-gradient( #F4684B, #F56254 , #C48773 ) ;
+	
+}
+
+#SelectHeroLabel {
+	-fx-font-family :"Orbitron";
+	-fx-font-size : 30px ;
+	-fx-font-weight: 300 ;
+	-fx-text-fill : "gray" ;
+}
+
+#NameLabel {
+	-fx-font-family : "Impact" ;
+	-fx-font-size : 14px ;
+	-fx-font-weight: 900;
+}
