@@ -4,6 +4,7 @@ import java.awt.Point;
 
 import engine.Game;
 import exceptions.InvalidTargetException;
+import javafx.scene.image.Image;
 import model.characters.Character;
 import model.characters.Hero;
 import model.characters.Zombie;
@@ -16,13 +17,13 @@ import model.world.CharacterCell;
  * @author Belal Abouraya
  */
 
-public class Vaccine implements Collectible {
+public class Vaccine extends Collectible {
 
 	/**
 	 * Default constructor for the class.
 	 */
 	public Vaccine() {
-		// Game.getVaccines().add(this);
+		super("vaccine");
 	}
 
 	@Override

@@ -1,17 +1,17 @@
 package model.characters;
 
-import exceptions.MovementException;
-import exceptions.NoAvailableResourcesException;
-import model.collectibles.Supply;
-import model.collectibles.Vaccine;
-import java.util.ArrayList;
 import java.awt.Point;
 import java.io.File;
+import java.util.ArrayList;
 
 import engine.Game;
 import exceptions.InvalidTargetException;
+import exceptions.MovementException;
+import exceptions.NoAvailableResourcesException;
 import exceptions.NotEnoughActionsException;
 import javafx.scene.image.Image;
+import model.collectibles.Supply;
+import model.collectibles.Vaccine;
 import model.world.CharacterCell;
 import model.world.CollectibleCell;
 import model.world.TrapCell;
@@ -25,6 +25,7 @@ import model.world.TrapCell;
  * <li>a boolean to check whether the special action is used</li>
  * <li>list of vaccines collected</li>
  * <li>list of supplies collected</li>
+ * <li>the selected game mode</li>
  * </ul>
  *
  * @author Ahmed Hussein
@@ -39,12 +40,11 @@ public abstract class Hero extends Character {
 	private boolean specialAction;
 	private ArrayList<Vaccine> vaccineInventory;
 	private ArrayList<Supply> supplyInventory;
-	private Image image;
-	private Image wallpaper;
+	private Image icon;
 
 	/**
-	 * Constructor that initializes the name, maximum Hp, attack damage and maximum
-	 * number of actions.
+	 * Constructor that initializes the name, maximum Hp, attack damage, maximum
+	 * number of actions and the hero icon.
 	 *
 	 * @pram name
 	 * @pram maxHp
@@ -60,12 +60,7 @@ public abstract class Hero extends Character {
 		this.specialAction = false;
 		this.vaccineInventory = new ArrayList<>();
 		this.supplyInventory = new ArrayList<>();
-		try {
-			this.image = new Image(new File("src/images/" + name + ".jpg").toURI().toURL().toExternalForm());
-			this.wallpaper = new Image(new File("src/images/" + name + "_w.jpg").toURI().toURL().toExternalForm());
-		} catch (Exception e) {
-			System.out.println(name + "'s images are missing");
-		}
+		this.icon = loadIcon(name);
 	}
 
 	/**
@@ -285,26 +280,35 @@ public abstract class Hero extends Character {
 		return supplyInventory;
 	}
 
-	/**
-	 * @return the image of the hero
-	 */
-	public Image getImage() {
-		return image;
-	}
-
-	/**
-	 * @return the wallpaper of the hero
-	 */
-	public Image getWallpaper() {
-		return wallpaper;
-	}
-	
 	public String getType() {
-		if(this instanceof Fighter)
-			return "Fighter" ;
-		if(this instanceof Medic)
-			return "Medic" ;
-		return "Explorer" ;
+		if (this instanceof Fighter)
+			return "Fighter";
+		if (this instanceof Medic)
+			return "Medic";
+		return "Explorer";
 	}
 
+	/**
+	 * @return the icon
+	 */
+	public Image getIcon() {
+		return icon;
+	}
+
+	/**
+	 * A helper method that loads the hero's icon based on the name and the selected
+	 * game mode by the player
+	 * 
+	 * @return the loaded hero icon
+	 */
+	public static Image loadIcon(String name) {
+		Image res = null;
+		try {
+			String path = "assets/" + Game.mode + "/images/icons/" + name + ".png";
+			res = new Image(new File(path).toURI().toURL().toExternalForm());
+		} catch (Exception e) {
+			System.out.println(name + "'s images are missing");
+		}
+		return res;
+	}
 }

@@ -1,6 +1,7 @@
 package engine;
 
 import java.awt.Point;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.Scanner;
 import exceptions.GameActionException;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughActionsException;
+import javafx.scene.image.Image;
 import model.characters.Explorer;
 import model.characters.Fighter;
 import model.characters.Medic;
@@ -37,6 +39,7 @@ public class Game {
 	public static ArrayList<Zombie> zombies = new ArrayList<>(10);
 	public static Cell[][] map = new Cell[15][15];
 	public static Hero currentHero;
+	public static String mode = "classic";
 
 	public static void main(String[] args) throws Exception {
 	}
@@ -128,7 +131,8 @@ public class Game {
 	 * 
 	 * @param h
 	 */
-	public static void startGame(Hero h) {
+	public static void startGame(Hero h, String mode) {
+		Game.mode = mode;
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[i].length; j++) {
 				map[i][j] = new CharacterCell();
@@ -242,4 +246,31 @@ public class Game {
 			Hero.makeAllAdjacentVisible((int) h.getLocation().getX(), (int) h.getLocation().getY());
 		}
 	}
+
+//	private static Image getIcon(String name, String mode) {
+//		Image res = null;
+//		try {
+//			String path = "assets/" + mode + "/images/icons/" + name + ".png";
+//			res = new Image(new File(path).toURI().toURL().toExternalForm());
+//		} catch (Exception e) {
+//			System.out.println(name + "'s images are missing");
+//		}
+//		return res;
+//	}
+
+//	static Image getModel(String name, String mode) {
+//		Image res = null;
+//		try {
+//			if (name.startsWith("Zombie")) {
+//				int tmp = Integer.parseInt(name.substring(7));
+//				tmp %= 10;
+//				name = "zombie" + tmp;
+//			}
+//			String path = "assets/" + mode + "/images/models/" + name + ".png";
+//			res = new Image(new File(path).toURI().toURL().toExternalForm());
+//		} catch (Exception e) {
+//			System.out.println(name + "'s images are missing");
+//		}
+//		return res;
+//	}
 }

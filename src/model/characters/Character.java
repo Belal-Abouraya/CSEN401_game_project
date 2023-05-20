@@ -1,22 +1,24 @@
 package model.characters;
 
 import java.awt.Point;
+import java.io.File;
 
+import engine.Game;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughActionsException;
-import model.world.CharacterCell;
-import engine.Game;
+import javafx.scene.image.Image;
 
 /**
  * Character is the abstract base class of all characters available in the game.
  * it contains all the common attributes of all characters such as:
  * <ul>
- * <li>name
- * <li>location
- * <li>maximum HP
- * <li>current HP
- * <li>attack damage
- * <li>target character
+ * <li>name</li>
+ * <li>location</li>
+ * <li>maximum HP</li>
+ * <li>current HP</li>
+ * <li>attack damage</li>
+ * <li>target character</li>
+ * <li>character model</li>
  * </ul>
  * 
  * @author Belal Abouraya
@@ -29,10 +31,12 @@ public abstract class Character {
 	private int currentHp;
 	private int attackDmg;
 	private Character target;
+	private Image model;
 
 	/**
-	 * Constructor for the character class which initializes the name, maximum HP
-	 * and attack damage. it sets other parameters to their default values.
+	 * Constructor for the character class which initializes the name, maximum HP ,
+	 * attack damage and character model. it sets other parameters to their default
+	 * values.
 	 * 
 	 * @param name
 	 * @param maxHp
@@ -47,6 +51,7 @@ public abstract class Character {
 		this.target = null;
 		this.location = null;
 		this.currentHp = maxHp;
+		this.model = LoadModel(name);
 	}
 
 	/**
@@ -84,7 +89,7 @@ public abstract class Character {
 	 * @throws NotEnoughActionsException
 	 */
 	public void attack() throws InvalidTargetException, NotEnoughActionsException {
-		if(target == null)
+		if (target == null)
 			throw new InvalidTargetException("Target is not set yet!");
 		target.defend(this);
 		target.setCurrentHp(target.getCurrentHp() - attackDmg);
@@ -177,6 +182,35 @@ public abstract class Character {
 	 */
 	public int getAttackDmg() {
 		return attackDmg;
+	}
+
+	/**
+	 * @return the model
+	 */
+	public Image getModel() {
+		return model;
+	}
+
+	/**
+	 * A helper method that loads a model based on the name and the selected game
+	 * mode by the player
+	 * 
+	 * @return the loaded model
+	 */
+	public static Image LoadModel(String name) {
+		Image res = null;
+		try {
+			if (name.startsWith("Zombie")) {
+				int tmp = Integer.parseInt(name.substring(7));
+				tmp %= 10;
+				name = "zombie" + tmp;
+			}
+			String path = "assets/" + Game.mode + "/images/models/" + name + ".png";
+			res = new Image(new File(path).toURI().toURL().toExternalForm());
+		} catch (Exception e) {
+			System.out.println(name + "'s images are missing");
+		}
+		return res;
 	}
 
 }

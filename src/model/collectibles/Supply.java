@@ -8,13 +8,13 @@ import model.characters.Hero;
  * @author Rafael Samuel
  * @author Belal Abouraya
  */
-public class Supply implements Collectible {
+public class Supply extends Collectible {
 
 	/**
 	 * Default constructor for the class.
 	 */
 	public Supply() {
-
+		super("supply");
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class Supply implements Collectible {
 	}
 
 	@Override
-	public void use(Hero owner){
+	public void use(Hero owner) {
 		owner.getSupplyInventory().remove(this);
 		owner.setSpecialAction(true);
 	}

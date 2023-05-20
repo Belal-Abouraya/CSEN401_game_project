@@ -14,12 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -31,25 +26,25 @@ public class Main extends Application {
 	static Scene firstScene;
 	static double width = 1280;
 	static double height = 720;
+	// static String mode = "classic";
 
 	@Override
 	public void start(Stage primaryStage) throws MalformedURLException {
 		window = primaryStage;
 		window.setTitle("Last of Us : Legacy");
 		createFirstScene();
-		firstScene.getStylesheets().add(this.getClass().getResource("classic.css").toExternalForm());
+		firstScene.getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
 		window.setScene(firstScene);
 //		window.setScene((new FirstScene()).getScene());
-		window.addEventHandler(GameEvent.WIN, e-> window.setScene((new WiningScene()).getScene()));
-		window.addEventHandler(GameEvent.GAME_OVER, e-> window.setScene((new LosingScene()).getScene()));
+		window.addEventHandler(GameEvent.WIN, e -> window.setScene((new WinningScene()).getScene()));
+		window.addEventHandler(GameEvent.GAME_OVER, e -> window.setScene((new LosingScene()).getScene()));
 		window.show();
 	}
 
 	public static void main(String[] args) {
 		try {
-			Game.loadHeroes("src/engine/Heros.csv");
+			Game.loadHeroes("assets/" + Game.mode + "/heroes.csv");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		launch(args);
@@ -59,7 +54,8 @@ public class Main extends Application {
 		StackPane stackPane = new StackPane();
 		Image wallpaper = null;
 		try {
-			wallpaper = new Image(new File("src/FirstScene.jpg").toURI().toURL().toExternalForm());
+			wallpaper = new Image(new File("assets/" + Game.mode + "/images/wallpapers/firstscene.jpg").toURI().toURL()
+					.toExternalForm());
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -67,22 +63,21 @@ public class Main extends Application {
 		ImageView imageView = new ImageView(wallpaper);
 		imageView.setFitHeight(height);
 		imageView.setFitWidth(width);
-		
+
 		Label label = new Label("Press Enter to Start");
 		label.setId("StartLabel");
 		label.setTranslateY(Math.floor(0.4 * height));
-		Timeline timeLine = new Timeline(
-				new KeyFrame(Duration.seconds(0), new KeyValue(label.opacityProperty(), 0)),
+		Timeline timeLine = new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(label.opacityProperty(), 0)),
 				new KeyFrame(Duration.seconds(1), new KeyValue(label.opacityProperty(), 1)),
 				new KeyFrame(Duration.seconds(2), new KeyValue(label.opacityProperty(), 0)));
 		timeLine.setCycleCount(Timeline.INDEFINITE);
 		timeLine.play();
 		stackPane.getChildren().addAll(imageView, label);
-		
+
 		firstScene = new Scene(stackPane, width, height);
 		firstScene.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.ENTER) {
-				window.setScene((new SecondScene()).getScene());
+				window.setScene((new SecondScene(Game.mode)).getScene());
 			}
 //			if(e.getCode() == KeyCode.F) {
 //				height = 1080 ;
@@ -97,72 +92,27 @@ public class Main extends Application {
 //				window.setFullScreen(false);
 //			}
 		});
-		firstScene.widthProperty().addListener((observable , oldWidth , newWidth) -> {
-			width = (double) newWidth ;
+		firstScene.widthProperty().addListener((observable, oldWidth, newWidth) -> {
+			width = (double) newWidth;
 			imageView.setFitWidth((double) newWidth);
-			double newSize = 30 * Math.min(width, height) / 720 ;
-			label.setStyle("-fx-font-size: "+newSize+";");
+			double newSize = 30 * Math.min(width, height) / 720;
+			label.setStyle("-fx-font-size: " + newSize + ";");
 		});
-		firstScene.heightProperty().addListener((observable , oldHeight , newHeight) -> {
-			height = (double) newHeight ;
+		firstScene.heightProperty().addListener((observable, oldHeight, newHeight) -> {
+			height = (double) newHeight;
 			imageView.setFitHeight((double) newHeight);
-			double newSize = 30 * Math.min(width, height) / 720 ;
-			label.setStyle("-fx-font-size: "+newSize+";");
+			double newSize = 30 * Math.min(width, height) / 720;
+			label.setStyle("-fx-font-size: " + newSize + ";");
 			label.setTranslateY(Math.floor(0.4 * height));
 		});
 	}
-}
-//package views;
-//
-//import java.io.File;
-//import java.io.FileInputStream;
-//import java.io.FileNotFoundException;
-//import java.io.IOException;
-//
-//import engine.Game;
-//import javafx.application.Application;
-//import javafx.event.Event;
-//import javafx.event.EventHandler;
-//import javafx.scene.image.Image;
-//import javafx.stage.Stage;
-//import junit.framework.Test;
-//import model.characters.Explorer;
-//
-///**
-// * 
-// */
-//public class Main extends Application {
-//	@Override
-//	public void init() {
-//	}
-//
+
 //	@Override
 //	public void start(Stage primaryStage) throws FileNotFoundException, IOException {
 //
-//		Game.loadHeroes("src\\engine\\Heros.csv");
-//		// Image i = new Image(
-//		// getClass().getResourceAsStream("D:\\eclipse-workspace\\CSEN401_game_project\\src\\images\\Bill.jpg"));
-//
-//		// Image i = new Image(new FileInputStream("C:\\Users\\Belal\\Downloads\\
-//		// billtlou.jpeg"));
-//		Image image1 = new Image(new File("C:/Users/Belal/Downloads/billtlou.jpeg").toURI().toURL().toExternalForm());
-//		Game.startGame(Game.availableHeroes.get(0));
-//		GameScene g = new GameScene();
-//		primaryStage.addEventHandler(GameEvent.GAME_OVER, new EventHandler<Event>() {
-//
-//			@Override
-//			public void handle(Event arg0) {
-//				System.out.println("You lose");
-//			}
-//		});
-//		primaryStage.addEventHandler(GameEvent.WIN, new EventHandler<Event>() {
-//
-//			@Override
-//			public void handle(Event arg0) {
-//				System.out.println("You win");
-//
-//			}
-//		});
+//		Game.loadHeroes("assets/classic/heroes.csv");
+//		Game.startGame(Game.availableHeroes.get(0), mode);
+//		GameScene g = new GameScene(mode);
 //		primaryStage.setScene(g.gameScene());
 //		primaryStage.show();
 //	}
@@ -170,4 +120,4 @@ public class Main extends Application {
 //	public static void main(String[] args) {
 //		launch(args);
 //	}
-//}
+}
