@@ -221,6 +221,7 @@ public class GameScene {
 
 		// handles styling
 		ImageView front = new ImageView();
+		front.setImage(s.getModel());
 		front.setFitWidth(40);
 		front.setFitHeight(40);
 		res.getChildren().add(front);
