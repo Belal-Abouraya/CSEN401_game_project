@@ -1,12 +1,16 @@
 package views;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 import engine.Game;
 import exceptions.GameActionException;
+import javafx.animation.AnimationTimer;
+import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,6 +20,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -24,12 +29,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import model.characters.Character;
 import model.characters.Direction;
 import model.characters.Fighter;
 import model.characters.Hero;
 import model.characters.Medic;
 import model.collectibles.Collectible;
+import model.collectibles.Supply;
 import model.world.Cell;
 import model.world.CharacterCell;
 import model.world.CollectibleCell;
@@ -46,6 +53,11 @@ import model.world.CollectibleCell;
 public class GameScene {
 	private Hero currentHero = Game.heroes.get(0);
 	private VBox Heroes;
+	private double cellHeight = 56, cellWidth = 75, bottomFont = 17, updatesHeight = 35, updatesWidth = 100;
+	private StackPane[][] cells = new StackPane[15][15];
+	EventHandler<MouseEvent>[][] events = new EventHandler[15][15];
+	Image invisible, empty, vaccineModel = Character.LoadModel("vaccine"), vaccineIcon = Hero.loadIcon("vaccine"),
+			supplyModel = Character.LoadModel("supply"), supplyIcon = Hero.loadIcon("supply");
 
 	/**
 	 * The method called by the Main class to get the game scene. It creates a Scene
@@ -54,44 +66,64 @@ public class GameScene {
 	 * @return the finished game scene object
 	 */
 	public Scene gameScene() {
+		try {
+			invisible = new Image(new File("assets/" + Game.mode + "/images/wallpapers/" + "invisible" + ".png").toURI()
+					.toURL().toExternalForm());
+			empty = new Image(new File("assets/" + Game.mode + "/images/wallpapers/" + "empty" + ".jpg").toURI().toURL()
+					.toExternalForm());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 
 		BorderPane root = new BorderPane();
 		Scene gameScene = new Scene(root);
 
-		// TODO Belal
 		GridPane grid = new GridPane();
+		grid.setAlignment(Pos.CENTER);
+		createGrid(Game.map, grid);
 		updateGrid(Game.map, grid);
 
-		// TODO Rafael
 		Heroes = new VBox();
 		updateHeroesStack(Game.heroes, Heroes);
 
 		Label updates = new Label();
+		updates.setMinSize(updatesWidth, updatesHeight);
+		updates.setStyle("-fx-font-size: " + bottomFont + ";");
 		BorderPane bottom = new BorderPane();
-		// updates.setAlignment(Pos.BASELINE_LEFT);
+		updates.setAlignment(Pos.CENTER);
 		Button endTurn = new Button("End turn");
+		endTurn.setMinHeight(updatesHeight);
+		endTurn.setStyle("-fx-font-size: " + bottomFont + ";");
+		FadeTransition ft = new FadeTransition(Duration.millis(1000), updates);
+		ft.setFromValue(0);
+		ft.setToValue(1);
+		ft.setCycleCount(2);
+		ft.setAutoReverse(true);
+
 		endTurn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
 				Game.endTurn();
-				updateGrid(Game.map, grid);
-				updateHeroesStack(Game.heroes, Heroes);
+				updateScene(Game.map, grid, Game.heroes, Heroes);
 				if (Game.checkGameOver())
 					grid.fireEvent(new GameEvent(GameEvent.GAME_OVER));
 				else if (Game.checkWin())
 					grid.fireEvent(new GameEvent(GameEvent.WIN));
 			}
 		});
-		// endTurn.setAlignment(Pos.BASELINE_RIGHT);
-		bottom.setLeft(updates);
-		bottom.setRight(endTurn);
 
+		BorderPane menu = new BorderPane();
+		bottom.setCenter(updates);
+		bottom.setRight(endTurn);
+		bottom.setStyle("-fx-background-color: red;");
+		menu.setBottom(bottom);
+		menu.setLeft(Heroes);
+		bottom.setMinHeight(35);
 		root.setCenter(grid);
-		root.setBottom(bottom);
-		root.setLeft(Heroes);
+		root.setLeft(menu);
 
 		/*
-		 * handles the game controls. W, A, S, D for movement Q for cure R for using the
+		 * handles the game controls. W, A, S, D for movement Q for cure E for using the
 		 * special action
 		 */
 		gameScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -107,16 +139,42 @@ public class GameScene {
 
 				case Q -> {
 					try {
+						int i = 0, j = 0;
+						if (currentHero.getTarget() != null) {
+							i = currentHero.getTarget().getLocation().x;
+							j = currentHero.getTarget().getLocation().y;
+						}
 						currentHero.cure();
+						Rectangle rect = (Rectangle) cells[i][j].getChildren().get(2);
+						rect.setFill(Color.BLUE);
+						FadeTransition ft1 = new FadeTransition(Duration.millis(150), rect);
+						ft1.setFromValue(0);
+						ft1.setToValue(0.3);
+						ft1.setCycleCount(2);
+						ft1.setAutoReverse(true);
+						ft1.play();
 					} catch (GameActionException e1) {
 						updates.setText(e1.getMessage());
 					}
 				}
-				case R -> {
+				case E -> {
 					try {
 						currentHero.useSpecial();
+						if (currentHero instanceof Medic) {
+							int i = currentHero.getTarget().getLocation().x;
+							int j = currentHero.getTarget().getLocation().y;
+							Rectangle rect = (Rectangle) cells[i][j].getChildren().get(2);
+							rect.setFill(Color.GREEN);
+							FadeTransition ft1 = new FadeTransition(Duration.millis(150), rect);
+							ft1.setFromValue(0);
+							ft1.setToValue(0.3);
+							ft1.setCycleCount(2);
+							ft1.setAutoReverse(true);
+							ft1.play();
+						}
 					} catch (GameActionException e1) {
 						updates.setText(e1.getMessage());
+						ft.play();
 					}
 				}
 				}
@@ -126,10 +184,10 @@ public class GameScene {
 						currentHero.move(d);
 					} catch (GameActionException e1) {
 						updates.setText(e1.getMessage());
+						ft.play();
 					}
 				}
-				updateGrid(Game.map, grid);
-				updateHeroesStack(Game.heroes, Heroes);
+				updateScene(Game.map, grid, Game.heroes, Heroes);
 
 				if (Game.checkGameOver())
 					grid.fireEvent(new GameEvent(GameEvent.GAME_OVER));
@@ -139,119 +197,129 @@ public class GameScene {
 		});
 
 		// handles mouse inputs. Left click for attack
-		gameScene.setOnMouseClicked(e -> {
+		grid.setOnMouseClicked(e -> {
 			if (e.getButton() == MouseButton.PRIMARY) {
 				try {
+					int i = 0, j = 0;
+					if (currentHero.getTarget() != null) {
+						i = currentHero.getTarget().getLocation().x;
+						j = currentHero.getTarget().getLocation().y;
+					}
 					currentHero.attack();
+					Rectangle rect = (Rectangle) cells[i][j].getChildren().get(2);
+					rect.setFill(Color.RED);
+					FadeTransition ft1 = new FadeTransition(Duration.millis(150), rect);
+					ft1.setFromValue(0);
+					ft1.setToValue(0.3);
+					ft1.setCycleCount(2);
+					ft1.setAutoReverse(true);
+					ft1.play();
 				} catch (GameActionException e1) {
 					updates.setText(e1.getMessage());
+					ft.play();
 				}
-				updateGrid(Game.map, grid);
+				updateScene(Game.map, grid, Game.heroes, Heroes);
 				if (Game.checkGameOver())
 					grid.fireEvent(new GameEvent(GameEvent.GAME_OVER));
 				else if (Game.checkWin())
 					grid.fireEvent(new GameEvent(GameEvent.WIN));
 			}
 		});
+
 		gameScene.getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
 		return gameScene;
 	}
 
 	/**
-	 * updates the displayed grid after every move.
+	 * 
+	 * @param map
+	 * @param grid
+	 * @param h
+	 * @param stack
+	 */
+	private void updateScene(Cell[][] map, GridPane grid, ArrayList<Hero> h, VBox stack) {
+		updateGrid(map, grid);
+		updateHeroesStack(h, stack);
+	}
+
+	/**
+	 * Initializes all the grid cells.
+	 * 
+	 * @param map  two dimensional array conataining the game state
+	 * @param grid the grid to be updated
+	 */
+	private void createGrid(Cell[][] map, GridPane grid) {
+		for (int i = map.length - 1; i >= 0; i--) {
+			for (int j = map[i].length - 1; j >= 0; j--) {
+				int x = j;
+				int y = 15 - i;
+				StackPane tmp = base();
+				cells[i][j] = tmp;
+				grid.add(tmp, x, y);
+			}
+		}
+
+	}
+
+	/**
+	 * Updates the displayed grid.
 	 * 
 	 * @param map  two dimensional array conataining the game state
 	 * @param grid the grid to be updated
 	 */
 	private void updateGrid(Cell[][] map, GridPane grid) {
-		grid.getChildren().clear();
 		for (int i = map.length - 1; i >= 0; i--) {
 			for (int j = map[i].length - 1; j >= 0; j--) {
-				int x = j;
-				int y = 15 - i;
-				StackPane tmp = null;
+				cells[i][j].getChildren().remove(1);
+				ImageView content = new ImageView();
+				if (events[i][j] != null)
+					cells[i][j].removeEventHandler(MouseEvent.ANY, events[i][j]);
 				if (map[i][j].isVisible()) {
 					if (map[i][j] instanceof CharacterCell) {
-						tmp = characterStackPane(((CharacterCell) map[i][j]).getCharacter());
-					} else if (map[i][j] instanceof CollectibleCell)
-						tmp = collectibleStackPane(((CollectibleCell) map[i][j]).getCollectible());
-					else
-						tmp = characterStackPane(null);
-				} else
-					tmp = invisibleStackPane();
-				grid.add(tmp, x, y);
+						Character c = ((CharacterCell) map[i][j]).getCharacter();
+						content.setFitWidth(cellWidth);
+						content.setFitHeight(cellHeight);
+						if (c != null)
+							content.setImage(c.getModel());
+						EventHandler<MouseEvent> e = new EventHandler<MouseEvent>() {
 
+							@Override
+							public void handle(MouseEvent arg0) {
+								currentHero.setTarget(c);
+							}
+						};
+						cells[i][j].setOnMouseClicked(e);
+
+					}
+
+					else if (map[i][j] instanceof CollectibleCell) {
+						Collectible c = ((CollectibleCell) map[i][j]).getCollectible();
+						Image model = null;
+						if (c instanceof Supply)
+							model = supplyModel;
+						else
+							model = vaccineModel;
+						content.setImage(model);
+						content.setFitWidth(cellWidth / 1.5);
+						content.setFitHeight(cellHeight / 1.5);
+					}
+				} else {
+					content.setImage(invisible);
+					content.setFitWidth(cellWidth);
+					content.setFitHeight(cellHeight);
+				}
+				cells[i][j].getChildren().add(1, content);
 			}
 		}
+
 	}
 
-	/**
-	 * creates a stack pane to display a character model.
-	 * 
-	 * @param c the character on the cell
-	 * @return the created stackPane
-	 */
-	private StackPane characterStackPane(Character c) {
-		StackPane res = emptyStackPane();
-		// handles setting the target
-		res.setOnMouseClicked(event -> {
-			if (event.getButton() == MouseButton.SECONDARY) {
-				currentHero.setTarget(c);
-			}
-		});
-
-		// handles styling
-		ImageView front = new ImageView();
-		front.setFitWidth(40);
-		front.setFitHeight(40);
-		if (c != null)
-			front.setImage(c.getModel());
-		res.getChildren().add(front);
-		return res;
-	}
-
-	/**
-	 * creates a stackPane to display a collectible model.
-	 * 
-	 * @param the collectible in the cell
-	 * @return the created stackPane
-	 */
-	private StackPane collectibleStackPane(Collectible s) {
-		StackPane res = emptyStackPane();
-
-		// handles styling
-		ImageView front = new ImageView();
-		front.setImage(s.getModel());
-		front.setFitWidth(40);
-		front.setFitHeight(40);
-		res.getChildren().add(front);
-		return res;
-	}
-
-	/**
-	 * creates a stackPane to display an empty cell.
-	 * 
-	 * @return the created stackPane
-	 */
-	private StackPane emptyStackPane() {
-
+	private StackPane base() {
 		StackPane res = new StackPane();
-		Rectangle front = new Rectangle(40, 40, Color.WHITE);
-		res.getChildren().add(front);
-		return res;
-	}
-
-	/**
-	 * creates a stack pan to display an empty cell.
-	 * 
-	 * @return the created stackPane
-	 */
-	private StackPane invisibleStackPane() {
-		StackPane res = emptyStackPane();
-
-		// handles styling
-		Rectangle front = new Rectangle(40, 40, Color.BLACK);
-		res.getChildren().add(front);
+		ImageView base = new ImageView(empty);
+		base.setFitHeight(cellHeight);
+		base.setFitWidth(cellWidth);
+		res.getChildren().addAll(base, new Rectangle(), new Rectangle(cellWidth, cellHeight, Color.TRANSPARENT));
 		return res;
 	}
 

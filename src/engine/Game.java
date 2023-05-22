@@ -247,30 +247,4 @@ public class Game {
 		}
 	}
 
-//	private static Image getIcon(String name, String mode) {
-//		Image res = null;
-//		try {
-//			String path = "assets/" + mode + "/images/icons/" + name + ".png";
-//			res = new Image(new File(path).toURI().toURL().toExternalForm());
-//		} catch (Exception e) {
-//			System.out.println(name + "'s images are missing");
-//		}
-//		return res;
-//	}
-
-//	static Image getModel(String name, String mode) {
-//		Image res = null;
-//		try {
-//			if (name.startsWith("Zombie")) {
-//				int tmp = Integer.parseInt(name.substring(7));
-//				tmp %= 10;
-//				name = "zombie" + tmp;
-//			}
-//			String path = "assets/" + mode + "/images/models/" + name + ".png";
-//			res = new Image(new File(path).toURI().toURL().toExternalForm());
-//		} catch (Exception e) {
-//			System.out.println(name + "'s images are missing");
-//		}
-//		return res;
-//	}
 }

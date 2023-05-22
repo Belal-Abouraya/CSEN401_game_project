@@ -203,6 +203,7 @@ public abstract class Character {
 			if (name.startsWith("Zombie")) {
 				int tmp = Integer.parseInt(name.substring(7));
 				tmp %= 10;
+				tmp++;
 				name = "zombie" + tmp;
 			}
 			String path = "assets/" + Game.mode + "/images/models/" + name + ".png";

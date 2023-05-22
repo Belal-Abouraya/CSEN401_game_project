@@ -115,7 +115,7 @@ public abstract class Hero extends Character {
 		case UP -> x += 1;
 		}
 		if (!isValidLocation(x, y))
-			throw new MovementException("Invalid direction.");
+			throw new MovementException("Invalid direction!");
 		if (Game.map[x][y] instanceof CharacterCell) {
 			if (((CharacterCell) Game.map[x][y]).getCharacter() != null)
 				throw new MovementException("Cell is occupied!");
