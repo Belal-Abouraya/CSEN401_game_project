@@ -51,4 +51,9 @@ public class Medic extends Hero {
 				cellLocation.y == this.getLocation().y ;
 	}
 
+	@Override
+	public String getType() {
+		return "MEDIC" ;
+	}
+
 }
