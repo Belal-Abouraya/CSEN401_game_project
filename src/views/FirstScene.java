@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
@@ -19,8 +20,6 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 public class FirstScene {
-	
-	public static MediaPlayer mediaPlayer ;
 
 	public Scene getScene() {
 		ImageView wallpaper = createImageView();
@@ -28,12 +27,16 @@ public class FirstScene {
 		StackPane stackPane = new StackPane();
 		stackPane.getChildren().addAll(wallpaper,label);
 		Scene scene = new Scene(stackPane , Main.width , Main.height);
-		getMediaPlayer();
 		scene.getStylesheets().add(this.getClass().getResource(Main.mode + ".css").toExternalForm());
 		scene.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.ENTER) {
-				mediaPlayer.setCycleCount(Timeline.INDEFINITE);
 				Main.window.setScene((new SecondScene()).getScene());
+			}
+			if(e.getCode() == KeyCode.MINUS) {
+				Main.mediaPlayer.stop();
+			}
+			if(e.getCode() == KeyCode.EQUALS) {
+				Main.mediaPlayer.play();
 			}
 		});
 		scene.widthProperty().addListener((observable, oldWidth, newWidth) -> {
@@ -78,11 +81,4 @@ public class FirstScene {
 		return label;
 	}
 	
-	private void getMediaPlayer() {
-		String path = "assets/" + Main.mode + "/audio/music/firstscene.mp3";
-		Media firstSceneMusic = new Media(new File(path).toURI().toString());
-		mediaPlayer = new MediaPlayer(firstSceneMusic);
-		mediaPlayer.setAutoPlay(true);
-	}
-
 }

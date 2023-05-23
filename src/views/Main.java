@@ -1,11 +1,15 @@
 package views;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
 import engine.Game;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 /**
@@ -18,11 +22,13 @@ public class Main extends Application {
 	static double height = 720;
 	static String mode = "classic";
 	static boolean isFullScreen;
+	static MediaPlayer mediaPlayer ;
 
 	@Override
 	public void start(Stage primaryStage) throws MalformedURLException {
 		window = primaryStage;
 		window.setTitle("Last of Us : Legacy");
+		getMediaPlayer();
 		window.setScene((new FirstScene()).getScene());
 		window.addEventHandler(GameEvent.WIN, e -> window.setScene((new WinningScene()).getScene()));
 		window.addEventHandler(GameEvent.GAME_OVER, e -> window.setScene((new LosingScene()).getScene()));
@@ -39,6 +45,15 @@ public class Main extends Application {
 		}
 		launch(args);
 	}
+	
+	private void getMediaPlayer() {
+		String path = "assets/" + Main.mode + "/audio/music/firstscene.mp3";
+		Media firstSceneMusic = new Media(new File(path).toURI().toString());
+		mediaPlayer = new MediaPlayer(firstSceneMusic);
+		mediaPlayer.setAutoPlay(true);
+		mediaPlayer.setCycleCount(Timeline.INDEFINITE);
+	}
+
 
 //	public static void main(String[] args) {
 //		launch(args);
