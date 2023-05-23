@@ -1,189 +1,194 @@
 package views;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import engine.Game;
+import model.characters.*;
+import javafx.scene.image.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
-import model.characters.Hero;
-
-/**
- * class dealing with the Second Scene. it has attributes :
- * <ul>
- * <li>wallpaper which represents the wallpaper used in this scene</li>
- * <li>selectYourHero label which displays "select your hero" message</li>
- * <li>row and column represent the location of the currently selected hero</li>
- * <li>dimension1 and dimension2 are the dimensions of the grid (used for
- * testing)</li>
- * <li>mapPane is a matrix contains all the stackPanes used</li>
- * </ul>
- * 
- * @author Ahmed Hussein
- *
- */
+import javafx.scene.control.Label;
 
 public class SecondScene {
-
-	private static ImageView wallpaper;
-	private static Label selectYourHero;
-	private static int row = 0;
-	private static int column = 0;
-	private static int dimension1 = 4;
-	private static int dimension2 = 2;
-	private static StackPane[][] mapPane = new StackPane[dimension1][dimension2];
-	private static VBox heroInfo ;
+	
+	private static StackPane sceneBack = new StackPane();
+	private static GridPane heroes = new GridPane();
+	private static int d1 = 2 , d2 = 4 ;
+	private static int row = 0 , column = 0 ;
+	private static Hero [][] map = new Hero [d1][d2] ;
+	
 	private static Color brightColor = Color.DARKGRAY.brighter();
 	private static Color darkColor = Color.DARKGRAY;
-	private static String mode;
-
-	public SecondScene(String mode) {
-		this.mode = mode;
-	}
-
-	/**
-	 * the controller method in the class.
-	 * 
-	 * {@link createWallpaper} {@link createSelectYourHeroLabel}
-	 * {@link createGridAndMap} {@link createScene}
-	 * 
-	 * @return the secondScene
-	 */
-
+	private static StackPane[][] mapPane = new StackPane[d1][d2];
+	
+	private static double RectangleWidth ;
+	private static double RectangleHeight ;
+	private static VBox vbox = new VBox();
+	private static ImageView wallpaper ;
+	private static Label selectYourHero ;
+	
+	
 	public Scene getScene() {
-
-		createWallpaper();
-
-		// gridPane
-		GridPane gridPane = new GridPane();
-		gridPane.setHgap(4);
-		gridPane.setVgap(4);
-		gridPane.setAlignment(Pos.BOTTOM_CENTER);
-		gridPane.setTranslateY(0.14 * Main.height);
-
-		// map
-		Hero[][] map = new Hero[dimension1][dimension2];
-
+		FirstScene.mediaPlayer.play();
+		FirstScene.mediaPlayer.setCycleCount(Timeline.INDEFINITE);
+		createBackGround();
 		createSelectYourHeroLabel();
-		createGridAndMap(map, gridPane);
+		createHeroes();
+		sceneBack.getChildren().add(wallpaper);
 		
-		// VBox
-		heroInfo = new VBox();
-		
-		// BorderPane 
-		BorderPane borderPane = new BorderPane();
-		borderPane.setLeft(heroInfo);
-		borderPane.setRight(gridPane);
-		borderPane.setTop(selectYourHero);
-
-		// the root of the scene
-		StackPane root = new StackPane();
-		root.getChildren().addAll(wallpaper, borderPane);
-
-		return createScene(root, map);
-	}
-
-	/**
-	 * A helper method that create a stackPane containing the hero image.
-	 * 
-	 * 
-	 * @param h the hero
-	 * @param x the x_location of the stackPane on the grid
-	 * @param y the y_location of the stackPane on the grid
-	 * @return stackPane
-	 */
-
-	private static StackPane hero(Hero h, int x, int y) {
-		StackPane res = new StackPane();
-		
-		Rectangle back = new Rectangle(100, 100);
-		back.setArcHeight(10);
-		back.setArcWidth(10);
-		back.setFill(darkColor);
-		res.getChildren().add(back);
-		
-		ImageView model = new ImageView(h.getModel());
-		
-		res.setOnMouseEntered(e -> {
+//		 initial state
+		vbox = createModel(map[0][0]);
+		((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(brightColor);
+		vbox.setAlignment(Pos.CENTER_LEFT);
+		sceneBack.getChildren().addAll( selectYourHero , vbox , heroes);
+		Scene scene = new Scene(sceneBack , Main.width , Main.height);
+		scene.getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
+		scene.setOnKeyPressed(e -> {
 			((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(darkColor);
-			mapPane[row][column].setTranslateY(0.0009 * Main.height);
-			back.setFill(brightColor);
-			row = x;
-			column = y;
-			res.setTranslateY(-0.14 * Main.height);
+			switch (e.getCode()) {
+				case W -> row = Math.max(row - 1, 0);
+				case A -> column = Math.max(column - 1, 0);
+				case S -> row = Math.min(row + 1, d1 - 1);
+				case D -> column = Math.min(column + 1, d2 - 1);
+				case ENTER -> {
+					Game.startGame(map[row][column], Main.mode);
+					FirstScene.mediaPlayer.stop();
+					Main.window.setScene((new GameScene()).gameScene());
+				}
+			}
+			((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(brightColor);
+			sceneBack.getChildren().clear();
+			vbox = createModel(map[row][column]);
+			vbox.setAlignment(Pos.CENTER_LEFT);
+			sceneBack.getChildren().addAll(wallpaper , selectYourHero , vbox , heroes );
 		});
-		res.setOnMouseExited(e -> {
-			back.setFill(darkColor);
-			res.setTranslateY(0.0009 * Main.height);
+		scene.widthProperty().addListener((observable , oldWidth , newWidth) -> {
+			double nw = (double) newWidth ;
+			Main.width = nw ;
+			wallpaper.setFitWidth(nw);
+			double newSize = 30 * Math.min(Main.width, Main.height) / 720;
+			selectYourHero.setStyle("-fx-font-size: " + newSize + ";");
+
 		});
-		res.setOnMouseClicked(e -> {
-			Game.startGame(h , mode);
-			Main.window.setScene((new GameScene()).gameScene());
+		scene.heightProperty().addListener((observable , oldHeight , newHeight) -> {
+			double nh = (double) newHeight ;
+			Main.height = nh ;
+			wallpaper.setFitHeight(nh);
+			double newSize = 30 * Math.min(Main.width, Main.height) / 720;
+			selectYourHero.setStyle("-fx-font-size: " + newSize + ";");
+//			createHeroes();
 		});
-		return res;
+		return scene ;
 	}
-
-	/**
-	 * An initializer method
-	 * <p>
-	 * it creates the grid that contains all the heroes images and the map that
-	 * contains the heroes in the same location as the grid so we can have direct
-	 * access to them.
-	 * </p>
-	 * 
-	 * @param map
-	 * @param gridPane
-	 */
-
-	private static void createGridAndMap(Hero[][] map, GridPane gridPane) {
+	
+	private static void createBackGround() {
+		Image image = null;
+		try {
+			String path = "assets/" + Main.mode + "/images/wallpapers/secondscene.jpeg";
+			image = new Image(new File(path).toURI().toURL().toExternalForm());
+		}catch(Exception e) {}
+		wallpaper = new ImageView(image);
+		wallpaper.setFitHeight(Main.height);
+		wallpaper.setFitWidth(Main.width);
+	}
+	
+	private static void createHeroes() {
 		ArrayList<Hero> allHeroes = Game.availableHeroes;
 		int count = 0;
-		for (int i = 0; i < dimension1; i++) {
-			for (int j = 0; j < dimension2; j++) {
+		for (int i = 0; i < d1; i++) {
+			for (int j = 0; j < d2; j++) {
 				map[i][j] = allHeroes.get(count);
 				StackPane tmp = hero(allHeroes.get(count++), i, j);
-				gridPane.add(tmp, j, i);
+				heroes.add(tmp, j, i);
 				mapPane[i][j] = tmp;
 			}
 		}
+		heroes.setAlignment(Pos.BOTTOM_CENTER);
+		heroes.setTranslateX(-2);
+		heroes.setHgap(2);
+		heroes.setVgap(2);
 	}
-
-	/**
-	 * An initializer method
-	 * <p>
-	 * initializes and creates the wallpaper imageView and give it the proper
-	 * dimensions and gives it an initial value.
-	 * </p>
-	 */
-
-	private static void createWallpaper() {
-		wallpaper = new ImageView();
-		wallpaper.setFitHeight(Main.height);
-		wallpaper.setFitWidth(Main.width);
-		wallpaper.setImage(Game.availableHeroes.get(0).getWallpaper());
+	
+	private static StackPane hero(Hero h, int x, int y) {
+		StackPane res = new StackPane();
+		RectangleHeight =  Math.pow(Main.height * Main.width , 1.0/3) / 0.98 ;
+		RectangleWidth =  Math.pow(Main.height * Main.width , 1.0/3) / 0.98 ;
+		
+		Rectangle back = new Rectangle(RectangleWidth, RectangleHeight);
+		back.setArcHeight(10);
+		back.setArcWidth(10);
+		back.setFill(darkColor);
+		back.setOpacity(0.2);
+		ImageView icon = new ImageView(h.getIcon());
+		icon.setFitHeight(RectangleHeight-5);
+		icon.setFitWidth(RectangleWidth-5);
+		res.getChildren().addAll(back , icon);
+		
+		res.setOnMouseEntered(e -> {
+			((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(darkColor);
+			back.setFill(brightColor);
+			row = x; column = y;
+			sceneBack.getChildren().clear();
+			vbox = createModel(map[row][column]);
+			vbox.setAlignment(Pos.CENTER_LEFT);
+			sceneBack.getChildren().addAll(wallpaper , selectYourHero , vbox , heroes );
+		});
+		res.setOnMouseClicked(e -> {
+			Game.startGame(h , Main.mode);
+			Main.window.setScene((new GameScene()).gameScene());
+		});
+		
+		return res;
 	}
+	
+	private static VBox createModel(Hero h) {
+		Image image = h.getModel();
+		ImageView imageView = new ImageView(image);
+		
+		double maxImageSize = Math.max(Main.height/3 , Main.width/3);
+		double imageWidth = image.getWidth();
+		double imageHeight = image.getHeight();
+		double scaleFactor = 1;
 
-	/**
-	 * An initializer method.
-	 * <p>
-	 * creates the selectYourHero label and its animation.
-	 * </p>
-	 */
+		if (imageWidth > maxImageSize || imageHeight > maxImageSize) {
+		    double widthRatio = maxImageSize / imageWidth;
+		    double heightRatio = maxImageSize / imageHeight;
+		    scaleFactor = Math.min(widthRatio, heightRatio);
+		}
+		
+		double width = imageWidth * scaleFactor ;
+		double height = imageHeight * scaleFactor ;
 
+		imageView.setFitWidth(width);
+		imageView.setFitHeight(height);
+		
+		Label info = new Label(
+				h.getName() + "\n" + 
+				h.getType() + "\n" +
+				"Health : "+ h.getMaxHp() + "\n" +
+				"Actions per Turn : "+h.getMaxActions() + "\n" + 
+				"Attack Damage : "+h.getAttackDmg()
+				);
+//		Label info = new Label();
+		
+		info.setTranslateX(width/5);
+		
+		VBox res = new VBox(4);
+		res.getChildren().addAll(imageView , info);
+		res.setTranslateY((Main.height-res.getHeight())/10);
+		return res ;
+	}
+	
 	private static void createSelectYourHeroLabel() {
 		selectYourHero = new Label("Select Your Hero");
 		selectYourHero.setId("SelectHeroLabel");
@@ -194,91 +199,13 @@ public class SecondScene {
 		timeLine.setCycleCount(Timeline.INDEFINITE);
 		timeLine.play();
 	}
-
-	/**
-	 * A helper method that creates a VBox containing the image of the hero and all
-	 * attributes
-	 * 
-	 * @param h the hero we want to get its VBox
-	 * @return VBox of hero's information
-	 */
-
-	private static VBox getHeroCell(Hero h) {
-		ImageView image = new ImageView(h.getImage());
-		image.setFitHeight(80);
-		image.setFitWidth(90);
-		String heroName = h.getName().split(" ").length == 1 ? h.getName() : h.getName().split(" ")[0];
-		Label name = new Label(heroName);
-		name.setId("NameLabel");
-		Label type = new Label(h.getType());
-		Label attackDmg = new Label("Attack Damage : " + h.getAttackDmg());
-		Label actionPoints = new Label("Action Points : " + h.getMaxActions());
-		Label health = new Label("Health Points : " + h.getMaxHp());
-		VBox res = new VBox(3);
-		res.getChildren().addAll(image, name, type, attackDmg, health, actionPoints);
-		return res;
-	}
-
-	/**
-	 * A helper method used to create the scene and its actions.
-	 * 
-	 * 
-	 * @param root the stackPane containing all items
-	 * @param map  contains all heros
-	 * @return the final scene
-	 */
-
-	private Scene createScene(StackPane root, Hero[][] map) {
-		Scene scene = new Scene(root, Main.width, Main.height);
-		mapPane[0][0].setTranslateY(-0.14 * Main.height);
-		((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(brightColor);
-		scene.setOnKeyPressed(e -> {
-			((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(darkColor);
-			KeyCode key = e.getCode();
-			boolean isValid = key == KeyCode.W || key == KeyCode.A || key == KeyCode.S || key == KeyCode.D;
-			if (isValid)
-				mapPane[row][column].setTranslateY(0.0009 * Main.height);
-			switch (e.getCode()) {
-			case W -> {
-				row = Math.max(row - 1, 0);
-			}
-			case A -> {
-				column = Math.max(column - 1, 0);
-			}
-			case S -> {
-				row = Math.min(row + 1, dimension1 - 1);
-			}
-			case D -> {
-				column = Math.min(column + 1, dimension2 - 1);
-			}
-			case ENTER -> {
-				Game.startGame(map[row][column]);
-				Main.window.setScene((new GameScene()).gameScene());
-			}
-			}
-			if (isValid)
-				mapPane[row][column].setTranslateY(-0.14 * Main.height);
-			((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(brightColor);
-			wallpaper.setImage(map[row][column].getWallpaper());
-		});
-
-		scene.widthProperty().addListener((observable, oldWidth, newWidth) -> {
-			Main.width = (double) newWidth;
-			wallpaper.setFitWidth((double) newWidth);
-			double newSize = 30 * Math.min(Main.height, Main.width) / 720;
-			selectYourHero.setStyle("-fx-font-size: " + newSize + ";");
-		});
-
-		scene.heightProperty().addListener((observable, oldHeight, newHeight) -> {
-			Main.height = (double) newHeight;
-			wallpaper.setFitHeight((double) newHeight);
-			double newSize = 30 * Math.min(Main.height, Main.width) / 720;
-			selectYourHero.setStyle("-fx-font-size: " + newSize + ";");
-		});
-
-		scene.getStylesheets().add(getClass().getResource("classic.css").toExternalForm());
-
-		return scene;
+	
+	private static String createInfo (Hero h) {
+		return h.getName() + "\n" + 
+				h.getType() + "\n" +
+				"Health : "+ h.getMaxHp() + "\n" +
+				"Actions per Turn : "+h.getMaxActions() + "\n" + 
+				"Attack Damage : "+h.getAttackDmg() ;
 	}
 
 }

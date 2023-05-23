@@ -56,7 +56,7 @@
 #StartLabel {
 	
 	-fx-font-family : "Orbitron";
-	-fx-font-size : 40px ;
+	-fx-font-size : 30px ;
 	-fx-font-weight: 300 ;
 	-fx-text-fill : linear-gradient( #F4684B, #F56254 , #C48773 ) ;
 	

@@ -13,10 +13,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 public class FirstScene {
+	
+	public static MediaPlayer mediaPlayer ;
 
 	public Scene getScene() {
 		ImageView wallpaper = createImageView();
@@ -24,11 +28,26 @@ public class FirstScene {
 		StackPane stackPane = new StackPane();
 		stackPane.getChildren().addAll(wallpaper,label);
 		Scene scene = new Scene(stackPane , Main.width , Main.height);
+		getMediaPlayer();
 		scene.getStylesheets().add(this.getClass().getResource(Main.mode + ".css").toExternalForm());
 		scene.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.ENTER) {
-				Main.window.setScene((new tmp()).getScene());
+				mediaPlayer.setCycleCount(Timeline.INDEFINITE);
+				Main.window.setScene((new SecondScene()).getScene());
 			}
+		});
+		scene.widthProperty().addListener((observable, oldWidth, newWidth) -> {
+			Main.width = (double) newWidth;
+			wallpaper.setFitWidth((double) newWidth);
+			double newSize = 30 * Math.min(Main.width, Main.height) / 720;
+			label.setStyle("-fx-font-size: " + newSize + ";");
+		});
+		scene.heightProperty().addListener((observable, oldHeight, newHeight) -> {
+			Main.height = (double) newHeight;
+			wallpaper.setFitHeight((double) newHeight);
+			double newSize = 30 * Math.min(Main.width, Main.height) / 720;
+			label.setStyle("-fx-font-size: " + newSize + ";");
+			label.setTranslateY(Math.floor(0.4 * Main.height));
 		});
 		return scene;
 	}
@@ -39,21 +58,31 @@ public class FirstScene {
 			String path = "assets/" + Main.mode + "/images/wallpapers/firstscene.jpg";
 			image = new Image(new File(path).toURI().toURL().toExternalForm());
 		}catch(Exception e) {}
-		ImageView wallpaper = new ImageView(image);
-		wallpaper.setFitHeight(Main.height);
-		wallpaper.setFitWidth(Main.width);
-		return wallpaper;
+		ImageView imageView = new ImageView(image);
+
+		imageView.setFitWidth(Main.width);
+		imageView.setFitHeight(Main.height);
+		
+		return imageView;
 	}
 	
 	private Label getStartGameLabel () {
 		Label label = new Label("Press Enter to Start");
 		label.setId("StartLabel");
+		label.setTranslateY(Math.floor(0.4 * Main.height));
 		Timeline timeLine = new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(label.opacityProperty(), 0)),
 				new KeyFrame(Duration.seconds(1), new KeyValue(label.opacityProperty(), 1)),
 				new KeyFrame(Duration.seconds(2), new KeyValue(label.opacityProperty(), 0)));
 		timeLine.setCycleCount(Timeline.INDEFINITE);
 		timeLine.play();
 		return label;
+	}
+	
+	private void getMediaPlayer() {
+		String path = "assets/" + Main.mode + "/audio/music/firstscene.mp3";
+		Media firstSceneMusic = new Media(new File(path).toURI().toString());
+		mediaPlayer = new MediaPlayer(firstSceneMusic);
+		mediaPlayer.setAutoPlay(true);
 	}
 
 }
