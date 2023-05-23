@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 import engine.Game;
+import model.characters.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -23,12 +24,56 @@ import javafx.util.Duration;
  * 
  */
 public class Main extends Application {
+	
 	static Stage window;
 	static Scene firstScene;
-	static double width = 1280;
-	static double height = 720;
-	// static String mode = "classic";
+	static double width = 1960;
+	static double height = 1080;
+	static String mode = "classic";
 
+	@Override
+	public void start(Stage primaryStage) throws FileNotFoundException, IOException {
+		window = primaryStage;
+		Game.loadHeroes("assets/classic/heroes.csv");
+//		GameScene g = new GameScene();
+		primaryStage.setScene((new FirstScene()).getScene());
+		primaryStage.show();
+	}
+
+	public static void main(String[] args) {
+		launch(args);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 //	@Override
 //	public void start(Stage primaryStage) throws MalformedURLException {
 //		window = primaryStage;
@@ -107,18 +152,4 @@ public class Main extends Application {
 //			label.setTranslateY(Math.floor(0.4 * height));
 //		});
 //	}
-
-	@Override
-	public void start(Stage primaryStage) throws FileNotFoundException, IOException {
-
-		Game.loadHeroes("assets/classic/heroes.csv");
-		Game.startGame(Game.availableHeroes.get(0), "classic");
-		GameScene g = new GameScene();
-		primaryStage.setScene(g.gameScene());
-		primaryStage.show();
-	}
-
-	public static void main(String[] args) {
-		launch(args);
-	}
 }

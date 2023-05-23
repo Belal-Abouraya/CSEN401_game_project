@@ -43,9 +43,10 @@ public class SecondScene {
 	private static Label selectYourHero;
 	private static int row = 0;
 	private static int column = 0;
-	private static int dimension1 = 1;
-	private static int dimension2 = 8;
+	private static int dimension1 = 4;
+	private static int dimension2 = 2;
 	private static StackPane[][] mapPane = new StackPane[dimension1][dimension2];
+	private static VBox heroInfo ;
 	private static Color brightColor = Color.DARKGRAY.brighter();
 	private static Color darkColor = Color.DARKGRAY;
 	private static String mode;
@@ -69,7 +70,7 @@ public class SecondScene {
 
 		// gridPane
 		GridPane gridPane = new GridPane();
-		gridPane.setHgap(6);
+		gridPane.setHgap(4);
 		gridPane.setVgap(4);
 		gridPane.setAlignment(Pos.BOTTOM_CENTER);
 		gridPane.setTranslateY(0.14 * Main.height);
@@ -79,10 +80,19 @@ public class SecondScene {
 
 		createSelectYourHeroLabel();
 		createGridAndMap(map, gridPane);
+		
+		// VBox
+		heroInfo = new VBox();
+		
+		// BorderPane 
+		BorderPane borderPane = new BorderPane();
+		borderPane.setLeft(heroInfo);
+		borderPane.setRight(gridPane);
+		borderPane.setTop(selectYourHero);
 
 		// the root of the scene
 		StackPane root = new StackPane();
-		root.getChildren().addAll(wallpaper, gridPane, selectYourHero);
+		root.getChildren().addAll(wallpaper, borderPane);
 
 		return createScene(root, map);
 	}
@@ -99,20 +109,19 @@ public class SecondScene {
 
 	private static StackPane hero(Hero h, int x, int y) {
 		StackPane res = new StackPane();
-		Rectangle back = new Rectangle(100, 190);
+		
+		Rectangle back = new Rectangle(100, 100);
 		back.setArcHeight(10);
 		back.setArcWidth(10);
 		back.setFill(darkColor);
 		res.getChildren().add(back);
-		VBox vbox = getHeroCell(h);
-		vbox.setAlignment(Pos.BASELINE_CENTER);
-		vbox.setTranslateY(5);
-		res.getChildren().add(vbox);
+		
+		ImageView model = new ImageView(h.getModel());
+		
 		res.setOnMouseEntered(e -> {
 			((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(darkColor);
 			mapPane[row][column].setTranslateY(0.0009 * Main.height);
 			back.setFill(brightColor);
-			wallpaper.setImage(h.getWallpaper());
 			row = x;
 			column = y;
 			res.setTranslateY(-0.14 * Main.height);
@@ -122,8 +131,8 @@ public class SecondScene {
 			res.setTranslateY(0.0009 * Main.height);
 		});
 		res.setOnMouseClicked(e -> {
-			Game.startGame(h);
-			Main.window.setScene((new GameScene(mode)).gameScene());
+			Game.startGame(h , mode);
+			Main.window.setScene((new GameScene()).gameScene());
 		});
 		return res;
 	}

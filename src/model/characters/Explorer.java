@@ -36,4 +36,9 @@ public class Explorer extends Hero {
 		}
 	}
 
+	@Override
+	public String getType() {
+		return "EXPLORER" ;
+	}
+
 }

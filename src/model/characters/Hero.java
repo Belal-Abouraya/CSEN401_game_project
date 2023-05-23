@@ -280,13 +280,7 @@ public abstract class Hero extends Character {
 		return supplyInventory;
 	}
 
-	public String getType() {
-		if (this instanceof Fighter)
-			return "Fighter";
-		if (this instanceof Medic)
-			return "Medic";
-		return "Explorer";
-	}
+	abstract public String getType();
 
 	/**
 	 * @return the icon

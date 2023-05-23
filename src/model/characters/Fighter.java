@@ -43,4 +43,9 @@ public class Fighter extends Hero {
 			setActionsAvailable(1 + getActionsAvailable());
 	}
 
+	@Override
+	public String getType() {
+		return "FIGHTER" ;
+	}
+
 }

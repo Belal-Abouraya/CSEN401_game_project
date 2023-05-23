@@ -9,9 +9,9 @@
 
 @font-face {
     fx-font-family: "Lobster" ;
-    fx-src: url('path/to/orbitron.woff2') format('woff2'),
-         url('path/to/orbitron.woff') format('woff'),
-         url('path/to/orbitron.ttf') format('truetype');
+    fx-src: url('path/to/lobster.woff2') format('woff2'),
+         url('path/to/lobster.woff') format('woff'),
+         url('path/to/lobster.ttf') format('truetype');
     fx-font-weight: normal;
     fx-font-style: normal;
 }
@@ -45,18 +45,19 @@
 
 .label{
 	
-	-fx-font-family : "Lobster";
-	-fx-font-size : 11px ;
-	-fx-font-weight : 600 ;
-	fx-text-fill : #361512 ;
+	-fx-font-family : "Orbitron";
+	-fx-font-size : 15px ;
+	-fx-font-weight : 500 ;
+	-fx-text-fill: #A9A9A9;
+	-fx-text-alignment: center;
 	
 }
 
 #StartLabel {
 	
 	-fx-font-family : "Orbitron";
-	-fx-font-size : 30px ;
-	-fx-font-weight: 200 ;
+	-fx-font-size : 40px ;
+	-fx-font-weight: 300 ;
 	-fx-text-fill : linear-gradient( #F4684B, #F56254 , #C48773 ) ;
 	
 }
