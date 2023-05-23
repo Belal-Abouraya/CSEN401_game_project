@@ -3,9 +3,6 @@ package model.collectibles;
 import java.awt.Point;
 
 import engine.Game;
-import exceptions.InvalidTargetException;
-import javafx.scene.image.Image;
-import model.characters.Character;
 import model.characters.Hero;
 import model.characters.Zombie;
 import model.world.CharacterCell;
@@ -17,13 +14,12 @@ import model.world.CharacterCell;
  * @author Belal Abouraya
  */
 
-public class Vaccine extends Collectible {
+public class Vaccine implements Collectible {
 
 	/**
 	 * Default constructor for the class.
 	 */
 	public Vaccine() {
-		super("vaccine");
 	}
 
 	@Override
@@ -36,7 +32,7 @@ public class Vaccine extends Collectible {
 		owner.getVaccineInventory().remove(this);
 		Point targetLocation = owner.getTarget().getLocation();
 		int x = targetLocation.x, y = targetLocation.y;
-		int idx = (int) (Math.random() * Game.heroes.size());
+		int idx = (int) (Math.random() * Game.availableHeroes.size());
 		Hero newHero = Game.availableHeroes.get(idx);
 		Hero.makeAllAdjacentVisible(x, y);
 		newHero.setLocation(new Point(x, y));

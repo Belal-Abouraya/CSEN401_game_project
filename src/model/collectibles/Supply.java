@@ -8,13 +8,12 @@ import model.characters.Hero;
  * @author Rafael Samuel
  * @author Belal Abouraya
  */
-public class Supply extends Collectible {
+public class Supply implements Collectible {
 
 	/**
 	 * Default constructor for the class.
 	 */
 	public Supply() {
-		super("supply");
 	}
 
 	@Override
