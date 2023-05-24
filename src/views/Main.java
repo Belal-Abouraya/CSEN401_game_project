@@ -27,19 +27,23 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws MalformedURLException {
 		window = primaryStage;
+		//TODO: maximize window
+		//window.setMaximized(true);
 		window.setTitle("Last of Us : Legacy");
 		getMediaPlayer();
+		window.setFullScreen(true);
+		isFullScreen = true ;
+		Main.height = window.getHeight();
+		Main.width = window.getWidth();
 		window.setScene((new FirstScene()).getScene());
 		window.addEventHandler(GameEvent.WIN, e -> window.setScene((new WinningScene()).getScene()));
 		window.addEventHandler(GameEvent.GAME_OVER, e -> window.setScene((new LosingScene()).getScene()));
-//		window.setFullScreen(true);
-//		isFullScreen = true ;
 		window.show();
 	}
 
 	public static void main(String[] args) {
 		try {
-			Game.loadHeroes("assets/" + Game.mode + "/heroes.csv");
+			Game.loadHeroes("assets/" + mode + "/heroes.csv");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

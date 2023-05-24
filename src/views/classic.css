@@ -74,3 +74,9 @@
 	-fx-font-size : 14px ;
 	-fx-font-weight: 900;
 }
+
+#tryAgain {
+	-fx-font-family :"Orbitron";
+	-fx-font-size : 25px ;
+	-fx-font-weight: 300 ;
+}

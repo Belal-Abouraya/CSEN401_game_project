@@ -20,13 +20,16 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 public class FirstScene {
+	
+	public double currHeight = Main.height , currWidth = Main.width ;
+	
 
 	public Scene getScene() {
 		ImageView wallpaper = createImageView();
 		Label label = getStartGameLabel();
 		StackPane stackPane = new StackPane();
 		stackPane.getChildren().addAll(wallpaper,label);
-		Scene scene = new Scene(stackPane , Main.width , Main.height);
+		Scene scene = new Scene(stackPane , currWidth , currHeight);
 		scene.getStylesheets().add(this.getClass().getResource(Main.mode + ".css").toExternalForm());
 		scene.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.ENTER) {
@@ -40,17 +43,17 @@ public class FirstScene {
 			}
 		});
 		scene.widthProperty().addListener((observable, oldWidth, newWidth) -> {
-			Main.width = (double) newWidth;
-			wallpaper.setFitWidth((double) newWidth);
-			double newSize = 30 * Math.min(Main.width, Main.height) / 720;
-			label.setStyle("-fx-font-size: " + newSize + ";");
+			currWidth = (double) newWidth ;
+			Main.width = currWidth;
+			wallpaper.setFitWidth(currWidth);
+			updateLabelSize(label, currWidth, currHeight);
 		});
 		scene.heightProperty().addListener((observable, oldHeight, newHeight) -> {
-			Main.height = (double) newHeight;
-			wallpaper.setFitHeight((double) newHeight);
-			double newSize = 30 * Math.min(Main.width, Main.height) / 720;
-			label.setStyle("-fx-font-size: " + newSize + ";");
-			label.setTranslateY(Math.floor(0.4 * Main.height));
+			currHeight = (double) newHeight ;
+			Main.height = currHeight;
+			wallpaper.setFitHeight(currHeight);
+			label.setTranslateY(0.4 * currHeight);
+			updateLabelSize(label, currWidth, currHeight);
 		});
 		return scene;
 	}
@@ -63,8 +66,8 @@ public class FirstScene {
 		}catch(Exception e) {}
 		ImageView imageView = new ImageView(image);
 
-		imageView.setFitWidth(Main.width);
-		imageView.setFitHeight(Main.height);
+		imageView.setFitWidth(currWidth);
+		imageView.setFitHeight(currHeight);
 		
 		return imageView;
 	}
@@ -72,13 +75,18 @@ public class FirstScene {
 	private Label getStartGameLabel () {
 		Label label = new Label("Press Enter to Start");
 		label.setId("StartLabel");
-		label.setTranslateY(Math.floor(0.4 * Main.height));
+		label.setTranslateY(0.4 * currHeight);
 		Timeline timeLine = new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(label.opacityProperty(), 0)),
 				new KeyFrame(Duration.seconds(1), new KeyValue(label.opacityProperty(), 1)),
 				new KeyFrame(Duration.seconds(2), new KeyValue(label.opacityProperty(), 0)));
 		timeLine.setCycleCount(Timeline.INDEFINITE);
 		timeLine.play();
 		return label;
+	}
+	
+	private void updateLabelSize(Label label , double width , double height) {
+		double size = 30 * Math.sqrt((width*height) / (720*1280)) ;
+		label.setStyle("-fx-font-size : "+size+ " ;");
 	}
 	
 }

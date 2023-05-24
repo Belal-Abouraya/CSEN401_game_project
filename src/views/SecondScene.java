@@ -24,34 +24,32 @@ import model.characters.Hero;
 
 public class SecondScene {
 
-	private static StackPane sceneBack = new StackPane();
-	private static GridPane heroes = new GridPane();
-	private static int d1 = 2, d2 = 4;
-	private static int row = 0, column = 0;
-	private static Hero[][] map = new Hero[d1][d2];
+	private StackPane sceneBack = new StackPane();
+	private GridPane heroes = new GridPane();
+	private int d1 = 2, d2 = 4;
+	private int row = 0, column = 0;
+	private Hero[][] map = new Hero[d1][d2];
 
-	private static Color brightColor = Color.DARKGRAY.brighter();
-	private static Color darkColor = Color.DARKGRAY;
-	private static StackPane[][] mapPane = new StackPane[d1][d2];
+	private Color brightColor = Color.DARKGRAY.brighter();
+	private Color darkColor = Color.DARKGRAY;
+	private StackPane[][] mapPane = new StackPane[d1][d2];
 
-	private static double RectangleWidth;
-	private static double RectangleHeight;
-	private static VBox vbox = new VBox();
-	private static ImageView wallpaper;
-	private static Label selectYourHero;
-	private static double scaleFactor ;
+	private double RectangleWidth = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.97;
+	private double RectangleHeight = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.97;
+	private VBox vbox = new VBox();
+	private ImageView wallpaper;
+	private Label selectYourHero;
+	private double scaleFactor ;
+	private double maxImageSize ;
 
 	public Scene getScene() {
 		createBackGround();
 		createSelectYourHeroLabel();
 		createHeroes();
-		sceneBack.getChildren().add(wallpaper);
-
-//		 initial state
 		vbox = createModel(map[0][0]);
 		((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(brightColor);
 		vbox.setAlignment(Pos.CENTER_LEFT);
-		sceneBack.getChildren().addAll(selectYourHero, vbox, heroes);
+		sceneBack.getChildren().addAll(wallpaper ,selectYourHero, vbox, heroes);
 		Scene scene = new Scene(sceneBack, Main.width, Main.height);
 		scene.getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
 		scene.setOnKeyPressed(e -> {
@@ -68,6 +66,7 @@ public class SecondScene {
 			}
 			case MINUS -> Main.mediaPlayer.stop();
 			case EQUALS -> Main.mediaPlayer.play();
+			case F -> Main.window.setFullScreen(true);
 			}
 			((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(brightColor);
 			sceneBack.getChildren().clear();
@@ -76,25 +75,29 @@ public class SecondScene {
 			sceneBack.getChildren().addAll(wallpaper, selectYourHero, vbox, heroes);
 		});
 		scene.widthProperty().addListener((observable, oldWidth, newWidth) -> {
-//			double nw = (double) newWidth;
-//			Main.width = nw;
-//			wallpaper.setFitWidth(nw);
-//			double newSize = 30 * Math.min(Main.width, Main.height) / 720;
-//			selectYourHero.setStyle("-fx-font-size: " + newSize + ";");
-//			resizeWidth(observable , oldWidth , newWidth) ;
+			double width = (double) newWidth ;
+			Main.width = width ;
+			RectangleWidth = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.97;
+			wallpaper.setFitWidth(width);
+			updateMap();
+			updateLabelSize(selectYourHero, width, Main.height);
+			maxImageSize = Math.max(Main.height / 3, Main.width / 3);
+			updateCurrVBox();
 		});
 		scene.heightProperty().addListener((observable, oldHeight, newHeight) -> {
-//			double nh = (double) newHeight;
-//			Main.height = nh;
-//			wallpaper.setFitHeight(nh);
-//			double newSize = 30 * Math.min(Main.width, Main.height) / 720;
-//			selectYourHero.setStyle("-fx-font-size: " + newSize + ";");
-//			resizeHeight(observable , oldHeight , newHeight) ;
+			double height = (double) newHeight ;
+			Main.height = height ;
+			RectangleHeight = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.97;
+			wallpaper.setFitHeight(height);
+			updateMap();
+			updateLabelSize(selectYourHero, Main.width, height);
+			maxImageSize = Math.max(Main.height / 3, Main.width / 3);
+			updateCurrVBox();
 		});
 		return scene;
 	}
 
-	private static void createBackGround() {
+	private void createBackGround() {
 		Image image = null;
 		try {
 			String path = "assets/" + Main.mode + "/images/wallpapers/secondscene.jpeg";
@@ -106,7 +109,7 @@ public class SecondScene {
 		wallpaper.setFitWidth(Main.width);
 	}
 
-	private static void createHeroes() {
+	private void createHeroes() {
 		ArrayList<Hero> allHeroes = Game.availableHeroes;
 		int count = 0;
 		for (int i = 0; i < d1; i++) {
@@ -123,10 +126,8 @@ public class SecondScene {
 		heroes.setVgap(2);
 	}
 
-	private static StackPane hero(Hero h, int x, int y) {
+	private StackPane hero(Hero h, int x, int y) {
 		StackPane res = new StackPane();
-		RectangleHeight = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.98;
-		RectangleWidth = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.98;
 
 		Rectangle back = new Rectangle(RectangleWidth, RectangleHeight);
 		back.setArcHeight(10);
@@ -157,11 +158,11 @@ public class SecondScene {
 		return res;
 	}
 
-	private static VBox createModel(Hero h) {
+	private VBox createModel(Hero h) {
 		Image image = h.getModel();
 		ImageView imageView = new ImageView(image);
 
-		double maxImageSize = Math.max(Main.height / 3, Main.width / 3);
+		maxImageSize = Math.max(Main.height / 3, Main.width / 3);
 		double imageWidth = image.getWidth();
 		double imageHeight = image.getHeight();
 		scaleFactor = 1;
@@ -180,16 +181,16 @@ public class SecondScene {
 
 		Label info = new Label(h.getName() + "\n" + h.getType() + "\n" + "Health : " + h.getMaxHp() + "\n"
 				+ "Actions per Turn : " + h.getMaxActions() + "\n" + "Attack Damage : " + h.getAttackDmg());
-//		Label info = new Label();
+		double size = 15 * Math.sqrt((Main.width*Main.height) / (720*1280)) ;
+		info.setStyle("-fx-font-size : "+size+ " ;");
 		info.setTranslateX(width / 5);
-
 		VBox res = new VBox(4);
 		res.getChildren().addAll(imageView, info);
 		res.setTranslateY((Main.height - res.getHeight()) / 10);
 		return res;
 	}
 
-	private static void createSelectYourHeroLabel() {
+	private void createSelectYourHeroLabel() {
 		selectYourHero = new Label("Select Your Hero");
 		selectYourHero.setId("SelectHeroLabel");
 		Timeline timeLine = new Timeline(
@@ -199,79 +200,46 @@ public class SecondScene {
 		timeLine.setCycleCount(Timeline.INDEFINITE);
 		timeLine.play();
 	}
-
-	private static String createInfo(Hero h) {
-		return h.getName() + "\n" + h.getType() + "\n" + "Health : " + h.getMaxHp() + "\n" + "Actions per Turn : "
-				+ h.getMaxActions() + "\n" + "Attack Damage : " + h.getAttackDmg();
-	}
 	
-	private void resizeWidth(ObservableValue<? extends Number> obs, Number oldWidth, Number newWidth) {
-		double nw = (double) oldWidth ;
-		Main.width = nw ;
-		wallpaper.setFitWidth(nw);
-		sceneBack.getChildren().clear();
-		RectangleWidth = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.98;
-		double newSize = 30 * Math.min(Main.width, Main.height) / 720;
-		for(Node node : heroes.getChildren()) {
-			( (Rectangle) ((StackPane) node).getChildren().get(0)).setWidth(RectangleWidth);
-			ImageView imageView = ((ImageView) ((StackPane) node).getChildren().get(1));
-			double maxImageSize = Math.max(Main.height / 3, Main.width / 3);
-			Image image = imageView.getImage();
-			double imageWidth = image.getWidth();
-			double imageHeight = image.getHeight();
-			scaleFactor = 1;
-
-			if (imageWidth > maxImageSize || imageHeight > maxImageSize) {
-				double widthRatio = maxImageSize / imageWidth;
-				double heightRatio = maxImageSize / imageHeight;
-				scaleFactor = Math.min(widthRatio, heightRatio);
+	private void updateMap() {
+		for(int i = 0 ; i < d1 ; i++) {
+			for(int j = 0 ; j < d2 ; j++) {
+				( (Rectangle) mapPane[i][j].getChildren().get(0)).setHeight(RectangleHeight);
+				( (Rectangle) mapPane[i][j].getChildren().get(0)).setWidth(RectangleWidth);
+				( (ImageView) mapPane[i][j].getChildren().get(1)).setFitWidth(RectangleWidth-5);
+				( (ImageView) mapPane[i][j].getChildren().get(1)).setFitHeight(RectangleHeight-5);
 			}
-
-			double width = imageWidth * scaleFactor;
-			double height = imageHeight * scaleFactor;
-
-			((ImageView) ((StackPane) node).getChildren().get(1)).setFitWidth(width);
-			((ImageView) ((StackPane) node).getChildren().get(1)).setFitHeight(height);
 		}
-		vbox = createModel(map[row][column]);
-		vbox.setAlignment(Pos.CENTER_LEFT);
-		selectYourHero.setStyle("-fx-font-size : " + newSize +"px ;");
-		sceneBack.getChildren().addAll(wallpaper, selectYourHero, vbox, heroes);
 	}
 	
-	private void resizeHeight(ObservableValue<? extends Number> obs, Number oldHeight, Number newHeight) {
-		double nh = (double) newHeight ;
-		Main.height = nh ;
-		wallpaper.setFitHeight(nh);
-		sceneBack.getChildren().clear();
-		RectangleHeight = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.98;
-		double newSize = 30 * Math.min(Main.width, Main.height) / 720;
-		for(Node node : heroes.getChildren()) {
-			( (Rectangle) ((StackPane) node).getChildren().get(0)).setHeight(RectangleWidth);
-			ImageView imageView = ((ImageView) ((StackPane) node).getChildren().get(1));
-			double maxImageSize = Math.max(Main.height / 3, Main.width / 3);
-			Image image = imageView.getImage();
-			double imageWidth = image.getWidth();
-			double imageHeight = image.getHeight();
-			scaleFactor = 1;
-
-			if (imageWidth > maxImageSize || imageHeight > maxImageSize) {
-				double widthRatio = maxImageSize / imageWidth;
-				double heightRatio = maxImageSize / imageHeight;
-				scaleFactor = Math.min(widthRatio, heightRatio);
-			}
-
-			double width = imageWidth * scaleFactor;
-			double height = imageHeight * scaleFactor;
-
-			((ImageView) ((StackPane) node).getChildren().get(1)).setFitWidth(width);
-			((ImageView) ((StackPane) node).getChildren().get(1)).setFitHeight(height);
-		}
-		selectYourHero.setStyle("-fx-font-size : " + newSize +"px ;");
-		vbox = createModel(map[row][column]);
-		vbox.setAlignment(Pos.CENTER_LEFT);
-		sceneBack.getChildren().addAll(wallpaper, selectYourHero, vbox, heroes);
+	private void updateLabelSize(Label label , double width , double height) {
+		double size = 30 * Math.sqrt((width*height) / (720*1280)) ;
+		label.setStyle("-fx-font-size : "+size+ " ;");
 	}
 	
+	private void updateCurrVBox() {
+		ImageView imageView = ((ImageView) vbox.getChildren().get(0));
+		Image image = imageView.getImage();
+		double maxImageSize = Math.max(Main.height / 3, Main.width / 3);
+		double imageWidth = image.getWidth();
+		double imageHeight = image.getHeight();
+		double scaleFactor = 1;
+
+		if (imageWidth > maxImageSize || imageHeight > maxImageSize) {
+			double widthRatio = maxImageSize / imageWidth;
+			double heightRatio = maxImageSize / imageHeight;
+			scaleFactor = Math.min(widthRatio, heightRatio);
+		}
+
+		double width = imageWidth * scaleFactor;
+		double height = imageHeight * scaleFactor;
+
+		imageView.setFitWidth(width);
+		imageView.setFitHeight(height);
+		
+		double size = 15 * Math.sqrt((Main.width*Main.height) / (720*1280)) ;
+		((Label) vbox.getChildren().get(1)).setStyle("-fx-font-size : "+size+ " ;");
+		((Label) vbox.getChildren().get(1)).setTranslateX(width / 5);
+	}
 
 }
