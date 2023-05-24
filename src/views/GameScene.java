@@ -7,11 +7,9 @@ import java.util.ArrayList;
 import engine.Game;
 import exceptions.GameActionException;
 import javafx.animation.FadeTransition;
-import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -20,7 +18,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -114,10 +111,8 @@ public class GameScene {
 		gameScene.setOnKeyPressed(e -> Keyboardcontrols(e));
 		grid.setOnMouseClicked(e -> mouseControls(e));
 
-		// gameScene.widthProperty().addListener((obs, OldWidth, newWidth) ->
-		// resizeWidth(obs, OldWidth, newWidth));
-		// gameScene.heightProperty().addListener((obs, OldHeight, newHeight) ->
-		// resizeHeight(obs, OldHeight, newHeight));
+		gameScene.widthProperty().addListener((obs, OldWidth, newWidth) -> resizeWidth(obs, OldWidth, newWidth));
+		gameScene.heightProperty().addListener((obs, OldHeight, newHeight) -> resizeHeight(obs, OldHeight, newHeight));
 		gameScene.getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
 		return gameScene;
 	}
@@ -526,9 +521,7 @@ public class GameScene {
 		double scale = (double) newHeight;
 		scale /= 860;
 		cellHeight = CELLHEIGHT * scale;
-		// cellWidth = CELLWIDTH * scale;
 		updatesHeight = UPDATESHEIGHT * scale;
-		// updatesWidth = UPDATESWIDTH * scale;
 		bottomFont = scale * BOTTOMFONT;
 		updates.setMinHeight(updatesHeight);
 		updates.setMaxHeight(updatesHeight);
@@ -536,8 +529,6 @@ public class GameScene {
 		updates.setStyle("-fx-font-size: " + bottomFont + ";");
 		createGrid();
 		updateScene();
-		System.out.println("height " + updatesHeight);
-		// System.out.println("old height : " + oldHeight + "new height: " + newHeight);
 	}
 
 	private void resizeWidth(ObservableValue<? extends Number> obs, Number oldWidth, Number newWidth) {
@@ -553,8 +544,5 @@ public class GameScene {
 		updates.setStyle("-fx-font-size: " + bottomFont + ";");
 		createGrid();
 		updateScene();
-		System.out.println("width " + updatesWidth);
-		// System.out.println("old width : " + oldWidth + "new width: " + newWidth);
-
 	}
 }
