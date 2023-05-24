@@ -36,7 +36,7 @@ public class LosingScene {
 		no.setId("no");
 		getLabels();
 
-		HBox hbox = new HBox(50);
+		HBox hbox = new HBox(50*Main.width/1280);
 		Label tryAgain = new Label("Try Again?");
 		tryAgain.setId("tryAgain");
 		
@@ -46,12 +46,30 @@ public class LosingScene {
 		VBox vbox = new VBox(5);
 		vbox.getChildren().addAll(tryAgain, hbox);
 		vbox.setAlignment(Pos.CENTER);
-		vbox.setTranslateY(120);
+		vbox.setTranslateY(120* Main.height*Main.height / 518400);
 
 		StackPane stackPane = new StackPane();
 		stackPane.getChildren().addAll(imageView, vbox);
 		Scene scene = new Scene(stackPane, Main.width, Main.height);
 		scene.getStylesheets().add(this.getClass().getResource(Main.mode + ".css").toExternalForm());
+		scene.widthProperty().addListener((obs , oldWidth , newWidth) -> {
+			double width = (double) newWidth ;
+			Main.width = width ;
+			imageView.setFitWidth(width);
+			hbox.setSpacing(50*Main.width/1280);
+			updateLabelSize(tryAgain, Main.width, Main.height , 25);
+			updateLabelSize(yes, Main.width, Main.height , 15);
+			updateLabelSize(no, Main.width, Main.height , 15);
+		});
+		scene.heightProperty().addListener((obs , oldHeight , newHeight) -> {
+			double height = (double) newHeight ;
+			Main.width = height ;
+			imageView.setFitHeight(height);
+			vbox.setTranslateY(120* Main.height*Main.height / 518400);
+//			updateLabelSize(tryAgain, Main.width, Main.height , 25);
+//			updateLabelSize(yes, Main.width, Main.height , 15);
+//			updateLabelSize(no, Main.width, Main.height , 15);
+		});
 		return scene;
 	}
 	
@@ -104,6 +122,11 @@ public class LosingScene {
 			timeLine.stop();
 			label.setOpacity(1);
 		});
+	}
+	
+	private void updateLabelSize(Label label , double width , double height , double prev) {
+		double size = prev * Math.sqrt((width*height) / (720*1280)) ;
+		label.setStyle("-fx-font-size : "+size+ " ;");
 	}
 	
 }

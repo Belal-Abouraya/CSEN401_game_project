@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import engine.Game;
 import exceptions.GameActionException;
 import javafx.animation.FadeTransition;
-import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -22,6 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
+
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -64,10 +64,10 @@ public class GameScene {
 	private Label updates;
 	FadeTransition ft;
 	final private static double CELLHEIGHT = 55, CELLWIDTH = 76, BOTTOMFONT = 18, UPDATESHEIGHT = 35,
-			HEROCARDWIDTH = 300, HEROCARDHEIGHT = 120, HEROIMAGEWIDTH =95 , HEROIMAGEHEIGHT =100,
-			HEALTHBARWIDTH = 200,ACTIONBARWIDTH = 100,ICONSIZE = 20;
+			HEROCARDWIDTH = 350, HEROCARDHEIGHT = 140, HEROIMAGEWIDTH =95 , HEROIMAGEHEIGHT =100,
+			HEALTHBARWIDTH = 170,ACTIONBARWIDTH = 120,ICONSIZE = 13;
 	private double cellHeight = 54, cellWidth = 75, bottomFont = 20, updatesHeight = 35,
-			heroCardWidth = 300, heroCardHeight = 120,heroImageWidth = 95,heroImageHeight = 100, healthBarWidth = 200, actionsBarWidth = 100,iconSize =20; ; 
+			heroCardWidth = 350, heroCardHeight = 140,heroImageWidth = 95,heroImageHeight = 100, healthBarWidth = 170, actionsBarWidth = 120,iconSize =13; ; 
 	private static StackPane[][] cells = new StackPane[15][15];
 	private Image invisible, empty, vaccineModel = Character.LoadModel("vaccine"),
 			vaccineIcon = Hero.loadIcon("vaccine"), supplyModel = Character.LoadModel("supply"),
@@ -360,6 +360,16 @@ public class GameScene {
 	// create a card for a hero
 	private StackPane heroCard(Hero h) {
 		HBox card = new HBox();
+		card.setMinHeight(heroCardHeight);
+		card.setMaxHeight(heroCardHeight);
+		card.setPrefHeight(heroCardHeight);
+		
+		card.setMinWidth(heroCardWidth);
+		card.setMaxWidth(heroCardWidth);
+		card.setPrefWidth(heroCardWidth);
+		
+		
+	
 		if (h.equals(currentHero))
 			card.setId("CurrentHero");
 		else
@@ -375,6 +385,7 @@ public class GameScene {
 
 		// VBox to contian the hero info
 		VBox info = new VBox();
+		info.setTranslateY(10);
 
 		// Getting the hero info
 		String name = h.getName();
@@ -464,7 +475,7 @@ public class GameScene {
 	
 	private GridPane collectibles(int supplies, int vaccines) {
 		GridPane grid = new GridPane();
-		grid.setHgap(5);
+		grid.setHgap(20);
 		StackPane vaccine = icon(iconSize, vaccineIcon);
 		StackPane supply = icon(iconSize, supplyIcon);
 
@@ -544,13 +555,14 @@ public class GameScene {
 		double scale = (double) newHeight;
 		scale /= 860;
 		cellHeight = CELLHEIGHT * scale;
-		// cellWidth = CELLWIDTH * scale;
 		updatesHeight = UPDATESHEIGHT * scale;
+
 		// updatesWidth = UPDATESWIDTH * scale;
 		heroCardHeight = scale * HEROCARDHEIGHT;
 		
 		heroImageHeight = scale * HEROIMAGEHEIGHT;
 		iconSize = scale * ICONSIZE ;		
+
 		bottomFont = scale * BOTTOMFONT;
 		bottomFont = Math.max(bottomFont, 0.4 * BOTTOMFONT);
 		updates.setMinHeight(updatesHeight);
@@ -559,8 +571,10 @@ public class GameScene {
 		updates.setStyle("-fx-font-size: " + bottomFont + ";");
 		createGrid();
 		updateScene();
+
 		// System.out.println("height " + updatesHeight);
 		// System.out.println("old height : " + oldHeight + "new height: " + newHeight);
+
 	}
 
 	private void resizeWidth(ObservableValue<? extends Number> obs, Number oldWidth, Number newWidth) {
@@ -579,6 +593,7 @@ public class GameScene {
 		updates.setStyle("-fx-font-size: " + bottomFont + ";");
 		createGrid();
 		updateScene();
+
 		// System.out.println("width " + updatesWidth);
 		// System.out.println("old width : " + oldWidth + "new width: " + newWidth);
 
