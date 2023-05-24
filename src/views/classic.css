@@ -80,3 +80,11 @@
 	-fx-font-size : 25px ;
 	-fx-font-weight: 300 ;
 }
+
+#winnigLabel {
+	-fx-font-family : "Orbitron";
+	-fx-font-size : 50px ;
+	-fx-font-weight : 500 ;
+	-fx-text-fill: #A9A9A9;
+	-fx-text-alignment: center;
+}
