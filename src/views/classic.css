@@ -53,6 +53,16 @@
 	
 }
 
+#OtherHero {
+	-fx-background-color: rgba(225,225,225,0.1);
+	-fx-background-radius: 5%;
+}
+
+#CurrentHero {
+	-fx-background-color:rgba(255,255,255,0.3);
+	-fx-background-radius: 5%;	
+}
+
 #StartLabel {
 	
 	-fx-font-family : "Orbitron";
