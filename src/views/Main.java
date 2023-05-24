@@ -31,10 +31,6 @@ public class Main extends Application {
 		//window.setMaximized(true);
 		window.setTitle("Last of Us : Legacy");
 		getMediaPlayer();
-		window.setFullScreen(true);
-		isFullScreen = true ;
-		Main.height = window.getHeight();
-		Main.width = window.getWidth();
 		window.setScene((new FirstScene()).getScene());
 		window.addEventHandler(GameEvent.WIN, e -> window.setScene((new WinningScene()).getScene()));
 		window.addEventHandler(GameEvent.GAME_OVER, e -> window.setScene((new LosingScene()).getScene()));
