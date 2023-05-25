@@ -98,3 +98,8 @@
 	-fx-text-fill: #A9A9A9;
 	-fx-text-alignment: center;
 }
+
+#info {
+	-fx-background-color: rgba(255, 255, 255, 0.1); 
+	-fx-alignment: center ;
+}
