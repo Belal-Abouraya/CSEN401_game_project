@@ -64,14 +64,16 @@ public class GameScene {
 	private Label updates;
 	FadeTransition ft;
 	final private static double CELLHEIGHT = 55, CELLWIDTH = 76, BOTTOMFONT = 18, UPDATESHEIGHT = 35,
-			HEROCARDWIDTH = 350, HEROCARDHEIGHT = 140, HEROIMAGEWIDTH =95 , HEROIMAGEHEIGHT =100,
-			HEALTHBARWIDTH = 170,ACTIONBARWIDTH = 120,ICONSIZE = 13;
-	private double cellHeight = 54, cellWidth = 75, bottomFont = 20, updatesHeight = 35,
-			heroCardWidth = 350, heroCardHeight = 140,heroImageWidth = 95,heroImageHeight = 100, healthBarWidth = 170, actionsBarWidth = 120,iconSize =13; ; 
+			HEROCARDWIDTH = 350, HEROCARDHEIGHT = 125, HEROIMAGEWIDTH = 85, HEROIMAGEHEIGHT = 90, HEALTHBARWIDTH = 170,
+			ACTIONBARWIDTH = 120, ICONHEIGHT = 20,ICONWIDTH = 20, DIVWIDTH= 13,DIVHEIGHT = 10;
+	private double cellHeight = CELLHEIGHT, cellWidth = CELLWIDTH, bottomFont = BOTTOMFONT,
+			updatesHeight = UPDATESHEIGHT, heroCardWidth = HEROCARDWIDTH, heroCardHeight = HEROCARDHEIGHT,
+			heroImageWidth = HEROIMAGEWIDTH, heroImageHeight = HEROIMAGEHEIGHT, healthBarWidth = HEALTHBARWIDTH,
+			actionsBarWidth = ACTIONBARWIDTH, iconHeight = ICONHEIGHT , iconWidth = ICONWIDTH, divWidth = DIVWIDTH ,divHeight = DIVHEIGHT ;
 	private static StackPane[][] cells = new StackPane[15][15];
 	private Image invisible, empty, vaccineModel = Character.LoadModel("vaccine"),
 			vaccineIcon = Hero.loadIcon("vaccine"), supplyModel = Character.LoadModel("supply"),
-			supplyIcon = Hero.loadIcon("supply"), actionIcon = Hero.loadIcon("action"), healthIcon = Hero.loadIcon("health");
+			supplyIcon = Hero.loadIcon("supply"), actionIcon = Hero.loadIcon("action"), healthIcon = Hero.loadIcon("health"),attackDamageIcon =Hero.loadIcon("attackDamage");
 
 	/**
 	 * The method called by the Main class to get the game scene. It creates a Scene
@@ -351,219 +353,254 @@ public class GameScene {
 
 		stack.getChildren().clear();
 		for (Hero x : h) {
-			StackPane card = heroCard(x);
+			BorderPane card = heroCard(x);
 			stack.getChildren().add(card);
 		}
 
 	}
 
+
 	// create a card for a hero
-	private StackPane heroCard(Hero h) {
-		HBox card = new HBox();
-		card.setMinHeight(heroCardHeight);
-		card.setMaxHeight(heroCardHeight);
-		card.setPrefHeight(heroCardHeight);
+		private BorderPane heroCard(Hero h) {
+			
+			BorderPane result = new BorderPane();
+			result.setPrefSize(heroCardWidth, heroCardHeight);
+			result.setMinHeight(heroCardHeight);
+			result.setMaxHeight(heroCardHeight);
+			result.setMinWidth(heroCardWidth);
+			result.setMaxWidth(heroCardWidth);
+			
+			
+			HBox card = new HBox();
+
+			card.setAlignment(Pos.TOP_LEFT);
+			card.setPrefSize( heroCardWidth ,heroCardHeight * 0.8);
+			card.setSpacing(5);
+			
+			card.setMinHeight(heroCardHeight *0.8);
+			card.setMaxHeight(heroCardHeight *0.8) ;
+
+
+			card.setMinWidth(heroCardWidth);
+			card.setMaxWidth(heroCardWidth);
 		
-		card.setMinWidth(heroCardWidth);
-		card.setMaxWidth(heroCardWidth);
-		card.setPrefWidth(heroCardWidth);
+
+			if (h.equals(currentHero))
+				result.setId("CurrentHero");
+			else
+				result.setId("OtherHero");
 		
+			
+			result.setTop(card);
+			
+			
+
+			// Getting the hero info
+			String name = h.getName();
+			String type = "Balabizak yasta";
+			if (h instanceof Medic) {
+				type = "Medic";
+			} else if (h instanceof Fighter) {
+				type = " Fighter";
+			} else {
+				type = "Explorer";
+			}
+			int currentHp = h.getCurrentHp();
+			int noSupplies = h.getSupplyInventory().size();
+			int noVaccines = h.getVaccineInventory().size();
+			int actionsAvailable = h.getActionsAvailable();
+			
+			
+			int attackDmg = h.getAttackDmg();
+			
 		
-	
-		if (h.equals(currentHero))
-			card.setId("CurrentHero");
-		else
-			card.setId("OtherHero");
+			
+			// VBox to contian the hero info
+			VBox info = new VBox();
+			info.setSpacing(3);
+			info.setTranslateY(7);
+	 
+			
+			// Setting the health bar.
+			double maxHp = h.getMaxHp();
+			GridPane healthBar = createHealthBar(currentHp, maxHp);
+	 
+			
+			// Setting the action points bar
+			double maxActions = h.getMaxActions();
+			GridPane actionsBar = createActionPintsBar(actionsAvailable);
 
-		card.setSpacing(3);
+			
+			// Setting the collictibleview
+			HBox collectibles = collectibles(noSupplies, noVaccines , attackDmg);
 
-		StackPane result = new StackPane();
-		Rectangle frame = new Rectangle(heroCardWidth, heroCardHeight);
-		frame.setFill(Color.TRANSPARENT);
-		result.getChildren().add(frame);
-		result.getChildren().add(card);
+			// Setting the attackDamge view
+			
+			Label heroType = new Label( type);
+			heroType.setPrefHeight( heroCardHeight * 0.1 );
+			heroType.setAlignment(Pos.BOTTOM_CENTER);
+			heroType.setStyle("-fx-alignment:center;");
+			heroType.setPadding(new Insets(5));
+			heroType.setStyle(" -fx-alignment:center;-fx-font-size: " +(bottomFont * 0.7));
+			
+			info.getChildren().addAll(healthBar, actionsBar, collectibles , heroType);
 
-		// VBox to contian the hero info
-		VBox info = new VBox();
-		info.setTranslateY(10);
+			// getting the hero image
+			VBox img = heroImage(h);
+			img.setAlignment(Pos.TOP_LEFT);
+			
+			card.getChildren().addAll(img, info);
 
-		// Getting the hero info
-		String name = h.getName();
-		int currentHp = h.getCurrentHp();
-		int noSupplies = h.getSupplyInventory().size();
-		int noVaccines = h.getVaccineInventory().size();
-		int actionsAvailable = h.getActionsAvailable();
-		boolean usedSpeacialAction = h.isSpecialAction();
+			// setting a listener to the card
+			result.setOnMouseEntered(e -> {
+				result.setId("CurrentHero");
+			});
+			result.setOnMouseExited(e -> {
+				if (h != currentHero) {
+					result.setId("OtherHero");
+				}
 
-		///// Setting the health bar.
-		
-		double maxHp = h.getMaxHp();
-//		double iconSize = 12;
-		GridPane healthBar = bar("healthBar", healthBarWidth, currentHp, maxHp, iconSize,
-				healthIcon);
+			});
+			result.setOnMouseClicked(e -> {
 
-		///// Setting the action points bar
-		
-		double maxActions = h.getMaxActions();
-		GridPane actionsBar = bar("actionsBar", actionsBarWidth, actionsAvailable, maxActions, iconSize,
-				actionIcon);
+				currentHero = h;
+				updateHeroesStack();
 
-		// Setting the collictibleview
-		GridPane collectibles = collectibles(noSupplies, noVaccines);
+			});
+			
+			Label Name = new Label(  name);
+			Name.setPrefHeight( heroCardHeight * 0.1 );
+			Name.setPadding(new Insets(5));
+			Name.setStyle(" -fx-alignment:center;-fx-font-size: " + (bottomFont * 0.7));
+			
+			img.getChildren().add(Name);
+			return result;
 
-		// specify the type of the hero.
-		String type = "Balabizak yasta";
-		if (h instanceof Medic) {
-			type = "Medic";
-		} else if (h instanceof Fighter) {
-			type = " Fighter";
-		} else {
-			type = "Explorer";
 		}
 
-		info.setSpacing(2);
-		info.getChildren().addAll(healthBar, actionsBar, collectibles);
 
-		// getting the hero image
-		VBox img = heroImage(h, type + " " + name);
-		img.setAlignment(Pos.TOP_LEFT);
+		private VBox heroImage(Hero h) {
+			StackPane photo = new StackPane();
+			ImageView imageView = new ImageView(h.getIcon());
 
-		card.getChildren().addAll(img, info);
+			imageView.setFitHeight(heroImageHeight);
+			imageView.setFitWidth(heroImageWidth);
 
-		// setting a listener to the card
-		result.setOnMouseEntered(e -> {
-			card.setId("CurrentHero");
-		});
-		result.setOnMouseExited(e -> {
-			if (h != currentHero) {
-				card.setId("OtherHero");
-			}
+			photo.getChildren().add(imageView);
 
-		});
-		result.setOnMouseClicked(e -> {
+			// Create a Rectangle as the Clip shape with round edges
+			Rectangle clipShape = new Rectangle(imageView.getFitWidth(), imageView.getFitHeight());
+			clipShape.setArcWidth(30);
+			clipShape.setArcHeight(30);
+			imageView.setClip(clipShape);
 
-			currentHero = h;
-			updateHeroesStack();
+			
 
-		});
-		return result;
-
-	}
-
-	private VBox heroImage(Hero h, String txt) {
-		StackPane photo = new StackPane();
-		ImageView imageView = new ImageView(h.getIcon());
-		
-		imageView.setFitHeight(heroImageHeight);
-		imageView.setFitWidth(heroImageWidth);
-
-		photo.getChildren().add(imageView);
-
-		// Create a Rectangle as the Clip shape with round edges
-		Rectangle clipShape = new Rectangle(imageView.getFitWidth(), imageView.getFitHeight());
-		clipShape.setArcWidth(30);
-		clipShape.setArcHeight(30);
-		imageView.setClip(clipShape);
-
-		Label name = new Label();
-		name.setText(txt);
-
-		VBox res = new VBox(10);
-		res.getChildren().addAll(photo, name);
-		return res;
-	}
+			VBox res = new VBox(10);
+			res.getChildren().addAll(photo);
+			return res;
+		}
 	
-	private GridPane collectibles(int supplies, int vaccines) {
-		GridPane grid = new GridPane();
-		grid.setHgap(20);
-		StackPane vaccine = icon(iconSize, vaccineIcon);
-		StackPane supply = icon(iconSize, supplyIcon);
+	private HBox collectibles(int supplies, int vaccines , int attackDmg) {
+		HBox res = new HBox(heroCardWidth * 0.05);
+		res.setAlignment(Pos.CENTER);
+		StackPane vaccine = icon( vaccineIcon); 
+		StackPane supply = icon( supplyIcon);
+		StackPane attack = icon( attackDamageIcon); 
 
 		Label noVaccines = new Label();
 		noVaccines.setText("  " + vaccines);
 
-		// vaccineIcon.getChildren().add(noVaccines);
+		Label noSupplies = new Label(); 
+		noSupplies.setText("  " + supplies);
+		
+		Label attackDamage = new Label();
+		attackDamage.setText("  " + attackDmg);
 
-		Label noSupplies = new Label();
-		noSupplies.setText("     " + supplies);
-
-		// supplyeIcon.getChildren().add(noSupplies);
-
-		grid.add(vaccine, 0, 0);
-		grid.add(noVaccines, 1, 0);
-		grid.add(supply, 2, 0);
-		grid.add(noSupplies, 3, 0);
-		return grid;
+		res.getChildren().addAll(attack, attackDamage, vaccine, noVaccines, supply, noSupplies);
+	
+		return res;
 	}
 
-	private StackPane icon(double r, Image icon) {
+	private StackPane icon( Image icon) {
 		StackPane res = new StackPane();
-		Circle circle = new Circle(r);
-		circle.setCenterX(r);
-		circle.setCenterY(r);
+		Rectangle rec = new Rectangle(iconWidth , iconHeight);
+	
 
 		try {
 			ImageView imageView = new ImageView(icon);
-			imageView.setFitWidth(r * 2);
-			imageView.setFitHeight(r * 2);
-			imageView.setClip(circle);
+			imageView.setFitWidth( iconWidth );
+			imageView.setFitHeight(iconHeight );
+			imageView.setClip(rec);
 			res.getChildren().add(imageView);
 
 		} catch (Exception e) {
 			System.out.println("Missing image");
-			circle.setFill(Color.BLACK);
-			res.getChildren().add(circle);
+			rec.setFill(Color.BLACK);
+			res.getChildren().add(rec);
 
 		}
 		return res;
 	}
 
-	private GridPane bar(String type, double width, double current, double max, double iconSize, Image i) {
+	private GridPane createHealthBar(double current, double max) {
 		GridPane res = new GridPane();
-		res.setHgap(20);
-
+		res.setHgap(healthBarWidth * 0.05);
 		ProgressBar bar = new ProgressBar();
-
 		bar.setProgress(current / max);
-		String style = "";
-		if (type.equals("healthBar")) {
-			style = "-fx-padding: 2px; -fx-background-insets: 2px;-fx-pref-height: 23px;";
-			if (current >= 0.75 * max)
-				style += "-fx-accent: green;";
-			else if (current >= 0.5 * max)
-				style += "-fx-accent: yellow;";
-			else if (current >= 0.25 * max)
-				style += "-fx-accent: orange;";
-			else
-				style += "-fx-accent: red;";
-		} else {
-			style = "-fx-accent: Blue;-fx-padding: 2px; -fx-background-insets: 2px;-fx-pref-height: 20px;";
-
-		}
-		bar.setStyle(style);
-		bar.setPrefWidth(width);
-
-		StackPane icon = icon(iconSize, i);
-
+		
+		StackPane icon = icon(healthIcon );
+	
+		String color = "Balabizo";
+		if (current >= 0.75 * max)
+			 color = "-fx-accent: green;";
+		else if (current >= 0.5 * max)
+			color = "-fx-accent: yellow;";
+		else if (current >= 0.25 * max)
+			color = "-fx-accent: orange;";
+		else
+			color = "-fx-accent: red;";
+		
+		bar.setStyle("-fx-padding: 2px; -fx-background-insets: 2px;-fx-pref-height: 23px;" + color);
+		bar.setPrefWidth(healthBarWidth);
 		res.add(bar, 1, 0);
 		res.add(icon, 0, 0);
 		return res;
 
 	}
+	
+	private  GridPane createActionPintsBar(int x ) {
+		GridPane res = new GridPane();
+		res.setHgap(healthBarWidth * 0.07);
+		HBox bar = new HBox(2);
+		bar.setAlignment(Pos.CENTER);
+		//bar.setStyle("-fx-border-color:red;");
+		
+		while( x --> 0) {
+			Rectangle rec = new Rectangle(divWidth,divHeight);
+			rec.setStyle("-fx-fill: linear-gradient(to bottom, rgba(0, 0, 255, 0.5), rgba(0, 0, 255, 1)); -fx-border-radius:5px;-fx-backgound-radius:5px;");
+			bar.getChildren().add(rec);
+		}
+		StackPane icon = icon( actionIcon);
+		res.add(bar, 1, 0);
+		res.add(icon, 0, 0);
+		return res;
+		
+		
+		
+	}
 
 	private void resizeHeight(ObservableValue<? extends Number> obs, Number oldHeight, Number newHeight) {
 		double scale = (double) newHeight;
 		scale /= 860;
+	
 		cellHeight = CELLHEIGHT * scale;
 		updatesHeight = UPDATESHEIGHT * scale;
-
-		// updatesWidth = UPDATESWIDTH * scale;
 		heroCardHeight = scale * HEROCARDHEIGHT;
-		
 		heroImageHeight = scale * HEROIMAGEHEIGHT;
-		iconSize = scale * ICONSIZE ;		
-
-		bottomFont = scale * BOTTOMFONT;
+		iconHeight = scale * ICONHEIGHT;
+		divHeight = DIVHEIGHT * scale; 
+		bottomFont = Math.max(scale, 0.8) * BOTTOMFONT;
 		bottomFont = Math.max(bottomFont, 0.4 * BOTTOMFONT);
 		updates.setMinHeight(updatesHeight);
 		updates.setMaxHeight(updatesHeight);
@@ -571,10 +608,6 @@ public class GameScene {
 		updates.setStyle("-fx-font-size: " + bottomFont + ";");
 		createGrid();
 		updateScene();
-
-		// System.out.println("height " + updatesHeight);
-		// System.out.println("old height : " + oldHeight + "new height: " + newHeight);
-
 	}
 
 	private void resizeWidth(ObservableValue<? extends Number> obs, Number oldWidth, Number newWidth) {
@@ -585,7 +618,9 @@ public class GameScene {
 		heroImageWidth = scale * HEROIMAGEWIDTH;
 		healthBarWidth = scale * HEALTHBARWIDTH;
 		actionsBarWidth = scale * ACTIONBARWIDTH;
-		bottomFont = scale * cellHeight / CELLHEIGHT * bottomFont;
+		divWidth = DIVWIDTH * scale;
+		iconWidth = ICONWIDTH * scale;
+		bottomFont = Math.max(scale, 0.8) * BOTTOMFONT;
 		bottomFont = Math.max(bottomFont, 0.4 * BOTTOMFONT);
 		updates.setMinWidth(heroCardWidth);
 		updates.setMaxWidth(heroCardWidth);
@@ -593,9 +628,5 @@ public class GameScene {
 		updates.setStyle("-fx-font-size: " + bottomFont + ";");
 		createGrid();
 		updateScene();
-
-		// System.out.println("width " + updatesWidth);
-		// System.out.println("old width : " + oldWidth + "new width: " + newWidth);
-
 	}
 }
