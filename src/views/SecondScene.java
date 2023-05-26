@@ -192,7 +192,7 @@ public class SecondScene {
 			((Rectangle) mapPane[row][column].getChildren().get(0)).setOpacity(0.2);
 			back.setFill(brightColor);
 			hover.seek(Duration.ZERO);
-			hover.play();
+//			hover.play();
 //			hover.setOnEndOfMedia(() -> hover.stop());
 			row = x;
 			column = y;

@@ -109,7 +109,6 @@ public class LosingScene {
 				new KeyFrame(Duration.seconds(1), new KeyValue(label.opacityProperty(), 1)),
 				new KeyFrame(Duration.seconds(2), new KeyValue(label.opacityProperty(), 0)));
 		timeLine.setCycleCount(Timeline.INDEFINITE);
-		label.setCursor(Cursor.HAND);
 		label.setOnMouseEntered(e -> {
 			timeLine.play();
 		});
