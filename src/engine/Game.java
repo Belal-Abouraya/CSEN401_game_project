@@ -51,10 +51,10 @@ public class Game {
 	 * <li>Each line represents the information of a single Hero.
 	 * <li>The data has no header, i.e. the first line represents the first Hero.
 	 * <li>The parameters are separated by a comma (,).
-	 * <li>The line represents the Heroesâ€™s data as follows: name, type, max Hp,
-	 * max actions, attack damage .
-	 * <li>The type represents the type of Hero:- â€¢ FIGH for Fighter â€¢ EXP for
-	 * Explorer â€¢ MED for Medic
+	 * <li>The line represents the Heroes's data as follows: name, type, max Hp, max
+	 * actions, attack damage .
+	 * <li>The type represents the type of Hero: FIGH for Fighter EXP for Explorer
+	 * MED for Medic
 	 * </ul>
 	 * 
 	 * @param filePath The path of the file containg the heros' information.

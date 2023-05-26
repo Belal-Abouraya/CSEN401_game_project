@@ -97,10 +97,10 @@ public abstract class Hero extends Character {
 	 * @throws MovementException
 	 * @throws NotEnoughActionsException
 	 */
-	public boolean move(Direction direction) throws MovementException, NotEnoughActionsException {
+	public int move(Direction direction) throws MovementException, NotEnoughActionsException {
 		if (this.getCurrentHp() <= 0) {
 			onCharacterDeath();
-			return false;
+			return 0;
 		}
 		if (actionsAvailable <= 0) {
 			throw new NotEnoughActionsException("Not enough actions.");
@@ -114,7 +114,7 @@ public abstract class Hero extends Character {
 		case DOWN -> x -= 1;
 		case UP -> x += 1;
 		}
-		boolean res = false ;
+		int res = 0;
 		if (!isValidLocation(x, y))
 			throw new MovementException("Invalid direction!");
 		if (Game.map[x][y] instanceof CharacterCell) {
@@ -126,12 +126,16 @@ public abstract class Hero extends Character {
 			int damage = ((TrapCell) (Game.map[x][y])).getTrapDamage();
 			Game.map[x][y] = new CharacterCell();
 			setCurrentHp(currHP - damage);
-			res = true ;
 			if (currHP > damage) {
 				((CharacterCell) Game.map[x][y]).setCharacter(this);
 			}
+			res = 1;
 		} else { // CollectibleCell case
 			((CollectibleCell) Game.map[x][y]).getCollectible().pickUp(this);
+			if (((CollectibleCell) Game.map[x][y]).getCollectible() instanceof Supply)
+				res = 2;
+			else
+				res = 3;
 			Game.map[x][y] = new CharacterCell();
 			((CharacterCell) Game.map[x][y]).setCharacter(this);
 		}
@@ -139,7 +143,7 @@ public abstract class Hero extends Character {
 		Game.clearCell(oldX, oldY);
 		makeAllAdjacentVisible(x, y);
 		setLocation(new Point(x, y));
-		return res ;
+		return res;
 	}
 
 	/**

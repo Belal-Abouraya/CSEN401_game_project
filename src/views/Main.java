@@ -1,8 +1,8 @@
 package views;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 import engine.Game;
 import javafx.animation.Timeline;
@@ -18,34 +18,34 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	static Stage window;
 	static Scene firstScene;
-	static double width = 1280;
-	static double height = 720;
+	static double width = 1552;
+	static double height = 873;
 	static String mode = "classic";
 	static boolean isFullScreen;
-	static MediaPlayer mediaPlayer ;
+	static MediaPlayer mediaPlayer;
 
-	@Override
-	public void start(Stage primaryStage) throws MalformedURLException {
-		window = primaryStage;
-		//TODO: maximize window
-		//window.setMaximized(true);
-		window.setTitle("Last of Us : Legacy");
-		getMediaPlayer();
-		window.setScene((new FirstScene()).getScene());
-		window.addEventHandler(GameEvent.WIN, e -> window.setScene((new WinningScene()).getScene()));
-		window.addEventHandler(GameEvent.GAME_OVER, e -> window.setScene((new LosingScene()).getScene()));
-		window.show();
-	}
+//	@Override
+//	public void start(Stage primaryStage) throws MalformedURLException {
+//		window = primaryStage;
+//		// TODO: maximize window
+//		// window.setMaximized(true);
+//		window.setTitle("Last of Us : Legacy");
+//		getMediaPlayer();
+//		window.setScene((new FirstScene()).getScene());
+//		window.addEventHandler(GameEvent.WIN, e -> window.setScene((new WinningScene()).getScene()));
+//		window.addEventHandler(GameEvent.GAME_OVER, e -> window.setScene((new LosingScene()).getScene()));
+//		window.show();
+//	}
+//
+//	public static void main(String[] args) {
+//		try {
+//			Game.loadHeroes("assets/" + mode + "/heroes.csv");
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		launch(args);
+//	}
 
-	public static void main(String[] args) {
-		try {
-			Game.loadHeroes("assets/" + mode + "/heroes.csv");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		launch(args);
-	}
-	
 	private void getMediaPlayer() {
 		String path = "assets/" + Main.mode + "/audio/music/firstscene.mp3";
 		Media firstSceneMusic = new Media(new File(path).toURI().toString());
@@ -54,19 +54,17 @@ public class Main extends Application {
 		mediaPlayer.setCycleCount(Timeline.INDEFINITE);
 	}
 
+	public static void main(String[] args) {
+		launch(args);
+	}
 
-//	public static void main(String[] args) {
-//		launch(args);
-//	}
-
-//	@Override
-//	public void start(Stage primaryStage) throws FileNotFoundException, IOException {
-//
-//		Game.loadHeroes("assets/classic/heroes.csv");
-//		Game.startGame(Game.availableHeroes.get(0), "classic");
-//		GameScene g = new GameScene();
-//		primaryStage.setScene(g.gameScene());
-//		primaryStage.setFullScreen(true);
-//		primaryStage.show();
-//	}
+	@Override
+	public void start(Stage primaryStage) throws FileNotFoundException, IOException {
+		Game.loadHeroes("assets/classic/heroes.csv");
+		Game.startGame(Game.availableHeroes.get(0), "classic");
+		GameScene g = new GameScene();
+		primaryStage.setScene(new Scene(g.getRoot()));
+		primaryStage.setFullScreen(true);
+		primaryStage.show();
+	}
 }

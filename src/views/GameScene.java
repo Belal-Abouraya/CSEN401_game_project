@@ -2,6 +2,7 @@ package views;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import engine.Game;
@@ -18,19 +19,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BackgroundImage;
-
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import model.characters.Character;
@@ -59,21 +55,55 @@ public class GameScene {
 
 	// private double heroCardWidth = 350;
 	// private double heroCardHeight = 140;
-
+	// private BorderPane root;
 	private GridPane grid;
 	private Label updates;
 	FadeTransition ft;
-	final private static double CELLHEIGHT = 55, CELLWIDTH = 76, BOTTOMFONT = 18, UPDATESHEIGHT = 35,
-			HEROCARDWIDTH = 350, HEROCARDHEIGHT = 125, HEROIMAGEWIDTH = 85, HEROIMAGEHEIGHT = 90, HEALTHBARWIDTH = 170,
-			ACTIONBARWIDTH = 120, ICONHEIGHT = 20,ICONWIDTH = 20, DIVWIDTH= 13,DIVHEIGHT = 10;
+	final private static double SCENEWIDTH = 860, SCENEHEIGHT = 1520, CELLHEIGHT = 55, CELLWIDTH = 76, BOTTOMFONT = 18,
+			UPDATESHEIGHT = 35, HEROCARDWIDTH = 350, HEROCARDHEIGHT = 125, HEROIMAGEWIDTH = 85, HEROIMAGEHEIGHT = 90,
+			HEALTHBARWIDTH = 170, ICONHEIGHT = 20, ICONWIDTH = 20, DIVWIDTH = 13, DIVHEIGHT = 10;
+
 	private double cellHeight = CELLHEIGHT, cellWidth = CELLWIDTH, bottomFont = BOTTOMFONT,
 			updatesHeight = UPDATESHEIGHT, heroCardWidth = HEROCARDWIDTH, heroCardHeight = HEROCARDHEIGHT,
 			heroImageWidth = HEROIMAGEWIDTH, heroImageHeight = HEROIMAGEHEIGHT, healthBarWidth = HEALTHBARWIDTH,
-			actionsBarWidth = ACTIONBARWIDTH, iconHeight = ICONHEIGHT , iconWidth = ICONWIDTH, divWidth = DIVWIDTH ,divHeight = DIVHEIGHT ;
+			iconHeight = ICONHEIGHT, iconWidth = ICONWIDTH, divWidth = DIVWIDTH, divHeight = DIVHEIGHT;
 	private static StackPane[][] cells = new StackPane[15][15];
-	private Image invisible, empty, vaccineModel = Character.LoadModel("vaccine"),
-			vaccineIcon = Hero.loadIcon("vaccine"), supplyModel = Character.LoadModel("supply"),
-			supplyIcon = Hero.loadIcon("supply"), actionIcon = Hero.loadIcon("action"), healthIcon = Hero.loadIcon("health"),attackDamageIcon =Hero.loadIcon("attackDamage");
+	private Image invisible, empty, vaccineModel, vaccineIcon, supplyModel, supplyIcon, actionIcon, healthIcon,
+			attackDamageIcon;
+	private MediaPlayer attackSound, cureSound, errorSound, explorerSound, fighterSound, hoverSound, medicSound,
+			selectSound, supplySound, trapSound, vaccineSound;
+
+	public GameScene() {
+		try {
+			invisible = new Image(new File("assets/" + Game.mode + "/images/wallpapers/" + "invisible" + ".png").toURI()
+					.toURL().toExternalForm());
+			empty = new Image(new File("assets/" + Game.mode + "/images/wallpapers/" + "empty" + ".png").toURI().toURL()
+					.toExternalForm());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		// loading icons
+		vaccineModel = Character.LoadModel("vaccine");
+		vaccineIcon = Hero.loadIcon("vaccine");
+		supplyModel = Character.LoadModel("supply");
+		supplyIcon = Hero.loadIcon("supply");
+		actionIcon = Hero.loadIcon("action");
+		healthIcon = Hero.loadIcon("health");
+		attackDamageIcon = Hero.loadIcon("attackdamage");
+
+		// loading sounds
+		attackSound = new MediaPlayer(loadMedia("attack"));
+		cureSound = new MediaPlayer(loadMedia("cure"));
+		errorSound = new MediaPlayer(loadMedia("error"));
+		explorerSound = new MediaPlayer(loadMedia("explorer"));
+		fighterSound = new MediaPlayer(loadMedia("fighter"));
+		hoverSound = new MediaPlayer(loadMedia("hover"));
+		medicSound = new MediaPlayer(loadMedia("medic"));
+		selectSound = new MediaPlayer(loadMedia("select"));
+		supplySound = new MediaPlayer(loadMedia("supply"));
+		trapSound = new MediaPlayer(loadMedia("trap"));
+		vaccineSound = new MediaPlayer(loadMedia("vaccine"));
+	}
 
 	/**
 	 * The method called by the Main class to get the game scene. It creates a Scene
@@ -81,15 +111,7 @@ public class GameScene {
 	 * 
 	 * @return the finished game scene object
 	 */
-	public Scene getScene() {
-		try {
-			invisible = new Image(new File("assets/" + Game.mode + "/images/wallpapers/" + "invisible" + ".png").toURI()
-					.toURL().toExternalForm());
-			empty = new Image(new File("assets/" + Game.mode + "/images/wallpapers/" + "empty" + ".jpg").toURI().toURL()
-					.toExternalForm());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+	public StackPane getRoot() {
 		StackPane back = new StackPane();
 		String path = "assets/" + Game.mode + "/images/wallpapers/secondscene.jpeg";
 		Image i = null;
@@ -103,11 +125,10 @@ public class GameScene {
 		wallpaper.setFitWidth(1920);
 		wallpaper.setFitHeight(1080);
 		back.getChildren().add(wallpaper);
-		//back.setStyle("-fx-background-color : black;");
+		// back.setStyle("-fx-background-color : black;");
 		BorderPane root = new BorderPane();
-		//root.setBackground(new BackgroundImage(empty, null, null, null, null));
+		// root.setBackground(new BackgroundImage(empty, null, null, null, null));
 		back.getChildren().add(root);
-		Scene gameScene = new Scene(back);
 
 		grid = new GridPane();
 		grid.setStyle("-fx-background-color : transparent;");
@@ -116,14 +137,13 @@ public class GameScene {
 		updateGrid();
 
 		Heroes = new VBox(10);
-		
+
 		// Heroes.setBackground(new background);
 		Heroes.setStyle("-fx-background-color : transparent;");
 		updateHeroesStack();
 
 		updates = new Label();
 		updates.setMinSize(heroCardWidth, updatesHeight);
-		// updates.setText("Heroes can not attack each other!");
 		updates.setStyle("-fx-font-size: " + bottomFont + ";");
 		StackPane bottom = new StackPane();
 		updates.setAlignment(Pos.CENTER);
@@ -141,13 +161,16 @@ public class GameScene {
 		root.setCenter(grid);
 		root.setLeft(menu);
 
-		gameScene.setOnKeyPressed(e -> Keyboardcontrols(e));
-		grid.setOnMouseClicked(e -> mouseControls(e));
+		root.setFocusTraversable(true);
+		root.setOnKeyPressed(e -> Keyboardcontrols(e));
+		root.setOnMouseClicked(e -> mouseControls(e));
+		root.widthProperty().addListener((obs, OldWidth, newWidth) -> resizeWidth(obs, OldWidth, newWidth));
+		root.heightProperty().addListener((obs, OldHeight, newHeight) -> resizeHeight(obs, OldHeight, newHeight));
+		root.setMinHeight(0);
+		root.setMinWidth(0);
+		root.getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
 
-		gameScene.widthProperty().addListener((obs, OldWidth, newWidth) -> resizeWidth(obs, OldWidth, newWidth));
-		gameScene.heightProperty().addListener((obs, OldHeight, newHeight) -> resizeHeight(obs, OldHeight, newHeight));
-		gameScene.getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
-		return gameScene;
+		return back;
 	}
 
 	/**
@@ -170,16 +193,13 @@ public class GameScene {
 					j = currentHero.getTarget().getLocation().y;
 				}
 				currentHero.cure();
-				Rectangle rect = (Rectangle) cells[i][j].getChildren().get(2);
-				rect.setFill(Color.BLUE);
-				FadeTransition ft1 = new FadeTransition(Duration.millis(150), rect);
-				ft1.setFromValue(0);
-				ft1.setToValue(0.3);
-				ft1.setCycleCount(2);
-				ft1.setAutoReverse(true);
-				ft1.play();
+				cureSound.seek(Duration.ZERO);
+				cureSound.play();
+				animate(i, j, Color.BLUE);
 			} catch (GameActionException e1) {
-				updates.setText(e1.getMessage());
+				display(e1.getMessage());
+				errorSound.seek(Duration.ZERO);
+				errorSound.play();
 			}
 		}
 		case E -> {
@@ -190,32 +210,57 @@ public class GameScene {
 					j = currentHero.getTarget().getLocation().y;
 				}
 				currentHero.useSpecial();
+				animate(currentHero.getLocation().x, currentHero.getLocation().y, Color.ORANGE);
+				display("Activated special action.");
 				if (currentHero instanceof Medic) {
-					Rectangle rect = (Rectangle) cells[i][j].getChildren().get(2);
-					rect.setFill(Color.GREEN);
-					FadeTransition ft1 = new FadeTransition(Duration.millis(150), rect);
-					ft1.setFromValue(0);
-					ft1.setToValue(0.3);
-					ft1.setCycleCount(2);
-					ft1.setAutoReverse(true);
-					ft1.play();
+					medicSound.seek(Duration.ZERO);
+					medicSound.play();
+					animate(i, j, Color.GREEN);
+				} else if (currentHero instanceof Fighter) {
+					fighterSound.seek(Duration.ZERO);
+					fighterSound.play();
+				} else {
+					explorerSound.seek(Duration.ZERO);
+					explorerSound.play();
 				}
 			} catch (GameActionException e1) {
-				updates.setText(e1.getMessage());
-				ft.play();
+				display(e1.getMessage());
+				errorSound.seek(Duration.ZERO);
+				errorSound.play();
 			}
 		}
 		case R -> {
 			Game.endTurn();
+			selectSound.seek(Duration.ZERO);
+			selectSound.play();
 		}
 		}
 
 		if (d != null) {
+			int type = -1;
 			try {
-				currentHero.move(d);
+				type = currentHero.move(d);
+				switch (type) {
+				case 1 -> {
+					display("Trap cell!");
+					trapSound.seek(Duration.ZERO);
+					trapSound.play();
+					animate(currentHero.getLocation().x, currentHero.getLocation().y, Color.RED);
+				}
+				case 2 -> {
+					supplySound.seek(Duration.ZERO);
+					supplySound.play();
+				}
+				case 3 -> {
+					vaccineSound.seek(Duration.ZERO);
+					vaccineSound.play();
+				}
+				}
+
 			} catch (GameActionException e1) {
-				updates.setText(e1.getMessage());
-				ft.play();
+				display(e1.getMessage());
+				errorSound.seek(Duration.ZERO);
+				errorSound.play();
 			}
 		}
 
@@ -239,17 +284,13 @@ public class GameScene {
 					j = currentHero.getTarget().getLocation().y;
 				}
 				currentHero.attack();
-				Rectangle rect = (Rectangle) cells[i][j].getChildren().get(2);
-				rect.setFill(Color.RED);
-				FadeTransition ft1 = new FadeTransition(Duration.millis(150), rect);
-				ft1.setFromValue(0);
-				ft1.setToValue(0.3);
-				ft1.setCycleCount(2);
-				ft1.setAutoReverse(true);
-				ft1.play();
+				attackSound.seek(Duration.ZERO);
+				attackSound.play();
+				animate(i, j, Color.RED);
 			} catch (GameActionException e1) {
-				updates.setText(e1.getMessage());
-				ft.play();
+				display(e1.getMessage());
+				errorSound.seek(Duration.ZERO);
+				errorSound.play();
 			}
 			updateScene();
 			if (Game.checkGameOver())
@@ -257,7 +298,6 @@ public class GameScene {
 			else if (Game.checkWin())
 				grid.fireEvent(new GameEvent(GameEvent.WIN));
 		}
-		// System.out.println(sce);
 	}
 
 	/**
@@ -306,7 +346,6 @@ public class GameScene {
 						if (c != null)
 							content.setImage(c.getModel());
 						cells[i][j].setOnMouseClicked(e -> currentHero.setTarget(c));
-
 					}
 
 					else if (map[i][j] instanceof CollectibleCell) {
@@ -326,6 +365,7 @@ public class GameScene {
 					content.setFitHeight(cellHeight * 1.05);
 				}
 				cells[i][j].getChildren().add(1, content);
+				cells[i][j].setStyle("-fx-border-width: 50; -fx-border-color: red");
 			}
 		}
 
@@ -359,178 +399,161 @@ public class GameScene {
 
 	}
 
-
 	// create a card for a hero
-		private BorderPane heroCard(Hero h) {
-			
-			BorderPane result = new BorderPane();
-			result.setPrefSize(heroCardWidth, heroCardHeight);
-			result.setMinHeight(heroCardHeight);
-			result.setMaxHeight(heroCardHeight);
-			result.setMinWidth(heroCardWidth);
-			result.setMaxWidth(heroCardWidth);
-			
-			
-			HBox card = new HBox();
+	private BorderPane heroCard(Hero h) {
 
-			card.setAlignment(Pos.TOP_LEFT);
-			card.setPrefSize( heroCardWidth ,heroCardHeight * 0.8);
-			card.setSpacing(5);
-			
-			card.setMinHeight(heroCardHeight *0.8);
-			card.setMaxHeight(heroCardHeight *0.8) ;
+		BorderPane result = new BorderPane();
+		result.setPrefSize(heroCardWidth, heroCardHeight);
+		result.setMinHeight(heroCardHeight);
+		result.setMaxHeight(heroCardHeight);
+		result.setMinWidth(heroCardWidth);
+		result.setMaxWidth(heroCardWidth);
 
+		HBox card = new HBox();
 
-			card.setMinWidth(heroCardWidth);
-			card.setMaxWidth(heroCardWidth);
-		
+		card.setAlignment(Pos.TOP_LEFT);
+		card.setPrefSize(heroCardWidth, heroCardHeight * 0.8);
+		card.setSpacing(5);
 
-			if (h.equals(currentHero))
-				result.setId("CurrentHero");
-			else
+		card.setMinHeight(heroCardHeight * 0.8);
+		card.setMaxHeight(heroCardHeight * 0.8);
+
+		card.setMinWidth(heroCardWidth);
+		card.setMaxWidth(heroCardWidth);
+
+		if (h.equals(currentHero))
+			result.setId("CurrentHero");
+		else
+			result.setId("OtherHero");
+
+		result.setTop(card);
+
+		// Getting the hero info
+		String name = h.getName();
+		String type = "Balabizak yasta";
+		if (h instanceof Medic) {
+			type = "Medic";
+		} else if (h instanceof Fighter) {
+			type = " Fighter";
+		} else {
+			type = "Explorer";
+		}
+		int currentHp = h.getCurrentHp();
+		int noSupplies = h.getSupplyInventory().size();
+		int noVaccines = h.getVaccineInventory().size();
+		int actionsAvailable = h.getActionsAvailable();
+
+		int attackDmg = h.getAttackDmg();
+
+		// VBox to contian the hero info
+		VBox info = new VBox();
+		info.setSpacing(3);
+		info.setTranslateY(7);
+
+		// Setting the health bar.
+		double maxHp = h.getMaxHp();
+		GridPane healthBar = createHealthBar(currentHp, maxHp);
+
+		// Setting the action points bar
+		double maxActions = h.getMaxActions();
+		GridPane actionsBar = createActionPintsBar(actionsAvailable);
+
+		// Setting the collictibleview
+		HBox collectibles = collectibles(noSupplies, noVaccines, attackDmg);
+
+		// Setting the attackDamge view
+
+		Label heroType = new Label(type);
+		heroType.setPrefHeight(heroCardHeight * 0.1);
+		heroType.setAlignment(Pos.BOTTOM_CENTER);
+		heroType.setStyle("-fx-alignment:center;");
+		heroType.setPadding(new Insets(5));
+		heroType.setStyle(" -fx-alignment:center;-fx-font-size: " + (bottomFont * 0.7));
+
+		info.getChildren().addAll(healthBar, actionsBar, collectibles, heroType);
+
+		// getting the hero image
+		VBox img = heroImage(h);
+		img.setAlignment(Pos.TOP_LEFT);
+
+		card.getChildren().addAll(img, info);
+
+		// setting a listener to the card
+		result.setOnMouseEntered(e -> {
+			result.setId("CurrentHero");
+		});
+		result.setOnMouseExited(e -> {
+			if (h != currentHero) {
 				result.setId("OtherHero");
-		
-			
-			result.setTop(card);
-			
-			
-
-			// Getting the hero info
-			String name = h.getName();
-			String type = "Balabizak yasta";
-			if (h instanceof Medic) {
-				type = "Medic";
-			} else if (h instanceof Fighter) {
-				type = " Fighter";
-			} else {
-				type = "Explorer";
 			}
-			int currentHp = h.getCurrentHp();
-			int noSupplies = h.getSupplyInventory().size();
-			int noVaccines = h.getVaccineInventory().size();
-			int actionsAvailable = h.getActionsAvailable();
-			
-			
-			int attackDmg = h.getAttackDmg();
-			
-		
-			
-			// VBox to contian the hero info
-			VBox info = new VBox();
-			info.setSpacing(3);
-			info.setTranslateY(7);
-	 
-			
-			// Setting the health bar.
-			double maxHp = h.getMaxHp();
-			GridPane healthBar = createHealthBar(currentHp, maxHp);
-	 
-			
-			// Setting the action points bar
-			double maxActions = h.getMaxActions();
-			GridPane actionsBar = createActionPintsBar(actionsAvailable);
 
-			
-			// Setting the collictibleview
-			HBox collectibles = collectibles(noSupplies, noVaccines , attackDmg);
+		});
+		result.setOnMouseClicked(e -> {
 
-			// Setting the attackDamge view
-			
-			Label heroType = new Label( type);
-			heroType.setPrefHeight( heroCardHeight * 0.1 );
-			heroType.setAlignment(Pos.BOTTOM_CENTER);
-			heroType.setStyle("-fx-alignment:center;");
-			heroType.setPadding(new Insets(5));
-			heroType.setStyle(" -fx-alignment:center;-fx-font-size: " +(bottomFont * 0.7));
-			
-			info.getChildren().addAll(healthBar, actionsBar, collectibles , heroType);
+			currentHero = h;
+			updateHeroesStack();
 
-			// getting the hero image
-			VBox img = heroImage(h);
-			img.setAlignment(Pos.TOP_LEFT);
-			
-			card.getChildren().addAll(img, info);
+		});
 
-			// setting a listener to the card
-			result.setOnMouseEntered(e -> {
-				result.setId("CurrentHero");
-			});
-			result.setOnMouseExited(e -> {
-				if (h != currentHero) {
-					result.setId("OtherHero");
-				}
+		Label Name = new Label(name);
+		Name.setPrefHeight(heroCardHeight * 0.1);
+		Name.setPadding(new Insets(5));
+		Name.setStyle(" -fx-alignment:center;-fx-font-size: " + (bottomFont * 0.7));
 
-			});
-			result.setOnMouseClicked(e -> {
+		img.getChildren().add(Name);
+		return result;
 
-				currentHero = h;
-				updateHeroesStack();
+	}
 
-			});
-			
-			Label Name = new Label(  name);
-			Name.setPrefHeight( heroCardHeight * 0.1 );
-			Name.setPadding(new Insets(5));
-			Name.setStyle(" -fx-alignment:center;-fx-font-size: " + (bottomFont * 0.7));
-			
-			img.getChildren().add(Name);
-			return result;
+	private VBox heroImage(Hero h) {
+		StackPane photo = new StackPane();
+		ImageView imageView = new ImageView(h.getIcon());
 
-		}
+		imageView.setFitHeight(heroImageHeight);
+		imageView.setFitWidth(heroImageWidth);
 
+		photo.getChildren().add(imageView);
 
-		private VBox heroImage(Hero h) {
-			StackPane photo = new StackPane();
-			ImageView imageView = new ImageView(h.getIcon());
+		// Create a Rectangle as the Clip shape with round edges
+		Rectangle clipShape = new Rectangle(imageView.getFitWidth(), imageView.getFitHeight());
+		clipShape.setArcWidth(30);
+		clipShape.setArcHeight(30);
+		imageView.setClip(clipShape);
 
-			imageView.setFitHeight(heroImageHeight);
-			imageView.setFitWidth(heroImageWidth);
+		VBox res = new VBox(10);
+		res.getChildren().addAll(photo);
+		return res;
+	}
 
-			photo.getChildren().add(imageView);
-
-			// Create a Rectangle as the Clip shape with round edges
-			Rectangle clipShape = new Rectangle(imageView.getFitWidth(), imageView.getFitHeight());
-			clipShape.setArcWidth(30);
-			clipShape.setArcHeight(30);
-			imageView.setClip(clipShape);
-
-			
-
-			VBox res = new VBox(10);
-			res.getChildren().addAll(photo);
-			return res;
-		}
-	
-	private HBox collectibles(int supplies, int vaccines , int attackDmg) {
+	private HBox collectibles(int supplies, int vaccines, int attackDmg) {
 		HBox res = new HBox(heroCardWidth * 0.05);
 		res.setAlignment(Pos.CENTER);
-		StackPane vaccine = icon( vaccineIcon); 
-		StackPane supply = icon( supplyIcon);
-		StackPane attack = icon( attackDamageIcon); 
+		StackPane vaccine = icon(vaccineIcon);
+		StackPane supply = icon(supplyIcon);
+		StackPane attack = icon(attackDamageIcon);
 
 		Label noVaccines = new Label();
 		noVaccines.setText("  " + vaccines);
 
-		Label noSupplies = new Label(); 
+		Label noSupplies = new Label();
 		noSupplies.setText("  " + supplies);
-		
+
 		Label attackDamage = new Label();
 		attackDamage.setText("  " + attackDmg);
 
 		res.getChildren().addAll(attack, attackDamage, vaccine, noVaccines, supply, noSupplies);
-	
+
 		return res;
 	}
 
-	private StackPane icon( Image icon) {
+	private StackPane icon(Image icon) {
 		StackPane res = new StackPane();
-		Rectangle rec = new Rectangle(iconWidth , iconHeight);
-	
+		Rectangle rec = new Rectangle(iconWidth, iconHeight);
 
 		try {
 			ImageView imageView = new ImageView(icon);
-			imageView.setFitWidth( iconWidth );
-			imageView.setFitHeight(iconHeight );
+			imageView.setFitWidth(iconWidth);
+			imageView.setFitHeight(iconHeight);
 			imageView.setClip(rec);
 			res.getChildren().add(imageView);
 
@@ -548,19 +571,19 @@ public class GameScene {
 		res.setHgap(healthBarWidth * 0.05);
 		ProgressBar bar = new ProgressBar();
 		bar.setProgress(current / max);
-		
-		StackPane icon = icon(healthIcon );
-	
+
+		StackPane icon = icon(healthIcon);
+
 		String color = "Balabizo";
 		if (current >= 0.75 * max)
-			 color = "-fx-accent: green;";
+			color = "-fx-accent: green;";
 		else if (current >= 0.5 * max)
 			color = "-fx-accent: yellow;";
 		else if (current >= 0.25 * max)
 			color = "-fx-accent: orange;";
 		else
 			color = "-fx-accent: red;";
-		
+
 		bar.setStyle("-fx-padding: 2px; -fx-background-insets: 2px;-fx-pref-height: 23px;" + color);
 		bar.setPrefWidth(healthBarWidth);
 		res.add(bar, 1, 0);
@@ -568,38 +591,39 @@ public class GameScene {
 		return res;
 
 	}
-	
-	private  GridPane createActionPintsBar(int x ) {
+
+	private GridPane createActionPintsBar(int x) {
 		GridPane res = new GridPane();
 		res.setHgap(healthBarWidth * 0.07);
 		HBox bar = new HBox(2);
 		bar.setAlignment(Pos.CENTER);
-		//bar.setStyle("-fx-border-color:red;");
-		
-		while( x --> 0) {
-			Rectangle rec = new Rectangle(divWidth,divHeight);
-			rec.setStyle("-fx-fill: linear-gradient(to bottom, rgba(0, 0, 255, 0.5), rgba(0, 0, 255, 1)); -fx-border-radius:5px;-fx-backgound-radius:5px;");
+		// bar.setStyle("-fx-border-color:red;");
+
+		while (x-- > 0) {
+			Rectangle rec = new Rectangle(divWidth, divHeight);
+			rec.setStyle(
+					"-fx-fill: linear-gradient(to bottom, rgba(0, 0, 255, 0.5), rgba(0, 0, 255, 1)); -fx-border-radius:5px;-fx-backgound-radius:5px;");
 			bar.getChildren().add(rec);
 		}
-		StackPane icon = icon( actionIcon);
+		StackPane icon = icon(actionIcon);
 		res.add(bar, 1, 0);
 		res.add(icon, 0, 0);
 		return res;
-		
-		
-		
+
 	}
 
 	private void resizeHeight(ObservableValue<? extends Number> obs, Number oldHeight, Number newHeight) {
 		double scale = (double) newHeight;
-		scale /= 860;
-	
+		scale /= SCENEWIDTH;
+		DecimalFormat d = new DecimalFormat("#.##");
+		scale = Double.parseDouble(d.format(scale));
+
 		cellHeight = CELLHEIGHT * scale;
 		updatesHeight = UPDATESHEIGHT * scale;
 		heroCardHeight = scale * HEROCARDHEIGHT;
 		heroImageHeight = scale * HEROIMAGEHEIGHT;
 		iconHeight = scale * ICONHEIGHT;
-		divHeight = DIVHEIGHT * scale; 
+		divHeight = DIVHEIGHT * scale;
 		bottomFont = Math.max(scale, 0.8) * BOTTOMFONT;
 		bottomFont = Math.max(bottomFont, 0.4 * BOTTOMFONT);
 		updates.setMinHeight(updatesHeight);
@@ -612,12 +636,14 @@ public class GameScene {
 
 	private void resizeWidth(ObservableValue<? extends Number> obs, Number oldWidth, Number newWidth) {
 		double scale = (double) newWidth;
-		scale /= 1520;
+		scale /= SCENEHEIGHT;
+		DecimalFormat d = new DecimalFormat("#.##");
+		scale = Double.parseDouble(d.format(scale));
+
 		cellWidth = CELLWIDTH * scale;
 		heroCardWidth = HEROCARDWIDTH * scale;
 		heroImageWidth = scale * HEROIMAGEWIDTH;
 		healthBarWidth = scale * HEALTHBARWIDTH;
-		actionsBarWidth = scale * ACTIONBARWIDTH;
 		divWidth = DIVWIDTH * scale;
 		iconWidth = ICONWIDTH * scale;
 		bottomFont = Math.max(scale, 0.8) * BOTTOMFONT;
@@ -628,5 +654,27 @@ public class GameScene {
 		updates.setStyle("-fx-font-size: " + bottomFont + ";");
 		createGrid();
 		updateScene();
+	}
+
+	private Media loadMedia(String name) {
+		String path = "assets/" + Game.mode + "/audio/effects/" + name + ".wav";
+		Media res = new Media(new File(path).toURI().toString());
+		return res;
+	}
+
+	private void animate(int i, int j, Color c) {
+		Rectangle rect = (Rectangle) cells[i][j].getChildren().get(2);
+		rect.setFill(c);
+		FadeTransition ft1 = new FadeTransition(Duration.millis(150), rect);
+		ft1.setFromValue(0);
+		ft1.setToValue(0.3);
+		ft1.setCycleCount(2);
+		ft1.setAutoReverse(true);
+		ft1.play();
+	}
+
+	private void display(String s) {
+		updates.setText(s);
+		ft.play();
 	}
 }

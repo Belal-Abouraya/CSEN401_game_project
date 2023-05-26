@@ -103,3 +103,7 @@
 	-fx-background-color: rgba(255, 255, 255, 0.1); 
 	-fx-alignment: center ;
 }
+
+.progress-bar > .bar, .progress-bar > .track {
+    -fx-background-insets: 0;
+}
