@@ -3,11 +3,14 @@ package views;
 import java.io.File;
 import java.text.DecimalFormat;
 
+import engine.Game;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -30,7 +33,7 @@ public class TutorialScene {
 		root = new StackPane();
 		Image image = null;
 		try {
-			String path = "assets/" + Main.mode + "/images/wallpapers/tutorialscene.jpg";
+			String path = "assets/" + Game.mode + "/images/wallpapers/tutorialscene.jpg";
 			image = new Image(new File(path).toURI().toURL().toExternalForm());
 		} catch (Exception e) {
 		}
@@ -45,7 +48,13 @@ public class TutorialScene {
 
 		root.widthProperty().addListener((obs, OldWidth, newWidth) -> resizeWidth(obs, OldWidth, newWidth));
 		root.heightProperty().addListener((obs, OldHeight, newHeight) -> resizeHeight(obs, OldHeight, newHeight));
-		root.getStylesheets().add(this.getClass().getResource(Main.mode + ".css").toExternalForm());
+		root.getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
+		Platform.runLater(() -> root.requestFocus());
+		root.setFocusTraversable(true);
+		root.setOnKeyPressed(e -> {
+			if (e.getCode() == KeyCode.H)
+				Main.scene.setRoot((new GameScene()).getRoot());
+		});
 	}
 
 	private void createStack() {

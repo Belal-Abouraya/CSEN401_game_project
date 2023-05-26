@@ -53,9 +53,6 @@ public class GameScene {
 	private Hero currentHero = Game.heroes.get(0);
 	private VBox Heroes;
 
-	// private double heroCardWidth = 350;
-	// private double heroCardHeight = 140;
-	// private BorderPane root;
 	private GridPane grid;
 	private Label updates;
 	FadeTransition ft;
@@ -63,7 +60,6 @@ public class GameScene {
 	final private static double CELLHEIGHT = 55, CELLWIDTH = 76, BOTTOMFONT = 18, UPDATESHEIGHT = 35,
 			HEROCARDWIDTH = 350, HEROCARDHEIGHT = 125, HEROIMAGEWIDTH = 85, HEROIMAGEHEIGHT = 90, HEALTHBARWIDTH = 170,
 			ICONHEIGHT = 20, ICONWIDTH = 20, DIVWIDTH = 13, DIVHEIGHT = 10;
-
 	private double cellHeight = CELLHEIGHT, cellWidth = CELLWIDTH, bottomFont = BOTTOMFONT,
 			updatesHeight = UPDATESHEIGHT, heroCardWidth = HEROCARDWIDTH, heroCardHeight = HEROCARDHEIGHT,
 			heroImageWidth = HEROIMAGEWIDTH, heroImageHeight = HEROIMAGEHEIGHT, healthBarWidth = HEALTHBARWIDTH,
@@ -91,7 +87,7 @@ public class GameScene {
 		supplyIcon = Hero.loadIcon("supply");
 		actionIcon = Hero.loadIcon("action");
 		healthIcon = Hero.loadIcon("health");
-		attackDamageIcon = Hero.loadIcon("attackdamage");
+		attackDamageIcon = Hero.loadIcon("attackDamage");
 
 		// loading sounds
 		attackSound = new MediaPlayer(loadMedia("attack"));
@@ -228,6 +224,9 @@ public class GameScene {
 			display("The turn has ended.");
 			selectSound.seek(Duration.ZERO);
 			selectSound.play();
+		}
+		case H -> {
+			Main.scene.setRoot((new TutorialScene()).getRoot());
 		}
 		}
 
@@ -447,7 +446,7 @@ public class GameScene {
 		// VBox to contian the hero info
 		VBox info = new VBox();
 		info.setSpacing(3);
-		info.setTranslateY(7);
+		info.setTranslateY(5);
 
 		// Setting the health bar.
 		double maxHp = h.getMaxHp();
@@ -480,6 +479,10 @@ public class GameScene {
 		// setting a listener to the card
 		result.setOnMouseEntered(e -> {
 			result.setId("CurrentHero");
+			hoverSound = new MediaPlayer(loadMedia("hover"));
+			hoverSound.seek(Duration.ZERO);
+			hoverSound.play();
+
 		});
 		result.setOnMouseExited(e -> {
 			if (h != currentHero) {
@@ -488,6 +491,9 @@ public class GameScene {
 
 		});
 		result.setOnMouseClicked(e -> {
+			selectSound = new MediaPlayer(loadMedia("select"));
+			selectSound.seek(Duration.ZERO);
+			selectSound.play();
 
 			currentHero = h;
 			updateHeroesStack();
@@ -496,7 +502,7 @@ public class GameScene {
 
 		Label Name = new Label(name);
 		Name.setPrefHeight(heroCardHeight * 0.1);
-		Name.setPadding(new Insets(5));
+		Name.setPadding(new Insets(2));
 		Name.setStyle(" -fx-alignment:center;-fx-font-size: " + (bottomFont * 0.7));
 
 		img.getChildren().add(Name);
@@ -533,12 +539,15 @@ public class GameScene {
 
 		Label noVaccines = new Label();
 		noVaccines.setText("  " + vaccines);
+		noVaccines.setStyle("-fx-font-size: " + bottomFont * 0.9);
 
 		Label noSupplies = new Label();
 		noSupplies.setText("  " + supplies);
+		noSupplies.setStyle("-fx-font-size: " + bottomFont * 0.9);
 
 		Label attackDamage = new Label();
 		attackDamage.setText("  " + attackDmg);
+		attackDamage.setStyle("-fx-font-size: " + bottomFont * 0.9);
 
 		res.getChildren().addAll(attack, attackDamage, vaccine, noVaccines, supply, noSupplies);
 
@@ -676,5 +685,4 @@ public class GameScene {
 		updates.setText(s);
 		ft.play();
 	}
-
 }

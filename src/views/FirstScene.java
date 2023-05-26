@@ -6,33 +6,37 @@ import engine.Game;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.scene.Scene;
+import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 public class FirstScene {
 
 	public double currHeight = Main.height, currWidth = Main.width;
 
-	public Scene getScene() {
+	public StackPane getRoot() {
 		ImageView wallpaper = createImageView();
 		Label label = getStartGameLabel();
 		StackPane stackPane = new StackPane();
 		stackPane.getChildren().addAll(wallpaper, label);
-		Scene scene = new Scene(stackPane, currWidth, currHeight);
-		scene.getStylesheets().add(this.getClass().getResource(Main.mode + ".css").toExternalForm());
-		scene.setOnKeyPressed(e -> {
+
+		stackPane.setFocusTraversable(true);
+		Platform.runLater(() -> stackPane.requestFocus());
+
+		String path = "assets/" + Game.mode + "/audio/effects/select.wav";
+		Media firstSceneMusic = new Media(new File(path).toURI().toString());
+		MediaPlayer select = new MediaPlayer(firstSceneMusic);
+
+		stackPane.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.ENTER) {
-				Main.window.setScene((new SecondScene()).getScene());
+				select.play();
+				Main.window.getScene().setRoot((new SecondScene()).getRoot());
 			}
 			if (e.getCode() == KeyCode.MINUS) {
 				Main.mediaPlayer.stop();
@@ -41,26 +45,26 @@ public class FirstScene {
 				Main.mediaPlayer.play();
 			}
 		});
-		scene.widthProperty().addListener((observable, oldWidth, newWidth) -> {
+		stackPane.widthProperty().addListener((observable, oldWidth, newWidth) -> {
 			currWidth = (double) newWidth;
 			Main.width = currWidth;
 			wallpaper.setFitWidth(currWidth);
 			updateLabelSize(label, currWidth, currHeight);
 		});
-		scene.heightProperty().addListener((observable, oldHeight, newHeight) -> {
+		stackPane.heightProperty().addListener((observable, oldHeight, newHeight) -> {
 			currHeight = (double) newHeight;
 			Main.height = currHeight;
 			wallpaper.setFitHeight(currHeight);
 			label.setTranslateY(0.4 * currHeight);
 			updateLabelSize(label, currWidth, currHeight);
 		});
-		return scene;
+		return stackPane;
 	}
 
 	private ImageView createImageView() {
 		Image image = null;
 		try {
-			String path = "assets/" + Main.mode + "/images/wallpapers/firstscene.png";
+			String path = "assets/" + Game.mode + "/images/wallpapers/firstscene.jpg";
 			image = new Image(new File(path).toURI().toURL().toExternalForm());
 		} catch (Exception e) {
 		}
