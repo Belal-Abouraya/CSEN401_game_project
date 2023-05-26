@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import engine.Game;
 import exceptions.GameActionException;
 import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
@@ -59,15 +59,17 @@ public class GameScene {
 	private GridPane grid;
 	private Label updates;
 	FadeTransition ft;
-	final private static double SCENEWIDTH = 860, SCENEHEIGHT = 1520, CELLHEIGHT = 55, CELLWIDTH = 76, BOTTOMFONT = 18,
-			UPDATESHEIGHT = 35, HEROCARDWIDTH = 350, HEROCARDHEIGHT = 125, HEROIMAGEWIDTH = 85, HEROIMAGEHEIGHT = 90,
-			HEALTHBARWIDTH = 170, ICONHEIGHT = 20, ICONWIDTH = 20, DIVWIDTH = 13, DIVHEIGHT = 10;
+	final public static double SCENEWIDTH = 1552, SCENEHEIGHT = 873;
+	final private static double CELLHEIGHT = 55, CELLWIDTH = 76, BOTTOMFONT = 18, UPDATESHEIGHT = 35,
+			HEROCARDWIDTH = 350, HEROCARDHEIGHT = 125, HEROIMAGEWIDTH = 85, HEROIMAGEHEIGHT = 90, HEALTHBARWIDTH = 170,
+			ICONHEIGHT = 20, ICONWIDTH = 20, DIVWIDTH = 13, DIVHEIGHT = 10;
 
 	private double cellHeight = CELLHEIGHT, cellWidth = CELLWIDTH, bottomFont = BOTTOMFONT,
 			updatesHeight = UPDATESHEIGHT, heroCardWidth = HEROCARDWIDTH, heroCardHeight = HEROCARDHEIGHT,
 			heroImageWidth = HEROIMAGEWIDTH, heroImageHeight = HEROIMAGEHEIGHT, healthBarWidth = HEALTHBARWIDTH,
 			iconHeight = ICONHEIGHT, iconWidth = ICONWIDTH, divWidth = DIVWIDTH, divHeight = DIVHEIGHT;
 	private static StackPane[][] cells = new StackPane[15][15];
+	private BorderPane root;
 	private Image invisible, empty, vaccineModel, vaccineIcon, supplyModel, supplyIcon, actionIcon, healthIcon,
 			attackDamageIcon;
 	private MediaPlayer attackSound, cureSound, errorSound, explorerSound, fighterSound, hoverSound, medicSound,
@@ -103,42 +105,26 @@ public class GameScene {
 		supplySound = new MediaPlayer(loadMedia("supply"));
 		trapSound = new MediaPlayer(loadMedia("trap"));
 		vaccineSound = new MediaPlayer(loadMedia("vaccine"));
-	}
 
-	/**
-	 * The method called by the Main class to get the game scene. It creates a Scene
-	 * object with all the required elements and logic of the game
-	 * 
-	 * @return the finished game scene object
-	 */
-	public StackPane getRoot() {
-		StackPane back = new StackPane();
 		String path = "assets/" + Game.mode + "/images/wallpapers/secondscene.jpeg";
 		Image i = null;
 		try {
 			i = new Image(new File(path).toURI().toURL().toExternalForm());
 		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		ImageView wallpaper = new ImageView(i);
-		wallpaper.setFitWidth(1920);
-		wallpaper.setFitHeight(1080);
-		back.getChildren().add(wallpaper);
-		// back.setStyle("-fx-background-color : black;");
-		BorderPane root = new BorderPane();
-		// root.setBackground(new BackgroundImage(empty, null, null, null, null));
-		back.getChildren().add(root);
-
+		wallpaper.setFitWidth(SCENEWIDTH);
+		wallpaper.setFitHeight(SCENEHEIGHT);
+		root = new BorderPane();
+		root.getChildren().add(wallpaper);
 		grid = new GridPane();
-		grid.setStyle("-fx-background-color : transparent;");
+
 		grid.setAlignment(Pos.CENTER);
 		createGrid();
 		updateGrid();
 
 		Heroes = new VBox(10);
-
-		// Heroes.setBackground(new background);
 		Heroes.setStyle("-fx-background-color : transparent;");
 		updateHeroesStack();
 
@@ -160,17 +146,25 @@ public class GameScene {
 		menu.setLeft(Heroes);
 		root.setCenter(grid);
 		root.setLeft(menu);
-
+		Platform.runLater(() -> root.requestFocus());
 		root.setFocusTraversable(true);
 		root.setOnKeyPressed(e -> Keyboardcontrols(e));
-		root.setOnMouseClicked(e -> mouseControls(e));
+		grid.setOnMouseClicked(e -> mouseControls(e));
 		root.widthProperty().addListener((obs, OldWidth, newWidth) -> resizeWidth(obs, OldWidth, newWidth));
 		root.heightProperty().addListener((obs, OldHeight, newHeight) -> resizeHeight(obs, OldHeight, newHeight));
 		root.setMinHeight(0);
 		root.setMinWidth(0);
 		root.getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
+	}
 
-		return back;
+	/**
+	 * The method called by the Main class to get the game scene. It creates a Scene
+	 * object with all the required elements and logic of the game
+	 * 
+	 * @return the finished game scene object
+	 */
+	public BorderPane getRoot() {
+		return root;
 	}
 
 	/**
@@ -231,6 +225,7 @@ public class GameScene {
 		}
 		case R -> {
 			Game.endTurn();
+			display("The turn has ended.");
 			selectSound.seek(Duration.ZERO);
 			selectSound.play();
 		}
@@ -256,7 +251,6 @@ public class GameScene {
 					vaccineSound.play();
 				}
 				}
-
 			} catch (GameActionException e1) {
 				display(e1.getMessage());
 				errorSound.seek(Duration.ZERO);
@@ -265,10 +259,13 @@ public class GameScene {
 		}
 
 		updateScene();
-		if (Game.checkGameOver())
+		if (Game.checkGameOver()) {
+			cureSound.stop();
 			grid.fireEvent(new GameEvent(GameEvent.GAME_OVER));
-		else if (Game.checkWin())
+		} else if (Game.checkWin()) {
+			cureSound.stop();
 			grid.fireEvent(new GameEvent(GameEvent.WIN));
+		}
 
 	}
 
@@ -324,7 +321,6 @@ public class GameScene {
 				grid.add(tmp, x, y);
 			}
 		}
-
 	}
 
 	/**
@@ -351,13 +347,17 @@ public class GameScene {
 					else if (map[i][j] instanceof CollectibleCell) {
 						Collectible c = ((CollectibleCell) map[i][j]).getCollectible();
 						Image model = null;
-						if (c instanceof Supply)
+						if (c instanceof Supply) {
 							model = supplyModel;
-						else
+							content.setFitWidth(cellWidth / 2);
+							content.setFitHeight(cellHeight / 2);
+						} else {
 							model = vaccineModel;
+							content.setFitWidth(cellWidth);
+							content.setFitHeight(cellHeight);
+						}
 						content.setImage(model);
-						content.setFitWidth(cellWidth / 1.5);
-						content.setFitHeight(cellHeight / 1.5);
+
 					}
 				} else {
 					content.setImage(invisible);
@@ -365,10 +365,8 @@ public class GameScene {
 					content.setFitHeight(cellHeight * 1.05);
 				}
 				cells[i][j].getChildren().add(1, content);
-				cells[i][j].setStyle("-fx-border-width: 50; -fx-border-color: red");
 			}
 		}
-
 	}
 
 	private StackPane base() {
@@ -378,11 +376,12 @@ public class GameScene {
 		base.setFitWidth(cellWidth * 1.05);
 		res.getChildren().addAll(base, new Rectangle(), new Rectangle(cellWidth, cellHeight, Color.TRANSPARENT));
 		res.setPrefSize(cellWidth, cellHeight);
-		// res.setBackground(Background.fill(Color.BLUE));
 		res.setMinHeight(cellHeight);
 		res.setMaxHeight(cellHeight);
 		res.setMinWidth(cellWidth);
 		res.setMaxWidth(cellWidth);
+		// res.setStyle("-fx-background-color: transparent");
+		res.getStyleClass().add("cell");
 		return res;
 	}
 
@@ -614,7 +613,7 @@ public class GameScene {
 
 	private void resizeHeight(ObservableValue<? extends Number> obs, Number oldHeight, Number newHeight) {
 		double scale = (double) newHeight;
-		scale /= SCENEWIDTH;
+		scale /= SCENEHEIGHT;
 		DecimalFormat d = new DecimalFormat("#.##");
 		scale = Double.parseDouble(d.format(scale));
 
@@ -624,19 +623,19 @@ public class GameScene {
 		heroImageHeight = scale * HEROIMAGEHEIGHT;
 		iconHeight = scale * ICONHEIGHT;
 		divHeight = DIVHEIGHT * scale;
-		bottomFont = Math.max(scale, 0.8) * BOTTOMFONT;
-		bottomFont = Math.max(bottomFont, 0.4 * BOTTOMFONT);
+		bottomFont = Math.max(scale, 0.3) * BOTTOMFONT;
 		updates.setMinHeight(updatesHeight);
 		updates.setMaxHeight(updatesHeight);
 		updates.setPrefHeight(updatesHeight);
 		updates.setStyle("-fx-font-size: " + bottomFont + ";");
+		((ImageView) root.getChildren().get(0)).setFitHeight((double) newHeight);
 		createGrid();
 		updateScene();
 	}
 
 	private void resizeWidth(ObservableValue<? extends Number> obs, Number oldWidth, Number newWidth) {
 		double scale = (double) newWidth;
-		scale /= SCENEHEIGHT;
+		scale /= SCENEWIDTH;
 		DecimalFormat d = new DecimalFormat("#.##");
 		scale = Double.parseDouble(d.format(scale));
 
@@ -646,12 +645,12 @@ public class GameScene {
 		healthBarWidth = scale * HEALTHBARWIDTH;
 		divWidth = DIVWIDTH * scale;
 		iconWidth = ICONWIDTH * scale;
-		bottomFont = Math.max(scale, 0.8) * BOTTOMFONT;
-		bottomFont = Math.max(bottomFont, 0.4 * BOTTOMFONT);
+		bottomFont = Math.max(scale, 0.3) * BOTTOMFONT;
 		updates.setMinWidth(heroCardWidth);
 		updates.setMaxWidth(heroCardWidth);
 		updates.setPrefWidth(heroCardWidth);
 		updates.setStyle("-fx-font-size: " + bottomFont + ";");
+		((ImageView) root.getChildren().get(0)).setFitWidth((double) newWidth);
 		createGrid();
 		updateScene();
 	}
@@ -677,4 +676,5 @@ public class GameScene {
 		updates.setText(s);
 		ft.play();
 	}
+
 }

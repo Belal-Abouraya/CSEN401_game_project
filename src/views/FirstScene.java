@@ -2,6 +2,7 @@ package views;
 
 import java.io.File;
 
+import engine.Game;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -10,7 +11,12 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 public class FirstScene {
@@ -54,7 +60,7 @@ public class FirstScene {
 	private ImageView createImageView() {
 		Image image = null;
 		try {
-			String path = "assets/" + Main.mode + "/images/wallpapers/firstscene.jpg";
+			String path = "assets/" + Main.mode + "/images/wallpapers/firstscene.png";
 			image = new Image(new File(path).toURI().toURL().toExternalForm());
 		} catch (Exception e) {
 		}
