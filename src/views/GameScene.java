@@ -53,9 +53,6 @@ public class GameScene {
 	private Hero currentHero = Game.heroes.get(0);
 	private VBox Heroes;
 
-	// private double heroCardWidth = 350;
-	// private double heroCardHeight = 140;
-	// private BorderPane root;
 	private GridPane grid;
 	private Label updates;
 	FadeTransition ft;
@@ -89,7 +86,7 @@ public class GameScene {
 		supplyIcon = Hero.loadIcon("supply");
 		actionIcon = Hero.loadIcon("action");
 		healthIcon = Hero.loadIcon("health");
-		attackDamageIcon = Hero.loadIcon("attackdamage");
+		attackDamageIcon = Hero.loadIcon("attackDamage");
 
 		// loading sounds
 		attackSound = new MediaPlayer(loadMedia("attack"));
@@ -481,6 +478,10 @@ public class GameScene {
 		// setting a listener to the card
 		result.setOnMouseEntered(e -> {
 			result.setId("CurrentHero");
+			hoverSound = new MediaPlayer(loadMedia("hover"));
+			hoverSound.seek(Duration.ZERO);
+			hoverSound.play();
+			
 		});
 		result.setOnMouseExited(e -> {
 			if (h != currentHero) {
@@ -489,6 +490,10 @@ public class GameScene {
 
 		});
 		result.setOnMouseClicked(e -> {
+			
+			selectSound = new MediaPlayer(loadMedia("select"));
+			selectSound.seek(Duration.ZERO);
+			selectSound.play();
 
 			currentHero = h;
 			updateHeroesStack();
@@ -534,12 +539,15 @@ public class GameScene {
 
 		Label noVaccines = new Label();
 		noVaccines.setText("  " + vaccines);
+		noVaccines.setStyle("-fx-font-size: " + bottomFont * 0.9);
 
 		Label noSupplies = new Label();
 		noSupplies.setText("  " + supplies);
+		noSupplies.setStyle("-fx-font-size: " + bottomFont * 0.9);
 
 		Label attackDamage = new Label();
 		attackDamage.setText("  " + attackDmg);
+		attackDamage.setStyle("-fx-font-size: " + bottomFont * 0.9);
 
 		res.getChildren().addAll(attack, attackDamage, vaccine, noVaccines, supply, noSupplies);
 
@@ -677,4 +685,7 @@ public class GameScene {
 		updates.setText(s);
 		ft.play();
 	}
+	
+
+   
 }
