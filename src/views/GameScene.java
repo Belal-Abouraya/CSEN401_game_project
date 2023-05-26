@@ -57,7 +57,7 @@ public class GameScene {
 	private Label updates;
 	FadeTransition ft;
 	final private static double SCENEWIDTH = 860, SCENEHEIGHT = 1520, CELLHEIGHT = 55, CELLWIDTH = 76, BOTTOMFONT = 18,
-			UPDATESHEIGHT = 35, HEROCARDWIDTH = 350, HEROCARDHEIGHT = 125, HEROIMAGEWIDTH = 85, HEROIMAGEHEIGHT = 90,
+			UPDATESHEIGHT = 35, HEROCARDWIDTH = 350, HEROCARDHEIGHT = 125, HEROIMAGEWIDTH = 85, HEROIMAGEHEIGHT = 85,
 			HEALTHBARWIDTH = 170, ICONHEIGHT = 20, ICONWIDTH = 20, DIVWIDTH = 13, DIVHEIGHT = 10;
 
 	private double cellHeight = CELLHEIGHT, cellWidth = CELLWIDTH, bottomFont = BOTTOMFONT,
@@ -445,7 +445,7 @@ public class GameScene {
 		// VBox to contian the hero info
 		VBox info = new VBox();
 		info.setSpacing(3);
-		info.setTranslateY(7);
+		info.setTranslateY(5);
 
 		// Setting the health bar.
 		double maxHp = h.getMaxHp();
@@ -502,7 +502,7 @@ public class GameScene {
 
 		Label Name = new Label(name);
 		Name.setPrefHeight(heroCardHeight * 0.1);
-		Name.setPadding(new Insets(5));
+		Name.setPadding(new Insets(2));
 		Name.setStyle(" -fx-alignment:center;-fx-font-size: " + (bottomFont * 0.7));
 
 		img.getChildren().add(Name);
