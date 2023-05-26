@@ -3,12 +3,14 @@ package views;
 import java.io.File;
 
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.util.Duration;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
@@ -32,7 +34,7 @@ public class WinningScene {
 		Timeline timeline = new Timeline(
                 new KeyFrame(Duration.ZERO, e -> {
                     // Set the text and start the fade transition
-                    label.setText("Universe is safe!");
+                    label.setText("The World is safe!");
                     label.setOpacity(1);// initially set opacity to 1
                     FadeTransition fadeTransition = new FadeTransition(Duration.seconds(4), label);
                     fadeTransition.setFromValue(1);
@@ -58,6 +60,13 @@ public class WinningScene {
                 })
         );
 		timeline.play();
+		
+		stackPane.setFocusTraversable(true);
+		Platform.runLater(() -> stackPane.requestFocus());
+		stackPane.setOnKeyPressed(e -> {
+			if(e.getCode() == KeyCode.Q)
+				Main.window.close();
+		});
 		stackPane.widthProperty().addListener((obs , oldWidth , newWidth) -> {
 			imageView.setFitWidth((double) newWidth);
 		});

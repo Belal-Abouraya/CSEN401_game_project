@@ -66,8 +66,7 @@ public class FirstScene {
 		try {
 			String path = "assets/" + Main.mode + "/images/wallpapers/firstscene.jpg";
 			image = new Image(new File(path).toURI().toURL().toExternalForm());
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 		ImageView imageView = new ImageView(image);
 
 		imageView.setFitWidth(currWidth);

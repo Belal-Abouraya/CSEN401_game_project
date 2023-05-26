@@ -1,5 +1,6 @@
 package views;
 
+import java.awt.Cursor;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,7 +10,9 @@ import engine.Game;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Group;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
@@ -33,6 +36,13 @@ public class Main extends Application {
 		window.setTitle("Last of Us : Legacy");
 		scene.setRoot((new FirstScene()).getRoot());
 		scene.getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
+		Image image = null;
+		try {
+			String path = "assets/" + Main.mode + "/images/icons/cursorImage.png";
+			image = new Image(new File(path).toURI().toURL().toExternalForm());
+		} catch (Exception e) {}
+		ImageCursor imageCursor = new ImageCursor(image);
+		scene.setCursor(imageCursor);
 		window.setScene(scene);
 		window.setFullScreen(true);
 		window.setFullScreenExitHint("");
