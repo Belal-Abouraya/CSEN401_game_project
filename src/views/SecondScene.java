@@ -63,7 +63,7 @@ public class SecondScene {
 		hbox.setTranslateY(Main.height / 10);
 
 		sceneBack.setFocusTraversable(true);
-		Platform.runLater(() -> sceneBack.requestFocus());
+		Platform.runLater(() -> heroes.requestFocus());
 
 		sceneBack.getChildren().addAll(selectYourHero, heroes);
 
@@ -178,8 +178,6 @@ public class SecondScene {
 	private StackPane hero(Hero h, int x, int y) {
 		StackPane res = new StackPane();
 		RectangleHeight = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.98;
-		RectangleWidth = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.98;
-
 		Rectangle back = new Rectangle(RectangleWidth, RectangleHeight);
 		back.setArcHeight(10);
 		back.setArcWidth(10);
@@ -189,27 +187,19 @@ public class SecondScene {
 		icon.setFitHeight(RectangleHeight - 5);
 		icon.setFitWidth(RectangleWidth - 5);
 		res.getChildren().addAll(back, icon);
-		// res.hoverProperty()
-		res.setOnMouseEntered(null);
-
-		res.setOnMouseEntered(e -> {
+		back.setOnMouseEntered(e -> {
+			Platform.runLater(() -> back.requestFocus());
 			((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(darkColor);
 			timeLine.stop();
 			((Rectangle) mapPane[row][column].getChildren().get(0)).setOpacity(0.2);
 			back.setFill(brightColor);
-			// if (e.getEventType() == MouseEvent.MOUSE_ENTERED_TARGET) {
-//			hover.seek(Duration.ZERO);
-//			hover.play();
-//			hover.setAutoPlay(false);
-//			hover.setCycleCount(1);
-			// }
-//			hover.setOnEndOfMedia(() -> hover.stop());
+			hover.seek(Duration.ZERO);
+			hover.play();
 
 			row = x;
 			column = y;
 			sceneBack.getChildren().clear();
 			hbox.getChildren().clear();
-//			vbox = createModel(map[row][column]);
 			timeLine = new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(back.opacityProperty(), 0)),
 					new KeyFrame(Duration.seconds(1), new KeyValue(back.opacityProperty(), 0.2)),
 					new KeyFrame(Duration.seconds(2), new KeyValue(back.opacityProperty(), 0.001)));
@@ -222,7 +212,7 @@ public class SecondScene {
 			hbox.getChildren().addAll(info);
 			sceneBack.getChildren().addAll(wallpaper, model, hbox, heroes);
 		});
-//		res.setOnMouseExited(e -> hover.stop());
+
 		res.setOnMouseClicked(e -> {
 			Game.startGame(h, Game.mode);
 			select.play();

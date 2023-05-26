@@ -479,7 +479,6 @@ public class GameScene {
 		// setting a listener to the card
 		result.setOnMouseEntered(e -> {
 			result.setId("CurrentHero");
-			hoverSound = new MediaPlayer(loadMedia("hover"));
 			hoverSound.seek(Duration.ZERO);
 			hoverSound.play();
 
@@ -491,7 +490,6 @@ public class GameScene {
 
 		});
 		result.setOnMouseClicked(e -> {
-			selectSound = new MediaPlayer(loadMedia("select"));
 			selectSound.seek(Duration.ZERO);
 			selectSound.play();
 
