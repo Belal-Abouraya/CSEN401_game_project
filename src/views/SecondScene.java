@@ -8,9 +8,12 @@ import model.characters.*;
 import javafx.scene.image.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -38,9 +41,14 @@ public class SecondScene {
 	private Label selectYourHero ;
 	private Label info = new Label();
 	private HBox hbox = new HBox(Main.width/7.05);
+	private Timeline timeLine = new Timeline();
 	
 	
-	public Scene getScene() {
+	private MediaPlayer select = loadMedia("select");
+	private MediaPlayer hover = loadMedia("hover");
+	
+	
+	public StackPane getRoot() {
 		Main.mediaPlayer.play();
 		Main.mediaPlayer.setCycleCount(Timeline.INDEFINITE);
 		createBackGround();
@@ -52,23 +60,43 @@ public class SecondScene {
 		info.setMinSize(RectangleWidth*2, RectangleHeight*3);
 		hbox.setAlignment(Pos.CENTER_LEFT);
 		hbox.setTranslateY(Main.height/10);
+		
+		sceneBack.setFocusTraversable(true);
+		Platform.runLater(() -> sceneBack.requestFocus());
+		
 		sceneBack.getChildren().addAll( selectYourHero , heroes);
-		Scene scene = new Scene(sceneBack , Main.width , Main.height);
-		scene.getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
-		scene.setOnKeyPressed(e -> {
+		sceneBack.setOnKeyPressed(e -> {
+			boolean isValid = false ;
+			switch (e.getCode()) {
+			case W -> isValid = true ;
+			case A -> isValid = true ;
+			case S -> isValid = true ;
+			case D -> isValid = true ;
+			case ENTER -> isValid = true ;
+			}
+			if(isValid) {
+			hover.play();
 			((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(darkColor);
+			timeLine.stop();
+			((Rectangle) mapPane[row][column].getChildren().get(0)).setOpacity(0.2);
 			switch (e.getCode()) {
 				case W -> row = Math.max(row - 1, 0);
 				case A -> column = Math.max(column - 1, 0);
 				case S -> row = Math.min(row + 1, d1 - 1);
 				case D -> column = Math.min(column + 1, d2 - 1);
 				case ENTER -> {
+					select.play();
 					Game.startGame(map[row][column], Main.mode);
 					Main.mediaPlayer.stop();
-					Main.window.setScene((new GameScene()).getScene());
+					Main.window.getScene().setRoot((new GameScene()).getRoot());
 				}
 			}
 			((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(brightColor);
+			timeLine = new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(((Rectangle) mapPane[row][column].getChildren().get(0)).opacityProperty(), 0)),
+					new KeyFrame(Duration.seconds(1), new KeyValue(((Rectangle) mapPane[row][column].getChildren().get(0)).opacityProperty(), 0.2)),
+					new KeyFrame(Duration.seconds(2), new KeyValue(((Rectangle) mapPane[row][column].getChildren().get(0)).opacityProperty(), 0.001)));
+			timeLine.setCycleCount(Timeline.INDEFINITE);
+			timeLine.play();
 			sceneBack.getChildren().clear();
 			hbox.getChildren().clear();
 			info.setText(createInfo(map[row][column]));
@@ -77,8 +105,8 @@ public class SecondScene {
 			model.setFitHeight( (1920 / 3) * Math.pow(Main.height/ 720 , 0.85) );
 			model.setFitWidth( (1480 / 3) * Math.sqrt(Main.width / 1280) );
 			sceneBack.getChildren().addAll(wallpaper , model , hbox , heroes);
-		});
-		scene.widthProperty().addListener((observable , oldWidth , newWidth) -> {
+			}});
+		sceneBack.widthProperty().addListener((observable , oldWidth , newWidth) -> {
 			double nw = (double) newWidth ;
 			Main.width = nw ;
 			wallpaper.setFitWidth(nw);
@@ -90,7 +118,7 @@ public class SecondScene {
 			updateMapWidth();
 			updateLabel();
 		});
-		scene.heightProperty().addListener((observable , oldHeight , newHeight) -> {
+		sceneBack.heightProperty().addListener((observable , oldHeight , newHeight) -> {
 			double nh = (double) newHeight ;
 			Main.height = nh ;
 			wallpaper.setFitHeight(nh);
@@ -103,7 +131,7 @@ public class SecondScene {
 			updateMapHeight();
 			updateLabel();
 		});
-		return scene ;
+		return sceneBack ;
 	}
 	
 	private void createBackGround() {
@@ -151,11 +179,19 @@ public class SecondScene {
 		
 		res.setOnMouseEntered(e -> {
 			((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(darkColor);
+			timeLine.stop();
+			((Rectangle) mapPane[row][column].getChildren().get(0)).setOpacity(0.2);
 			back.setFill(brightColor);
+			hover.play();
 			row = x; column = y;
 			sceneBack.getChildren().clear();
 			hbox.getChildren().clear();
 //			vbox = createModel(map[row][column]);
+			timeLine = new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(back.opacityProperty(), 0)),
+					new KeyFrame(Duration.seconds(1), new KeyValue(back.opacityProperty(), 0.2)),
+					new KeyFrame(Duration.seconds(2), new KeyValue(back.opacityProperty(), 0.001)));
+			timeLine.setCycleCount(Timeline.INDEFINITE);
+			timeLine.play();
 			model.setImage(map[row][column].getModel());
 			model.setFitHeight( (1920 / 3) * Math.pow(Main.height/ 720 , 0.85) );
 			model.setFitWidth( (1480 / 3) * Math.sqrt(Main.width / 1280) );
@@ -165,28 +201,20 @@ public class SecondScene {
 		});
 		res.setOnMouseClicked(e -> {
 			Game.startGame(h , Main.mode);
-			Main.window.setScene((new GameScene()).getScene());
+			select.play();
+			Main.mediaPlayer.stop();
+			Main.window.getScene().setRoot((new GameScene()).getRoot());
 		});
 		
 		return res;
 	}
 	
-//	private static VBox createModel(Hero h) {
-//		Image image = h.getModel();
-//		ImageView imageView = new ImageView(image);
-//		
-//		imageView.setFitHeight((1920/3.0) * (Main.height / 720));
-//		imageView.setFitWidth((1480/3.0) * (Main.width / 1280));
-//		
-////		info.setTranslateX(Main.width/5);
-//		
-//		VBox res = new VBox(4);
-//		res.getChildren().addAll(imageView);
-//		
-////		res.setTranslateY((Main.height-res.getHeight())/10);
-//		
-//		return res ;
-//	}
+	private MediaPlayer loadMedia(String name) {
+		String path = "assets/" + Main.mode + "/audio/effects/" +name+ ".wav";
+		Media tmp = new Media(new File(path).toURI().toString());
+		MediaPlayer player = new MediaPlayer(tmp);
+		return player ;
+	}
 	
 	private void createSelectYourHeroLabel() {
 		selectYourHero = new Label("Select Your Hero");

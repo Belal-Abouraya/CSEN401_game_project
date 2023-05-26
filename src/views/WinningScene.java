@@ -21,7 +21,7 @@ public class WinningScene {
 	
 	MediaPlayer mediaPlayer ;
 
-	public Scene getScene() {
+	public StackPane getRoot() {
 		ImageView imageView = getImageView();
 		StackPane stackPane = new StackPane();
 		stackPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
@@ -58,15 +58,13 @@ public class WinningScene {
                 })
         );
 		timeline.play();
-		Scene scene = new Scene(stackPane , Main.width , Main.height);
-		scene.getStylesheets().add(this.getClass().getResource(Main.mode + ".css").toExternalForm());
-		scene.widthProperty().addListener((obs , oldWidth , newWidth) -> {
+		stackPane.widthProperty().addListener((obs , oldWidth , newWidth) -> {
 			imageView.setFitWidth((double) newWidth);
 		});
-		scene.heightProperty().addListener((obs , oldHeight , newHeight) -> {
+		stackPane.heightProperty().addListener((obs , oldHeight , newHeight) -> {
 			imageView.setFitHeight((double) newHeight);
 		});
-		return scene ;
+		return stackPane ;
 	}
 	
 	private ImageView getImageView() {

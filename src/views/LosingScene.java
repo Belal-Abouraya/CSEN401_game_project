@@ -28,7 +28,7 @@ public class LosingScene {
 	ImageView imageView ;
 	MediaPlayer mediaPlayer ;
 
-	public Scene getScene() {
+	public StackPane getRoot() {
 		
 		getImageView();
 		getMediaPlayer();
@@ -50,9 +50,7 @@ public class LosingScene {
 
 		StackPane stackPane = new StackPane();
 		stackPane.getChildren().addAll(imageView, vbox);
-		Scene scene = new Scene(stackPane, Main.width, Main.height);
-		scene.getStylesheets().add(this.getClass().getResource(Main.mode + ".css").toExternalForm());
-		scene.widthProperty().addListener((obs , oldWidth , newWidth) -> {
+		stackPane.widthProperty().addListener((obs , oldWidth , newWidth) -> {
 			double width = (double) newWidth ;
 			Main.width = width ;
 			imageView.setFitWidth(width);
@@ -61,16 +59,13 @@ public class LosingScene {
 			updateLabelSize(yes, Main.width, Main.height , 15);
 			updateLabelSize(no, Main.width, Main.height , 15);
 		});
-		scene.heightProperty().addListener((obs , oldHeight , newHeight) -> {
+		stackPane.heightProperty().addListener((obs , oldHeight , newHeight) -> {
 			double height = (double) newHeight ;
 			Main.width = height ;
 			imageView.setFitHeight(height);
 			vbox.setTranslateY(120* Main.height*Main.height / 518400);
-//			updateLabelSize(tryAgain, Main.width, Main.height , 25);
-//			updateLabelSize(yes, Main.width, Main.height , 15);
-//			updateLabelSize(no, Main.width, Main.height , 15);
 		});
-		return scene;
+		return stackPane;
 	}
 	
 	private void getMediaPlayer() {
@@ -104,7 +99,7 @@ public class LosingScene {
 				Game.loadHeroes("assets/" + Main.mode + "/heroes.csv");
 			} catch (IOException e1) {}
 			mediaPlayer.stop();
-			Main.window.setScene((new SecondScene()).getScene());
+			Main.window.getScene().setRoot((new SecondScene()).getRoot());
 		});
 		no.setOnMouseClicked(e -> Main.window.close());
 	}

@@ -46,6 +46,8 @@ public class Medic extends Hero {
 	 * @return true if the two characters are in the same cell and false otherwise
 	 */
 	private boolean sameCell(Character c) {
+		if(c == null)
+			return false;
 		Point cellLocation = c.getLocation();
 		return cellLocation.x == this.getLocation().x &&
 				cellLocation.y == this.getLocation().y ;
