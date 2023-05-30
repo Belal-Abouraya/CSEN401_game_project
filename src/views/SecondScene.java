@@ -230,6 +230,8 @@ public class SecondScene {
 			if (e.getCode() != KeyCode.ENTER) {
 				hover.stop();
 				hover.play();
+				((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(darkColor);
+				((Rectangle) mapPane[row][column].getChildren().get(0)).setOpacity(0.2);
 			}
 			switch (e.getCode()) {
 			case W -> row = Math.max(row - 1, 0);
@@ -243,33 +245,33 @@ public class SecondScene {
 				Main.window.getScene().setRoot((new GameScene()).getRoot());
 			}
 			}
-			handleHelper();
+			handleHelper(row , column);
 		}
 	}
 
 	private void mouseHandle(MouseEvent e, int x, int y) {
 		hover.seek(Duration.ZERO);
 		hover.play();
-		row = x;
-		column = y;
-		handleHelper();
+		handleHelper(x , y);
 	}
 
-	private void handleHelper() {
+	private void handleHelper(int x , int y) {
 		info.setVisible(true);
 		model.setVisible(true);
 		selectYourHero.setVisible(false);
 		((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(darkColor);
 		timeLine.stop();
 		((Rectangle) mapPane[row][column].getChildren().get(0)).setOpacity(0.2);
+		row = x;
+		column = y;
 		((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(brightColor);
 		timeLine = new Timeline(
 				new KeyFrame(Duration.seconds(0),
-						new KeyValue(((Rectangle) mapPane[row][column].getChildren().get(0)).opacityProperty(), 0)),
-				new KeyFrame(Duration.seconds(1),
 						new KeyValue(((Rectangle) mapPane[row][column].getChildren().get(0)).opacityProperty(), 0.2)),
+				new KeyFrame(Duration.seconds(1),
+						new KeyValue(((Rectangle) mapPane[row][column].getChildren().get(0)).opacityProperty(), 0.05)),
 				new KeyFrame(Duration.seconds(2), new KeyValue(
-						((Rectangle) mapPane[row][column].getChildren().get(0)).opacityProperty(), 0.001)));
+						((Rectangle) mapPane[row][column].getChildren().get(0)).opacityProperty(), 0.2)));
 		timeLine.setCycleCount(Timeline.INDEFINITE);
 		timeLine.play();
 		info.setText(createInfo(map[row][column]));
