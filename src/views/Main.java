@@ -26,11 +26,6 @@ import model.characters.Hero;
  */
 public class Main extends Application {
 	static Stage window;
-//<<<<<<< HEAD
-//	static Scene firstScene;
-//	static double width = 1280;
-//	static double height = 720;
-//=======
 	static double width = 1280;
 	static double height = 720;
 	static Scene scene = new Scene(new Group());
@@ -39,7 +34,7 @@ public class Main extends Application {
 	@Override
 	public void init() {
 		try {
-			Font.loadFont(new File("assets/classic/fonts/Orbitron-Regular.ttf").toURI().toURL().toExternalForm(), 10);
+			Font.loadFont(new File("assets/classic/fonts/Orbitron-Bold.ttf").toURI().toURL().toExternalForm(), 10);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -98,7 +93,7 @@ public class Main extends Application {
 //	@Override
 //	public void start(Stage primaryStage) throws FileNotFoundException, IOException {
 //		Game.loadHeroes("assets/classic/heroes.csv");
-//		Game.startGame(Game.availableHeroes.get(0), "classic");
+//		Game.startGame(Game.availableHeroes.get(0));
 //		GameScene g = new GameScene();
 ////		TutorialScene t = new TutorialScene();
 //		primaryStage.setScene(new Scene(g.getRoot()));

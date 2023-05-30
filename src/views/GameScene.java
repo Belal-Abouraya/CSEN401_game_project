@@ -66,52 +66,14 @@ public class GameScene {
 			iconHeight = ICONHEIGHT, iconWidth = ICONWIDTH, divWidth = DIVWIDTH, divHeight = DIVHEIGHT;
 	private static StackPane[][] cells = new StackPane[15][15];
 	private BorderPane root;
+	private ImageView wallpaper;
 	private Image invisible, empty, vaccineModel, vaccineIcon, supplyModel, supplyIcon, actionIcon, healthIcon,
 			attackDamageIcon;
 	private MediaPlayer attackSound, cureSound, errorSound, explorerSound, fighterSound, hoverSound, medicSound,
 			selectSound, supplySound, trapSound, vaccineSound;
 
 	public GameScene() {
-		try {
-			invisible = new Image(new File("assets/" + Game.mode + "/images/wallpapers/" + "invisible" + ".png").toURI()
-					.toURL().toExternalForm());
-			empty = new Image(new File("assets/" + Game.mode + "/images/wallpapers/" + "empty" + ".png").toURI().toURL()
-					.toExternalForm());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		// loading icons
-		vaccineModel = Character.LoadModel("vaccine");
-		vaccineIcon = Hero.loadIcon("vaccine");
-		supplyModel = Character.LoadModel("supply");
-		supplyIcon = Hero.loadIcon("supply");
-		actionIcon = Hero.loadIcon("action");
-		healthIcon = Hero.loadIcon("health");
-		attackDamageIcon = Hero.loadIcon("attackDamage");
-
-		// loading sounds
-		attackSound = new MediaPlayer(loadMedia("attack"));
-		cureSound = new MediaPlayer(loadMedia("cure"));
-		errorSound = new MediaPlayer(loadMedia("error"));
-		explorerSound = new MediaPlayer(loadMedia("explorer"));
-		fighterSound = new MediaPlayer(loadMedia("fighter"));
-		hoverSound = new MediaPlayer(loadMedia("hover"));
-		medicSound = new MediaPlayer(loadMedia("medic"));
-		selectSound = new MediaPlayer(loadMedia("select"));
-		supplySound = new MediaPlayer(loadMedia("supply"));
-		trapSound = new MediaPlayer(loadMedia("trap"));
-		vaccineSound = new MediaPlayer(loadMedia("vaccine"));
-
-		String path = "assets/" + Game.mode + "/images/wallpapers/secondscene.jpeg";
-		Image i = null;
-		try {
-			i = new Image(new File(path).toURI().toURL().toExternalForm());
-		} catch (MalformedURLException e1) {
-			e1.printStackTrace();
-		}
-		ImageView wallpaper = new ImageView(i);
-		wallpaper.setFitWidth(SCENEWIDTH);
-		wallpaper.setFitHeight(SCENEHEIGHT);
+		loadAssets();
 		root = new BorderPane();
 		root.getChildren().add(wallpaper);
 		grid = new GridPane();
@@ -153,6 +115,46 @@ public class GameScene {
 		root.getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
 	}
 
+	private void loadAssets() {
+		Image i = null;
+		try {
+			i = new Image(new File("assets/" + Game.mode + "/images/wallpapers/secondscene.jpeg").toURI().toURL()
+					.toExternalForm());
+			invisible = new Image(new File("assets/" + Game.mode + "/images/wallpapers/" + "invisible" + ".png").toURI()
+					.toURL().toExternalForm());
+			empty = new Image(new File("assets/" + Game.mode + "/images/wallpapers/" + "empty" + ".png").toURI().toURL()
+					.toExternalForm());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+		wallpaper = new ImageView(i);
+		wallpaper.setFitWidth(SCENEWIDTH);
+		wallpaper.setFitHeight(SCENEHEIGHT);
+
+		// loading icons
+		vaccineModel = Character.LoadModel("vaccine");
+		vaccineIcon = Hero.loadIcon("vaccine");
+		supplyModel = Character.LoadModel("supply");
+		supplyIcon = Hero.loadIcon("supply");
+		actionIcon = Hero.loadIcon("action");
+		healthIcon = Hero.loadIcon("health");
+		attackDamageIcon = Hero.loadIcon("attackDamage");
+
+		// loading sounds
+		attackSound = loadMedia("attack");
+		cureSound = loadMedia("cure");
+		errorSound = loadMedia("error");
+		explorerSound = loadMedia("explorer");
+		fighterSound = loadMedia("fighter");
+		hoverSound = loadMedia("hover");
+		medicSound = loadMedia("medic");
+		selectSound = loadMedia("select");
+		supplySound = loadMedia("supply");
+		trapSound = loadMedia("trap");
+		vaccineSound = loadMedia("vaccine");
+	}
+
 	/**
 	 * The method called by the Main class to get the game scene. It creates a Scene
 	 * object with all the required elements and logic of the game
@@ -183,13 +185,10 @@ public class GameScene {
 					j = currentHero.getTarget().getLocation().y;
 				}
 				currentHero.cure();
-				cureSound.seek(Duration.ZERO);
-				cureSound.play();
+				play(cureSound);
 				animate(i, j, Color.BLUE);
 			} catch (GameActionException e1) {
-				display(e1.getMessage());
-				errorSound.seek(Duration.ZERO);
-				errorSound.play();
+				handleException(e1);
 			}
 		}
 		case E -> {
@@ -203,27 +202,21 @@ public class GameScene {
 				animate(currentHero.getLocation().x, currentHero.getLocation().y, Color.ORANGE);
 				display("Activated special action.");
 				if (currentHero instanceof Medic) {
-					medicSound.seek(Duration.ZERO);
-					medicSound.play();
+					play(medicSound);
 					animate(i, j, Color.GREEN);
 				} else if (currentHero instanceof Fighter) {
-					fighterSound.seek(Duration.ZERO);
-					fighterSound.play();
+					play(fighterSound);
 				} else {
-					explorerSound.seek(Duration.ZERO);
-					explorerSound.play();
+					play(explorerSound);
 				}
 			} catch (GameActionException e1) {
-				display(e1.getMessage());
-				errorSound.seek(Duration.ZERO);
-				errorSound.play();
+				handleException(e1);
 			}
 		}
 		case R -> {
 			Game.endTurn();
 			display("The turn has ended.");
-			selectSound.seek(Duration.ZERO);
-			selectSound.play();
+			play(selectSound);
 		}
 		case H -> {
 			Main.scene.setRoot((new TutorialScene()).getRoot());
@@ -237,23 +230,18 @@ public class GameScene {
 				switch (type) {
 				case 1 -> {
 					display("Trap cell!");
-					trapSound.seek(Duration.ZERO);
-					trapSound.play();
+					play(trapSound);
 					animate(currentHero.getLocation().x, currentHero.getLocation().y, Color.RED);
 				}
 				case 2 -> {
-					supplySound.seek(Duration.ZERO);
-					supplySound.play();
+					play(supplySound);
 				}
 				case 3 -> {
-					vaccineSound.seek(Duration.ZERO);
-					vaccineSound.play();
+					play(vaccineSound);
 				}
 				}
 			} catch (GameActionException e1) {
-				display(e1.getMessage());
-				errorSound.seek(Duration.ZERO);
-				errorSound.play();
+				handleException(e1);
 			}
 		}
 
@@ -280,13 +268,10 @@ public class GameScene {
 					j = currentHero.getTarget().getLocation().y;
 				}
 				currentHero.attack();
-				attackSound.seek(Duration.ZERO);
-				attackSound.play();
+				play(attackSound);
 				animate(i, j, Color.RED);
 			} catch (GameActionException e1) {
-				display(e1.getMessage());
-				errorSound.seek(Duration.ZERO);
-				errorSound.play();
+				handleException(e1);
 			}
 			updateScene();
 			if (Game.checkGameOver())
@@ -379,7 +364,6 @@ public class GameScene {
 		res.setMaxHeight(cellHeight);
 		res.setMinWidth(cellWidth);
 		res.setMaxWidth(cellWidth);
-		// res.setStyle("-fx-background-color: transparent");
 		res.getStyleClass().add("cell");
 		return res;
 	}
@@ -479,9 +463,7 @@ public class GameScene {
 		// setting a listener to the card
 		result.setOnMouseEntered(e -> {
 			result.setId("CurrentHero");
-			hoverSound.seek(Duration.ZERO);
-			hoverSound.play();
-
+			play(hoverSound);
 		});
 		result.setOnMouseExited(e -> {
 			if (h != currentHero) {
@@ -490,9 +472,7 @@ public class GameScene {
 
 		});
 		result.setOnMouseClicked(e -> {
-			selectSound.seek(Duration.ZERO);
-			selectSound.play();
-
+			play(selectSound);
 			currentHero = h;
 			updateHeroesStack();
 
@@ -501,7 +481,7 @@ public class GameScene {
 		Label Name = new Label(name);
 		Name.setPrefHeight(heroCardHeight * 0.1);
 		Name.setPadding(new Insets(2));
-		Name.setStyle(" -fx-alignment:center;-fx-font-size: " + (bottomFont * 0.7));
+		Name.setStyle("-fx-alignment:center;-fx-font-size: " + (bottomFont * 0.7));
 
 		img.getChildren().add(Name);
 		return result;
@@ -662,10 +642,10 @@ public class GameScene {
 		updateScene();
 	}
 
-	private Media loadMedia(String name) {
+	public static MediaPlayer loadMedia(String name) {
 		String path = "assets/" + Game.mode + "/audio/effects/" + name + ".wav";
 		Media res = new Media(new File(path).toURI().toString());
-		return res;
+		return new MediaPlayer(res);
 	}
 
 	private void animate(int i, int j, Color c) {
@@ -682,5 +662,15 @@ public class GameScene {
 	private void display(String s) {
 		updates.setText(s);
 		ft.play();
+	}
+
+	private void play(MediaPlayer m) {
+		m.seek(Duration.ZERO);
+		m.play();
+	}
+
+	private void handleException(GameActionException e) {
+		display(e.getMessage());
+		play(errorSound);
 	}
 }

@@ -40,6 +40,8 @@ public class Game {
 	public static Cell[][] map = new Cell[15][15];
 	public static Hero currentHero;
 	public static String mode = "classic";
+	public static int deadZombies, deadHeroes, turns;
+	public static long startTime, endTime;
 
 	public static void main(String[] args) throws Exception {
 	}
@@ -131,8 +133,9 @@ public class Game {
 	 * 
 	 * @param h
 	 */
-	public static void startGame(Hero h, String mode) {
-		Game.mode = mode;
+	public static void startGame(Hero h) {
+		startTime = System.currentTimeMillis();
+		deadZombies = deadHeroes = turns = 0;
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[i].length; j++) {
 				map[i][j] = new CharacterCell();
@@ -156,7 +159,8 @@ public class Game {
 	}
 
 	/**
-	 * This method checks the win conditions for the game.
+	 * This method checks the win conditions for the game and updates the endTime
+	 * variable if the player wins.
 	 */
 	public static boolean checkWin() {
 		if (heroes.size() >= 5) {
@@ -169,6 +173,8 @@ public class Game {
 			for (Hero h : heroes)
 				if (h.getVaccineInventory().size() > 0)
 					return false;
+
+			endTime = System.currentTimeMillis();
 			return true;
 		}
 		return false;
@@ -206,10 +212,9 @@ public class Game {
 
 	public static void endTurn() {
 		Zombie z1 = null;
-		if (zombies.size() < 10) {
-			z1 = new Zombie();
-			spawnCell(new CharacterCell(z1));
-		}
+		z1 = new Zombie();
+		spawnCell(new CharacterCell(z1));
+
 		for (int i = 0; i < zombies.size(); i++) {
 			Zombie z = zombies.get(i);
 			if (z.getAdjacentTarget() != null) {
@@ -227,6 +232,7 @@ public class Game {
 		updateMapVisibility();
 		if (z1 != null)
 			zombies.add(z1);
+		turns++;
 	}
 
 	/**

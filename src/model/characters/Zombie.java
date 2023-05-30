@@ -52,6 +52,7 @@ public class Zombie extends Character {
 		Zombie z = new Zombie();
 		Game.zombies.add(z);
 		Game.spawnCell(new CharacterCell(z));
+		Game.deadZombies++;
 		super.onCharacterDeath();
 	}
 

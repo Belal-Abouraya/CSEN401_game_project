@@ -225,6 +225,7 @@ public abstract class Hero extends Character {
 	public void onCharacterDeath() {
 		super.onCharacterDeath();
 		Game.heroes.remove(this);
+		Game.deadHeroes++;
 	}
 
 	/**
