@@ -63,7 +63,17 @@
     -fx-background-insets: 0;
 }
 
-.cell:hover{
-	-fx-border-width: 20px;
+#hero{
+	-fx-border-width: 0.5 0.5 1.2 2.3;
 	-fx-border-color: blue;
+}
+
+#zombie-target{
+		-fx-border-width: 0.5 0.5 1.2 2.3;
+		-fx-border-color: red;
+}
+
+#hero-target{
+	-fx-border-width: 0.5 0.5 1.2 2.3;
+	-fx-border-color: green;
 }

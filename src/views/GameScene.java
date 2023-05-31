@@ -1,9 +1,12 @@
 package views;
 
+import java.awt.Point;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import engine.Game;
 import exceptions.GameActionException;
@@ -19,9 +22,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
@@ -34,6 +39,7 @@ import model.characters.Direction;
 import model.characters.Fighter;
 import model.characters.Hero;
 import model.characters.Medic;
+import model.characters.Zombie;
 import model.collectibles.Collectible;
 import model.collectibles.Supply;
 import model.world.Cell;
@@ -64,43 +70,32 @@ public class GameScene {
 			updatesHeight = UPDATESHEIGHT, heroCardWidth = HEROCARDWIDTH, heroCardHeight = HEROCARDHEIGHT,
 			heroImageWidth = HEROIMAGEWIDTH, heroImageHeight = HEROIMAGEHEIGHT, healthBarWidth = HEALTHBARWIDTH,
 			iconHeight = ICONHEIGHT, iconWidth = ICONWIDTH, divWidth = DIVWIDTH, divHeight = DIVHEIGHT;
-	private static StackPane[][] cells = new StackPane[15][15];
-	private BorderPane root;
+	private StackPane[][] cells = new StackPane[15][15];
+	private Region heroBorder, targetBorder;
+	private BorderPane root, menu;
 	private ImageView wallpaper;
 	private Image invisible, empty, vaccineModel, vaccineIcon, supplyModel, supplyIcon, actionIcon, healthIcon,
 			attackDamageIcon;
 	private MediaPlayer attackSound, cureSound, errorSound, explorerSound, fighterSound, hoverSound, medicSound,
-			selectSound, supplySound, trapSound, vaccineSound;
+			selectSound, supplySound, trapSound, vaccineSound, zombieSound;
 
 	public GameScene() {
 		loadAssets();
 		root = new BorderPane();
 		root.getChildren().add(wallpaper);
 		grid = new GridPane();
-
 		grid.setAlignment(Pos.CENTER);
+		grid.setMinSize(0, 0);
 		createGrid();
 		updateGrid();
 
-		Heroes = new VBox(10);
-		Heroes.setStyle("-fx-background-color : transparent;");
+		createUpdates();
+
+		createHeroesStack();
 		updateHeroesStack();
 
-		updates = new Label();
-		updates.setMinSize(heroCardWidth, updatesHeight);
-		updates.setStyle("-fx-font-size: " + bottomFont + ";");
-		StackPane bottom = new StackPane();
-		updates.setAlignment(Pos.CENTER);
-		ft = new FadeTransition(Duration.millis(1000), updates);
-		ft.setFromValue(0);
-		ft.setToValue(1);
-		ft.setCycleCount(2);
-		ft.setAutoReverse(true);
-
-		BorderPane menu = new BorderPane();
-		bottom.getChildren().add(updates);
-		bottom.setStyle("-fx-background-color: transparent;");
-		menu.setBottom(bottom);
+		menu = new BorderPane();
+		menu.setBottom(updates);
 		menu.setLeft(Heroes);
 		root.setCenter(grid);
 		root.setLeft(menu);
@@ -110,19 +105,13 @@ public class GameScene {
 		grid.setOnMouseClicked(e -> mouseControls(e));
 		root.widthProperty().addListener((obs, OldWidth, newWidth) -> resizeWidth(obs, OldWidth, newWidth));
 		root.heightProperty().addListener((obs, OldHeight, newHeight) -> resizeHeight(obs, OldHeight, newHeight));
-		root.setMinHeight(0);
-		root.setMinWidth(0);
-		root.getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
+		root.setMinSize(0, 0);
 	}
 
 	private void loadAssets() {
 		Image i = null;
 		try {
 			i = new Image(new File("assets/" + Game.mode + "/images/wallpapers/secondscene.jpeg").toURI().toURL()
-					.toExternalForm());
-			invisible = new Image(new File("assets/" + Game.mode + "/images/wallpapers/" + "invisible" + ".png").toURI()
-					.toURL().toExternalForm());
-			empty = new Image(new File("assets/" + Game.mode + "/images/wallpapers/" + "empty" + ".png").toURI().toURL()
 					.toExternalForm());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -140,6 +129,8 @@ public class GameScene {
 		actionIcon = Hero.loadIcon("action");
 		healthIcon = Hero.loadIcon("health");
 		attackDamageIcon = Hero.loadIcon("attackDamage");
+		invisible = Hero.loadIcon("invisible");
+		empty = Hero.loadIcon("empty");
 
 		// loading sounds
 		attackSound = loadMedia("attack");
@@ -153,14 +144,9 @@ public class GameScene {
 		supplySound = loadMedia("supply");
 		trapSound = loadMedia("trap");
 		vaccineSound = loadMedia("vaccine");
+		zombieSound = loadMedia("zombie");
 	}
 
-	/**
-	 * The method called by the Main class to get the game scene. It creates a Scene
-	 * object with all the required elements and logic of the game
-	 * 
-	 * @return the finished game scene object
-	 */
 	public BorderPane getRoot() {
 		return root;
 	}
@@ -214,9 +200,8 @@ public class GameScene {
 			}
 		}
 		case R -> {
-			Game.endTurn();
-			display("The turn has ended.");
-			play(selectSound);
+			display("Zombies turn!");
+			endTurn();
 		}
 		case H -> {
 			Main.scene.setRoot((new TutorialScene()).getRoot());
@@ -248,6 +233,7 @@ public class GameScene {
 		updateScene();
 		if (Game.checkGameOver()) {
 			cureSound.stop();
+			zombieSound.stop();
 			grid.fireEvent(new GameEvent(GameEvent.GAME_OVER));
 		} else if (Game.checkWin()) {
 			cureSound.stop();
@@ -281,18 +267,37 @@ public class GameScene {
 		}
 	}
 
-	/**
-	 * 
-	 */
 	private void updateScene() {
 		updateGrid();
 		updateHeroesStack();
 	}
 
-	/**
-	 * Initializes all the grid cells.
-	 */
+	private void createUpdates() {
+		updates = new Label();
+		updates.setMinSize(heroCardWidth, updatesHeight);
+		updates.setPrefSize(heroCardWidth, updatesHeight);
+		updates.setMaxSize(heroCardWidth, updatesHeight);
+		updates.setStyle("-fx-font-size: " + bottomFont);
+		updates.setAlignment(Pos.CENTER);
+		ft = new FadeTransition(Duration.millis(700), updates);
+		ft.setFromValue(0);
+		ft.setToValue(1);
+		ft.setCycleCount(2);
+		ft.setAutoReverse(true);
+	}
+
 	private void createGrid() {
+		heroBorder = new Region();
+		heroBorder.setMinSize(cellWidth, cellHeight);
+		heroBorder.setPrefSize(cellWidth, cellHeight);
+		heroBorder.setMaxSize(cellWidth, cellHeight);
+		heroBorder.setId("hero");
+
+		targetBorder = new Region();
+		targetBorder.setMinSize(cellWidth, cellHeight);
+		targetBorder.setPrefSize(cellWidth, cellHeight);
+		targetBorder.setMaxSize(cellWidth, cellHeight);
+
 		Cell map[][] = Game.map;
 		grid.getChildren().clear();
 		grid.setPadding(new Insets(5));
@@ -307,10 +312,6 @@ public class GameScene {
 		}
 	}
 
-	/**
-	 * Updates the displayed grid.
-	 * 
-	 */
 	private void updateGrid() {
 		Cell map[][] = Game.map;
 		for (int i = map.length - 1; i >= 0; i--) {
@@ -325,7 +326,12 @@ public class GameScene {
 						content.setFitHeight(cellHeight);
 						if (c != null)
 							content.setImage(c.getModel());
-						cells[i][j].setOnMouseClicked(e -> currentHero.setTarget(c));
+						cells[i][j].setOnMouseClicked(e -> {
+							if (e.getButton() == MouseButton.SECONDARY) {
+								currentHero.setTarget(c);
+								updateScene();
+							}
+						});
 					}
 
 					else if (map[i][j] instanceof CollectibleCell) {
@@ -351,6 +357,23 @@ public class GameScene {
 				cells[i][j].getChildren().add(1, content);
 			}
 		}
+
+		int x = currentHero.getLocation().x, y = currentHero.getLocation().y;
+		if (!cells[x][y].getChildren().contains(heroBorder))
+			cells[x][y].getChildren().add(heroBorder);
+
+		if (targetBorder.getParent() != null)
+			((StackPane) targetBorder.getParent()).getChildren().remove(targetBorder);
+
+		if (currentHero.getTarget() != null) {
+			x = currentHero.getTarget().getLocation().x;
+			y = currentHero.getTarget().getLocation().y;
+			cells[x][y].getChildren().add(targetBorder);
+			if (currentHero.getTarget() instanceof Zombie)
+				targetBorder.setId("zombie-target");
+			else
+				targetBorder.setId("hero-target");
+		}
 	}
 
 	private StackPane base() {
@@ -364,32 +387,46 @@ public class GameScene {
 		res.setMaxHeight(cellHeight);
 		res.setMinWidth(cellWidth);
 		res.setMaxWidth(cellWidth);
-		res.getStyleClass().add("cell");
 		return res;
+	}
+
+	private void createHeroesStack() {
+		Heroes = new VBox(10);
+		Heroes.setStyle("-fx-background-color : transparent;");
+
+		for (int i = 0; i < 6; i++) {
+			BorderPane result = new BorderPane();
+			result.setPrefSize(heroCardWidth, heroCardHeight);
+			result.setMinHeight(heroCardHeight);
+			result.setMaxHeight(heroCardHeight);
+			result.setMinWidth(heroCardWidth);
+			result.setMaxWidth(heroCardWidth);
+			result.setVisible(false);
+			Heroes.getChildren().add(result);
+		}
 	}
 
 	// create a stack of hero cards
 	private void updateHeroesStack() {
 		ArrayList<Hero> h = Game.heroes;
 		VBox stack = Heroes;
-
-		stack.getChildren().clear();
-		for (Hero x : h) {
-			BorderPane card = heroCard(x);
-			stack.getChildren().add(card);
+		for (int i = 0; i < 6; i++) {
+			Heroes.getChildren().get(i).setVisible(false);
 		}
-
+		for (int i = 0; i < h.size(); i++) {
+			heroCard(h.get(i), (BorderPane) stack.getChildren().get(i));
+		}
 	}
 
 	// create a card for a hero
-	private BorderPane heroCard(Hero h) {
-
-		BorderPane result = new BorderPane();
+	private void heroCard(Hero h, BorderPane result) {
+		result.getChildren().clear();
 		result.setPrefSize(heroCardWidth, heroCardHeight);
 		result.setMinHeight(heroCardHeight);
 		result.setMaxHeight(heroCardHeight);
 		result.setMinWidth(heroCardWidth);
 		result.setMaxWidth(heroCardWidth);
+		result.setVisible(true);
 
 		HBox card = new HBox();
 
@@ -474,8 +511,7 @@ public class GameScene {
 		result.setOnMouseClicked(e -> {
 			play(selectSound);
 			currentHero = h;
-			updateHeroesStack();
-
+			updateScene();
 		});
 
 		Label Name = new Label(name);
@@ -484,8 +520,6 @@ public class GameScene {
 		Name.setStyle("-fx-alignment:center;-fx-font-size: " + (bottomFont * 0.7));
 
 		img.getChildren().add(Name);
-		return result;
-
 	}
 
 	private VBox heroImage(Hero h) {
@@ -583,7 +617,6 @@ public class GameScene {
 		res.setHgap(healthBarWidth * 0.07);
 		HBox bar = new HBox(2);
 		bar.setAlignment(Pos.CENTER);
-		// bar.setStyle("-fx-border-color:red;");
 
 		while (x-- > 0) {
 			Rectangle rec = new Rectangle(divWidth, divHeight);
@@ -615,7 +648,11 @@ public class GameScene {
 		updates.setMaxHeight(updatesHeight);
 		updates.setPrefHeight(updatesHeight);
 		updates.setStyle("-fx-font-size: " + bottomFont + ";");
-		((ImageView) root.getChildren().get(0)).setFitHeight((double) newHeight);
+		wallpaper.setFitHeight((double) newHeight);
+		menu.setMinHeight((double) newHeight);
+		menu.setPrefHeight((double) newHeight);
+		menu.setMaxHeight((double) newHeight);
+
 		createGrid();
 		updateScene();
 	}
@@ -637,7 +674,10 @@ public class GameScene {
 		updates.setMaxWidth(heroCardWidth);
 		updates.setPrefWidth(heroCardWidth);
 		updates.setStyle("-fx-font-size: " + bottomFont + ";");
-		((ImageView) root.getChildren().get(0)).setFitWidth((double) newWidth);
+		wallpaper.setFitWidth((double) newWidth);
+		menu.setMinWidth(heroCardWidth);
+		menu.setPrefWidth(heroCardWidth);
+		menu.setMaxWidth(heroCardWidth);
 		createGrid();
 		updateScene();
 	}
@@ -649,9 +689,13 @@ public class GameScene {
 	}
 
 	private void animate(int i, int j, Color c) {
+		animate(i, j, c, 150);
+	}
+
+	private void animate(int i, int j, Color c, int period) {
 		Rectangle rect = (Rectangle) cells[i][j].getChildren().get(2);
 		rect.setFill(c);
-		FadeTransition ft1 = new FadeTransition(Duration.millis(150), rect);
+		FadeTransition ft1 = new FadeTransition(Duration.millis(period), rect);
 		ft1.setFromValue(0);
 		ft1.setToValue(0.3);
 		ft1.setCycleCount(2);
@@ -672,5 +716,27 @@ public class GameScene {
 	private void handleException(GameActionException e) {
 		display(e.getMessage());
 		play(errorSound);
+	}
+
+	private void endTurn() {
+		ArrayList<Point> locations = Game.endTurn();
+		for (Point p : locations) {
+			animate(p.x, p.y, Color.RED, 300);
+		}
+		if (locations.size() > 0) {
+			root.setOnKeyPressed(null);
+			grid.setOnMouseClicked(null);
+			play(zombieSound);
+
+			Timer t = new Timer();
+			t.schedule(new TimerTask() {
+
+				@Override
+				public void run() {
+					root.setOnKeyPressed(e -> Keyboardcontrols(e));
+					grid.setOnMouseClicked(e -> mouseControls(e));
+				}
+			}, 1000);
+		}
 	}
 }

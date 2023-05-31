@@ -64,7 +64,7 @@ public class FirstScene {
 	private ImageView createImageView() {
 		Image image = null;
 		try {
-			String path = "assets/" + Game.mode + "/images/wallpapers/firstscene.jpg";
+			String path = "assets/" + Game.mode + "/images/wallpapers/firstscene.png";
 			image = new Image(new File(path).toURI().toURL().toExternalForm());
 		} catch (Exception e) {
 		}

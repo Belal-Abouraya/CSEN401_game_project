@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import engine.Game;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -71,8 +72,9 @@ public class TutorialScene {
 		create(hKey, "Tutorial menu");
 		create(rClick, "Set target");
 		create(lClick, "Attack");
-		vBox.setAlignment(Pos.CENTER);
 
+		vBox.setAlignment(Pos.CENTER);
+		vBox.setPadding(new Insets(20));
 		root.getChildren().add(vBox);
 	}
 
@@ -86,7 +88,7 @@ public class TutorialScene {
 		l.setStyle("-fx-font-size:" + fontSize);
 		ImageView imageView = new ImageView(image);
 		imageView.setFitWidth(imageWidth);
-		imageView.setFitHeight(imageWidth);
+		imageView.setFitHeight(imageHeight);
 		hBox.setAlignment(Pos.CENTER_LEFT);
 		hBox.getChildren().add(imageView);
 		hBox.getChildren().add(l);

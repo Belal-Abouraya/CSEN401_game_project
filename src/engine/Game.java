@@ -210,15 +210,18 @@ public class Game {
 	 * @throws InvalidTargetException
 	 */
 
-	public static void endTurn() {
+	public static ArrayList<Point> endTurn() {
+		ArrayList<Point> res = new ArrayList<>();
 		Zombie z1 = null;
 		z1 = new Zombie();
 		spawnCell(new CharacterCell(z1));
 
 		for (int i = 0; i < zombies.size(); i++) {
 			Zombie z = zombies.get(i);
-			if (z.getAdjacentTarget() != null) {
+			Hero h = z.getAdjacentTarget();
+			if (h != null) {
 				try {
+					res.add(h.getLocation());
 					z.attack();
 				} catch (GameActionException e) {
 					System.out.println("Balabizo");
@@ -233,6 +236,7 @@ public class Game {
 		if (z1 != null)
 			zombies.add(z1);
 		turns++;
+		return res;
 	}
 
 	/**
