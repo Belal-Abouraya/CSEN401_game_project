@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -33,7 +34,7 @@ public class TutorialScene {
 			fKey = Hero.loadIcon("f"), hKey = Hero.loadIcon("h"), rClick = Hero.loadIcon("rightclick"),
 			lClick = Hero.loadIcon("leftclick");
 
-	public TutorialScene() {
+	public TutorialScene(Parent prev) {
 		root = new StackPane();
 		Image image = null;
 		try {
@@ -45,7 +46,6 @@ public class TutorialScene {
 
 		imageView.setFitWidth(GameScene.SCENEWIDTH);
 		imageView.setFitHeight(GameScene.SCENEHEIGHT);
-		imageView.setFitHeight(873);
 
 		root.getChildren().add(imageView);
 		createStack();
@@ -57,9 +57,8 @@ public class TutorialScene {
 		root.setFocusTraversable(true);
 		root.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.H) {
-				SecondScene secondScene = new SecondScene();
 				GameScene.play(select);
-				Main.scene.setRoot((secondScene).getRoot());
+				Main.scene.setRoot(prev);
 			}
 		});
 	}
@@ -91,7 +90,7 @@ public class TutorialScene {
 	private void create(Image image, String message) {
 		HBox hBox = new HBox(20);
 		Label l = new Label(message);
-		l.setStyle("-fx-font-size:" + fontSize);
+		l.setStyle("-fx-text-fill: white;-fx-font-size:" + fontSize);
 		ImageView imageView = new ImageView(image);
 		imageView.setFitWidth(imageWidth);
 		imageView.setFitHeight(imageHeight);

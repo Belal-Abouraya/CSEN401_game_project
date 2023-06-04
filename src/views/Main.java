@@ -1,7 +1,6 @@
 package views;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 
 import engine.Game;
@@ -16,8 +15,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
-
-
 import javafx.stage.Stage;
 import model.characters.Hero;
 
@@ -89,9 +86,10 @@ public class Main extends Application {
 //	public void start(Stage primaryStage) throws FileNotFoundException, IOException {
 //		Game.loadHeroes("assets/classic/heroes.csv");
 //		Game.startGame(Game.availableHeroes.get(0));
-//		GameScene g = new GameScene();
+//		WinningScene g = new WinningScene();
 ////		TutorialScene t = new TutorialScene();
 //		primaryStage.setScene(new Scene(g.getRoot()));
+//		primaryStage.getScene().getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
 //		primaryStage.setFullScreen(true);
 //		primaryStage.show();
 //	}

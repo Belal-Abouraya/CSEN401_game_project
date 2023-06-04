@@ -20,19 +20,18 @@ import javafx.scene.media.MediaPlayer;
 public class WinningScene {
 
 	MediaPlayer mediaPlayer;
-	//SecondScene sc = new SecondScene();
 	Label label = new Label();
 	VBox vbox = new VBox(6);
 	double size = 23;
 	double factor = 23;
 	private MediaPlayer select = GameScene.loadMedia("select");
-	
+
 	public StackPane getRoot() {
 		ImageView imageView = getImageView();
 		StackPane stackPane = new StackPane();
 		createLabel();
 		createVBox();
-		stackPane.getChildren().addAll(imageView ,label ,vbox);
+		stackPane.getChildren().addAll(imageView, label, vbox);
 		vbox.setAlignment(Pos.BOTTOM_LEFT);
 		getMediaPlayer();
 		stackPane.setFocusTraversable(true);
@@ -48,15 +47,15 @@ public class WinningScene {
 				Main.window.getScene().setRoot((new SecondScene()).getRoot());
 			}
 		});
-		
+
 		stackPane.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-			Main.width = (double) newWidth ;
+			Main.width = (double) newWidth;
 			imageView.setFitWidth((double) newWidth);
 			SecondScene.updateLabelSize(label, Main.width, Main.height, 30);
 			updateVbox();
 		});
 		stackPane.heightProperty().addListener((obs, oldHeight, newHeight) -> {
-			Main.height = (double) newHeight ;
+			Main.height = (double) newHeight;
 			imageView.setFitHeight((double) newHeight);
 			SecondScene.updateLabelSize(label, Main.width, Main.height, 30);
 			updateVbox();
@@ -84,31 +83,29 @@ public class WinningScene {
 		mediaPlayer.setAutoPlay(true);
 		mediaPlayer.setCycleCount(Timeline.INDEFINITE);
 	}
-	
+
 	private void createLabel() {
 		label.setId("winnigLabel");
 		long totalTime = Game.endTime - Game.startTime;
-		totalTime/=1000;
-		long minutes = totalTime / 60 ;
-		long seconds = totalTime % 60 ;
-		String text = "Total time played : " + minutes + ":" + seconds + "\n" + "\n" 
-				+ "Number of Turns played : " + Game.turns + "\n" + "\n"
-				+ "Number of Zombies killed : " + Game.deadZombies+ "\n" + "\n" 
+		totalTime /= 1000;
+		long minutes = totalTime / 60;
+		long seconds = totalTime % 60;
+		String text = "Total time played : " + minutes + ":" + seconds + "\n" + "\n" + "Number of Turns played : "
+				+ Game.turns + "\n" + "\n" + "Number of Zombies killed : " + Game.deadZombies + "\n" + "\n"
 				+ "Number of Heroes lost : " + Game.deadHeroes + "\n";
 		label.setText(text);
 	}
-	
+
 	private void createVBox() {
 		HBox quit = SecondScene.createButton("q", "Quit", size, factor);
 		HBox play = SecondScene.createButton("r", "Replay", size, factor);
-		vbox.getChildren().addAll(play , quit);
+		vbox.getChildren().addAll(play, quit);
 	}
-	
+
 	private void updateVbox() {
-		for(Node node : vbox.getChildren()) {
+		for (Node node : vbox.getChildren()) {
 			HBox currentButton = (HBox) node;
-			SecondScene.updateVBox(currentButton , size , factor);
+			SecondScene.updateVBox(currentButton, size, factor);
 		}
 	}
-	
 }

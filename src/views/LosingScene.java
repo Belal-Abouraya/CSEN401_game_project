@@ -1,7 +1,6 @@
 package views;
 
 import java.io.File;
-import java.io.IOException;
 
 import engine.Game;
 import javafx.animation.KeyFrame;
