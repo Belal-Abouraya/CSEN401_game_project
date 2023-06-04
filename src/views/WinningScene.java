@@ -3,71 +3,63 @@ package views;
 import java.io.File;
 
 import engine.Game;
-import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.paint.Color;
-import javafx.util.Duration;
 
 public class WinningScene {
 
 	MediaPlayer mediaPlayer;
-
+	//SecondScene sc = new SecondScene();
+	Label label = new Label();
+	VBox vbox = new VBox(6);
+	double size = 23;
+	double factor = 23;
+	private MediaPlayer select = GameScene.loadMedia("select");
+	
 	public StackPane getRoot() {
 		ImageView imageView = getImageView();
 		StackPane stackPane = new StackPane();
-		stackPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-		Label label = new Label();
-		label.setId("winnigLabel");
-		stackPane.getChildren().addAll(label);
+		createLabel();
+		createVBox();
+		stackPane.getChildren().addAll(imageView ,label ,vbox);
+		vbox.setAlignment(Pos.BOTTOM_LEFT);
 		getMediaPlayer();
-		Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, e -> {
-			// Set the text and start the fade transition
-			label.setText("The World is safe!");
-			label.setOpacity(1);// initially set opacity to 1
-			FadeTransition fadeTransition = new FadeTransition(Duration.seconds(4), label);
-			fadeTransition.setFromValue(1);
-			fadeTransition.setToValue(0);
-			fadeTransition.play();
-		}), new KeyFrame(Duration.seconds(3), e -> {
-			// Set the new text and start the fade transition
-			label.setText("You can rest now!");
-			label.setOpacity(1); // reset the opacity to 1
-			FadeTransition fadeTransition = new FadeTransition(Duration.seconds(4), label);
-			fadeTransition.setFromValue(1);
-			fadeTransition.setToValue(0);
-			fadeTransition.play();
-		}), new KeyFrame(Duration.seconds(6), e -> {
-			// Start the fade transition on the image view
-			stackPane.getChildren().addAll(imageView);
-			FadeTransition fadeTransition = new FadeTransition(Duration.seconds(4), imageView);
-			fadeTransition.setFromValue(0);
-			fadeTransition.setToValue(1);
-			fadeTransition.play();
-		}));
-		timeline.play();
-
 		stackPane.setFocusTraversable(true);
 		Platform.runLater(() -> stackPane.requestFocus());
 		stackPane.setOnKeyPressed(e -> {
-			if (e.getCode() == KeyCode.Q)
+			if (e.getCode() == KeyCode.Q) {
+				select.play();
 				Main.window.close();
+			}
+			if (e.getCode() == KeyCode.R) {
+				select.play();
+				mediaPlayer.stop();
+				Main.window.getScene().setRoot((new SecondScene()).getRoot());
+			}
 		});
+		
 		stackPane.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+			Main.width = (double) newWidth ;
 			imageView.setFitWidth((double) newWidth);
+			SecondScene.updateLabelSize(label, Main.width, Main.height, 30);
+			updateVbox();
 		});
 		stackPane.heightProperty().addListener((obs, oldHeight, newHeight) -> {
+			Main.height = (double) newHeight ;
 			imageView.setFitHeight((double) newHeight);
+			SecondScene.updateLabelSize(label, Main.width, Main.height, 30);
+			updateVbox();
 		});
 		return stackPane;
 	}
@@ -92,4 +84,31 @@ public class WinningScene {
 		mediaPlayer.setAutoPlay(true);
 		mediaPlayer.setCycleCount(Timeline.INDEFINITE);
 	}
+	
+	private void createLabel() {
+		label.setId("winnigLabel");
+		long totalTime = Game.endTime - Game.startTime;
+		totalTime/=1000;
+		long minutes = totalTime / 60 ;
+		long seconds = totalTime % 60 ;
+		String text = "Total time played : " + minutes + ":" + seconds + "\n" + "\n" 
+				+ "Number of Turns played : " + Game.turns + "\n" + "\n"
+				+ "Number of Zombies killed : " + Game.deadZombies+ "\n" + "\n" 
+				+ "Number of Heroes lost : " + Game.deadHeroes + "\n";
+		label.setText(text);
+	}
+	
+	private void createVBox() {
+		HBox quit = SecondScene.createButton("q", "Quit", size, factor);
+		HBox play = SecondScene.createButton("r", "Replay", size, factor);
+		vbox.getChildren().addAll(play , quit);
+	}
+	
+	private void updateVbox() {
+		for(Node node : vbox.getChildren()) {
+			HBox currentButton = (HBox) node;
+			SecondScene.updateVBox(currentButton , size , factor);
+		}
+	}
+	
 }

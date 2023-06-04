@@ -65,6 +65,7 @@ public class Game {
 	public static void loadHeroes(String filePath) throws FileNotFoundException, IOException {
 		FileReader fr = new FileReader(filePath);
 		Scanner sc = new Scanner(fr);
+		availableHeroes.clear();
 		while (sc.hasNextLine()) {
 			String[] tmp = sc.nextLine().split(",");
 			String name = tmp[0];
@@ -136,6 +137,8 @@ public class Game {
 	public static void startGame(Hero h) {
 		startTime = System.currentTimeMillis();
 		deadZombies = deadHeroes = turns = 0;
+		zombies.clear();
+		heroes.clear();
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[i].length; j++) {
 				map[i][j] = new CharacterCell();

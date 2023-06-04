@@ -24,6 +24,8 @@ public class LosingScene {
 	Label no = new Label("NO");
 	ImageView imageView;
 	MediaPlayer mediaPlayer;
+	private MediaPlayer select = GameScene.loadMedia("select");
+	private MediaPlayer hover = GameScene.loadMedia("hover");
 
 	public StackPane getRoot() {
 
@@ -89,17 +91,14 @@ public class LosingScene {
 		updateLabel(yes);
 		updateLabel(no);
 		yes.setOnMouseClicked(e -> {
-			Game.availableHeroes.clear();
-			Game.heroes.clear();
-			Game.zombies.clear();
-			try {
-				Game.loadHeroes("assets/" + Game.mode + "/heroes.csv");
-			} catch (IOException e1) {
-			}
+			select.play();
 			mediaPlayer.stop();
 			Main.window.getScene().setRoot((new SecondScene()).getRoot());
 		});
-		no.setOnMouseClicked(e -> Main.window.close());
+		no.setOnMouseClicked(e -> {
+			select.play();
+			Main.window.close();
+		});
 	}
 
 	private void updateLabel(Label label) {
@@ -108,9 +107,11 @@ public class LosingScene {
 				new KeyFrame(Duration.seconds(2), new KeyValue(label.opacityProperty(), 0)));
 		timeLine.setCycleCount(Timeline.INDEFINITE);
 		label.setOnMouseEntered(e -> {
+			hover.play();
 			timeLine.play();
 		});
 		label.setOnMouseExited(e -> {
+			hover.stop();
 			timeLine.stop();
 			label.setOpacity(1);
 		});

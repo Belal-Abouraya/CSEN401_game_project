@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import javax.swing.plaf.basic.BasicSplitPaneUI.KeyboardEndHandler;
-
 import engine.Game;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -18,8 +16,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
-
-
 
 
 import javafx.stage.Stage;
@@ -62,7 +58,7 @@ public class Main extends Application {
 		scene.setCursor(imageCursor);
 		window.setScene(scene);
 		window.setFullScreen(true);
-		window.setFullScreenExitHint("Press F to toggle fullscreen mode");
+		window.setFullScreenExitHint("");
 		window.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			if (e.getCode() == KeyCode.F)
 				window.setFullScreen(!window.isFullScreen());
@@ -74,11 +70,6 @@ public class Main extends Application {
 	}
 
 	public static void main(String[] args) {
-		try {
-			Game.loadHeroes("assets/" + Game.mode + "/heroes.csv");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		launch(args);
 	}
 

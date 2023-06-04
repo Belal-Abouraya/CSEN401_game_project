@@ -1,6 +1,7 @@
 package views;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import engine.Game;
@@ -20,6 +21,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -47,25 +49,33 @@ public class SecondScene {
 	private Label selectYourHero;
 	private Label info = new Label();
 	private StackPane hBoxContainer = new StackPane();
-	private HBox hBox = new HBox(Main.width / 7.05);
+	private VBox vbox = new VBox(Main.height / 3.7);
+	private HBox button = new HBox(6);
 	private Timeline timeLine = new Timeline();
 
 	private MediaPlayer select = GameScene.loadMedia("select");
 	private MediaPlayer hover = GameScene.loadMedia("hover");
+	private double textSize = 23 ;
+	private double factor = 23 ;
 
 	public SecondScene() {
+		try {
+			Game.loadHeroes("assets/" + Game.mode + "/heroes.csv");
+		} catch (IOException e1) {
+		}
 		Main.mediaPlayer.play();
 		Main.mediaPlayer.setCycleCount(Timeline.INDEFINITE);
-		createBackGround();
+		createBackGround();	
 		createSelectYourHeroLabel();
 		createHeroes();
-
+		button = createButton("h", "Help" , textSize , 28);
+		
 		root.getChildren().addAll(wallpaper, borderPane, selectYourHero, model);
 
 		info.setId("info");
 		info.setVisible(false);
 		info.setMinSize(RectangleWidth * 2, RectangleHeight * 3);
-		hBox.setAlignment(Pos.CENTER_LEFT);
+		vbox.setAlignment(Pos.BOTTOM_LEFT);
 		borderPane.setBackground(Background.fill(new Color(0, 0, 0, 0)));
 		borderPane.setFocusTraversable(true);
 		Platform.runLater(() -> heroes.requestFocus());
@@ -73,8 +83,8 @@ public class SecondScene {
 		model.setVisible(false);
 		heroesContainer.getChildren().add(heroes);
 		borderPane.setRight(heroesContainer);
-		hBox.getChildren().add(info);
-		hBoxContainer.getChildren().add(hBox);
+		vbox.getChildren().addAll(info , button);
+		hBoxContainer.getChildren().add(vbox);
 		borderPane.setLeft(hBoxContainer);
 		root.setOnKeyPressed(e -> keyboardHandle(e));
 		borderPane.widthProperty().addListener((observable, oldWidth, newWidth) -> {
@@ -88,9 +98,11 @@ public class SecondScene {
 			RectangleWidth = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.98;
 			updateMapWidth();
 			updateLabel();
+			updateVBox(button , textSize , factor);
 		});
 		borderPane.heightProperty().addListener((observable, oldHeight, newHeight) -> {
 			double nh = (double) newHeight;
+			vbox.setSpacing(Main.height / 3.7);
 			Main.height = nh;
 			wallpaper.setFitHeight(nh);
 			updateLabelSize(selectYourHero, Main.width, nh, 30);
@@ -100,6 +112,7 @@ public class SecondScene {
 			RectangleWidth = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.98;
 			updateMapHeight();
 			updateLabel();
+			updateVBox(button , textSize , factor);
 		});
 	}
 
@@ -134,6 +147,26 @@ public class SecondScene {
 		heroes.setTranslateX(-2);
 		heroes.setHgap(2);
 		heroes.setVgap(2);
+	}
+	
+	static HBox createButton(String letter , String text , double textSize , double factor) {
+		HBox button = new HBox(6);
+		Image hKey = Hero.loadIcon(letter);
+		ImageView imageView = new ImageView(hKey);
+		double size = Math.min(Main.height, Main.width)/factor;
+		imageView.setFitHeight(size);
+		imageView.setFitWidth(size);
+		Label label = new Label(text);
+		label.setStyle("-fx-font-size : " + textSize + "px");
+		button.getChildren().addAll(imageView , label);
+		return button;
+	}
+	
+	static void updateVBox(HBox button , double prev , double factor) {
+		double size = Math.min(Main.height, Main.width)/factor;
+		((ImageView) button.getChildren().get(0)).setFitHeight(size);
+		((ImageView) button.getChildren().get(0)).setFitWidth(size);
+		updateLabelSize((Label) button.getChildren().get(1), Main.width, Main.height, prev);
 	}
 
 	private StackPane hero(Hero h, int x, int y) {
@@ -176,7 +209,7 @@ public class SecondScene {
 				+ "Actions per Turn : " + h.getMaxActions() + "\n" + "Attack Damage : " + h.getAttackDmg();
 	}
 
-	private void updateLabelSize(Label label, double width, double height, double prev) {
+	static void updateLabelSize(Label label, double width, double height, double prev) {
 		double size = prev * Math.sqrt((width * height) / (720 * 1280));
 		label.setStyle("-fx-font-size : " + size + " ;");
 	}
@@ -221,15 +254,15 @@ public class SecondScene {
 		case A:
 		case S:
 		case D:
+		case H:
 		case ENTER:
 			isValid = true;
 		default:
 			break;
 		}
 		if (isValid) {
-			if (e.getCode() != KeyCode.ENTER) {
-				hover.stop();
-				hover.play();
+			if (e.getCode() != KeyCode.ENTER && e.getCode() != KeyCode.H) {
+				GameScene.play(hover);
 				((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(darkColor);
 				((Rectangle) mapPane[row][column].getChildren().get(0)).setOpacity(0.2);
 			}
@@ -238,6 +271,10 @@ public class SecondScene {
 			case A -> column = Math.max(column - 1, 0);
 			case S -> row = Math.min(row + 1, d1 - 1);
 			case D -> column = Math.min(column + 1, d2 - 1);
+			case H ->{ 
+				GameScene.play(select);
+				Main.window.getScene().setRoot((new TutorialScene()).getRoot());
+			}
 			case ENTER -> {
 				Main.mediaPlayer.stop();
 				select.play();
@@ -278,5 +315,9 @@ public class SecondScene {
 		model.setImage(map[row][column].getModel());
 		model.setFitHeight((1920 / 3) * Math.pow(Main.height / 720, 0.85));
 		model.setFitWidth((1480 / 3) * Math.sqrt(Main.width / 1280));
+	}
+	
+	public MediaPlayer getHover() {
+		return hover ;
 	}
 }

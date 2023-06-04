@@ -23,7 +23,7 @@
 	-fx-font-family : "Orbitron";
 	-fx-font-size : 30px ;
 	-fx-font-weight: 300 ;
-	-fx-text-fill : linear-gradient( #F4684B, #F56254 , #C48773 ) ;
+	-fx-text-fill : #A9A9A9;
 	
 }
 
@@ -47,11 +47,12 @@
 }
 
 #winnigLabel {
-	-fx-font-family : "Orbitron";
-	-fx-font-size : 50px ;
-	-fx-font-weight : 500 ;
-	-fx-text-fill: #A9A9A9;
+	-fx-background-color: rgba(0, 0, 0, 0.5);
+	-fx-font-size : 30px ;
+	-fx-text-fill: white;
 	-fx-text-alignment: center;
+	-fx-padding: 40;
+	-fx-background-radius: 10;
 }
 
 #info {

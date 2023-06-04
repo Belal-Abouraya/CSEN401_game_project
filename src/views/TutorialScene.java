@@ -15,6 +15,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.MediaPlayer;
 import model.characters.Hero;
 
 /**
@@ -23,6 +24,8 @@ import model.characters.Hero;
 public class TutorialScene {
 	private StackPane root;
 	private VBox vBox;
+	private MediaPlayer select = GameScene.loadMedia("select");
+
 	final private static double FONTSIZE = 30, IMAGEWIDTH = 50, IMAGEHEIGHT = 50;
 	private double fontSize = FONTSIZE, imageWidth = IMAGEWIDTH, imageHeight = IMAGEHEIGHT;
 	private Image wKey = Hero.loadIcon("w"), aKey = Hero.loadIcon("a"), sKey = Hero.loadIcon("s"),
@@ -53,8 +56,11 @@ public class TutorialScene {
 		Platform.runLater(() -> root.requestFocus());
 		root.setFocusTraversable(true);
 		root.setOnKeyPressed(e -> {
-			if (e.getCode() == KeyCode.H)
-				Main.scene.setRoot((new GameScene()).getRoot());
+			if (e.getCode() == KeyCode.H) {
+				SecondScene secondScene = new SecondScene();
+				GameScene.play(select);
+				Main.scene.setRoot((secondScene).getRoot());
+			}
 		});
 	}
 

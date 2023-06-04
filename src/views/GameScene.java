@@ -203,9 +203,6 @@ public class GameScene {
 			display("Zombies turn!");
 			endTurn();
 		}
-		case H -> {
-			Main.scene.setRoot((new TutorialScene()).getRoot());
-		}
 		}
 
 		if (d != null) {
@@ -708,7 +705,7 @@ public class GameScene {
 		ft.play();
 	}
 
-	private void play(MediaPlayer m) {
+	static void play(MediaPlayer m) {
 		m.seek(Duration.ZERO);
 		m.play();
 	}
