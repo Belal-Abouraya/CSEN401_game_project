@@ -104,7 +104,7 @@ public class SecondScene {
 			double nh = (double) newHeight;
 			vbox.setSpacing(Main.height / 3.7);
 			Main.height = nh;
-			wallpaper.setFitHeight(nh + 10);
+			wallpaper.setFitHeight(nh + 20);
 			updateLabelSize(selectYourHero, Main.width, nh, 30);
 			model.setFitHeight((1920 / 3) * Math.pow(Main.height / 720, 0.85));
 			model.setFitWidth((1480 / 3) * Math.sqrt(Main.width / 1280));
@@ -210,8 +210,11 @@ public class SecondScene {
 	}
 
 	static void updateLabelSize(Label label, double width, double height, double prev) {
-		double size = prev * Math.sqrt((width * height) / (720 * 1280));
-		label.setStyle("-fx-text-fill: white;-fx-font-size : " + size + " ;");
+		Platform.runLater(() -> {
+			double size = prev * Math.sqrt((width * height) / (720 * 1280));
+			label.setStyle("-fx-text-fill: white;-fx-font-size : " + size + " ;");
+		});
+
 	}
 
 	private void updateMapHeight() {
@@ -241,10 +244,13 @@ public class SecondScene {
 	}
 
 	private void updateLabel() {
-		info.setMinHeight(RectangleWidth * 2);
-		info.setMinWidth(RectangleHeight * 3);
-		double size = 15 * Math.pow((Main.height * Main.width) / (1280 * 720), 1.0 / 3);
-		info.setStyle("-fx-font-size : " + size + " ;");
+		Platform.runLater(() -> {
+			info.setMinHeight(RectangleWidth * 2);
+			info.setMinWidth(RectangleHeight * 3);
+			double size = 15 * Math.pow((Main.height * Main.width) / (1280 * 720), 1.0 / 3);
+			info.setStyle("-fx-font-size : " + size + " ;");
+		});
+
 	}
 
 	private void keyboardHandle(KeyEvent e) {

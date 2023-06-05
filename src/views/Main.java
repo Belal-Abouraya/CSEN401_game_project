@@ -18,9 +18,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.characters.Hero;
 
-/**
- * 
- */
 public class Main extends Application {
 	static Stage window;
 	static double width = 1280;

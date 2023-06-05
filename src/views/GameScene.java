@@ -46,10 +46,6 @@ import model.world.CharacterCell;
 import model.world.CollectibleCell;
 
 /**
- * A Helper class that creates the game scene. It has only one attribute:
- * <ul>
- * <li>currentHero</li>
- * </ul>
  * 
  * @author Belal Abouraya
  * @author Rafael Samuel
