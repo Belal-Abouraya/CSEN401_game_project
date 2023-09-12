@@ -16,6 +16,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.characters.Hero;
 
 public class Main extends Application {
@@ -38,7 +39,9 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws MalformedURLException {
 		window = primaryStage;
 		window.getIcons().add(Hero.loadIcon("icon"));
-		getMediaPlayer();
+		mediaPlayer = loadMusic("firstscene");
+		mediaPlayer.setAutoPlay(true);
+		mediaPlayer.setCycleCount(Timeline.INDEFINITE);
 		window.setTitle("Last of Us : Legacy");
 		scene.setRoot((new FirstScene()).getRoot());
 		scene.getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
@@ -67,14 +70,34 @@ public class Main extends Application {
 		launch(args);
 	}
 
-	private void getMediaPlayer() {
-		String path = "assets/" + Game.mode + "/audio/music/firstscene.mp3";
-		Media firstSceneMusic = new Media(new File(path).toURI().toString());
-		mediaPlayer = new MediaPlayer(firstSceneMusic);
-		mediaPlayer.setAutoPlay(true);
-		mediaPlayer.setCycleCount(Timeline.INDEFINITE);
+	public static Image loadImage(String name) {
+		Image i = null;
+		try {
+			i = new Image(new File("assets/" + Game.mode + "/images/" + name).toURI().toURL().toExternalForm());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		return i;
 	}
 
+	private static MediaPlayer loadMedia(String name) {
+		String path = "assets/" + Game.mode + "/audio/" + name;
+		Media res = new Media(new File(path).toURI().toString());
+		return new MediaPlayer(res);
+	}
+
+	static MediaPlayer loadMusic(String name) {
+		return loadMedia("music/" + name + ".mp3");
+	}
+
+	static MediaPlayer loadEffect(String name) {
+		return loadMedia("effects/" + name + ".wav");
+	}
+
+	static void play(MediaPlayer m) {
+		m.seek(Duration.ZERO);
+		m.play();
+	}
 //	public static void main(String[] args) {
 //		launch(args);
 //	}

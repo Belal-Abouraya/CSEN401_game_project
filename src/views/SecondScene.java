@@ -53,8 +53,8 @@ public class SecondScene {
 	private HBox button = new HBox(6);
 	private Timeline timeLine = new Timeline();
 
-	private MediaPlayer select = GameScene.loadMedia("select");
-	private MediaPlayer hover = GameScene.loadMedia("hover");
+	private MediaPlayer select = Main.loadEffect("select");
+	private MediaPlayer hover = Main.loadEffect("hover");
 	private double textSize = 23;
 	private double factor = 23;
 
@@ -268,7 +268,7 @@ public class SecondScene {
 		}
 		if (isValid) {
 			if (e.getCode() != KeyCode.ENTER && e.getCode() != KeyCode.H) {
-				GameScene.play(hover);
+				Main.play(hover);
 				((Rectangle) mapPane[row][column].getChildren().get(0)).setFill(darkColor);
 				((Rectangle) mapPane[row][column].getChildren().get(0)).setOpacity(0.2);
 			}
@@ -278,7 +278,7 @@ public class SecondScene {
 			case S -> row = Math.min(row + 1, d1 - 1);
 			case D -> column = Math.min(column + 1, d2 - 1);
 			case H -> {
-				GameScene.play(select);
+				Main.play(select);
 				Main.window.getScene().setRoot((new TutorialScene(root)).getRoot());
 			}
 			case ENTER -> {

@@ -15,6 +15,7 @@ import model.collectibles.Vaccine;
 import model.world.CharacterCell;
 import model.world.CollectibleCell;
 import model.world.TrapCell;
+import views.Main;
 
 /**
  * Hero is the abstract base class of all heroes in the game. it contains all
@@ -304,13 +305,6 @@ public abstract class Hero extends Character {
 	 * @return the loaded hero icon
 	 */
 	public static Image loadIcon(String name) {
-		Image res = null;
-		try {
-			String path = "assets/" + Game.mode + "/images/icons/" + name + ".png";
-			res = new Image(new File(path).toURI().toURL().toExternalForm());
-		} catch (Exception e) {
-			System.out.println(name + "'s images are missing");
-		}
-		return res;
+		return Main.loadImage("icons/" + name + ".png");
 	}
 }

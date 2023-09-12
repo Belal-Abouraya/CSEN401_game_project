@@ -5,7 +5,7 @@ import javafx.event.EventTarget;
 import javafx.event.EventType;
 
 /**
- * A class that models events that can occur in a game it has only two
+ * A class that models events that can occur in a game. It has only two
  * eventTypes:
  * <ul>
  * <li>GAME_OVER

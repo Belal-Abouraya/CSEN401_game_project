@@ -24,7 +24,7 @@ public class WinningScene {
 	VBox vbox = new VBox(6);
 	double size = 23;
 	double factor = 23;
-	private MediaPlayer select = GameScene.loadMedia("select");
+	private MediaPlayer select = Main.loadEffect("select");
 
 	public StackPane getRoot() {
 		ImageView imageView = getImageView();

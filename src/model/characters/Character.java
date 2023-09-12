@@ -7,6 +7,7 @@ import engine.Game;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughActionsException;
 import javafx.scene.image.Image;
+import views.Main;
 
 /**
  * Character is the abstract base class of all characters available in the game.
@@ -198,20 +199,13 @@ public abstract class Character {
 	 * @return the loaded model
 	 */
 	public static Image LoadModel(String name) {
-		Image res = null;
-		try {
-			if (name.startsWith("Zombie")) {
-				int tmp = Integer.parseInt(name.substring(7));
-				tmp %= 10;
-				tmp++;
-				name = "zombie" + tmp;
-			}
-			String path = "assets/" + Game.mode + "/images/models/" + name + ".png";
-			res = new Image(new File(path).toURI().toURL().toExternalForm());
-		} catch (Exception e) {
-			System.out.println(name + "'s images are missing");
+		if (name.startsWith("Zombie")) {
+			int tmp = Integer.parseInt(name.substring(7));
+			tmp %= 10;
+			tmp++;
+			name = "zombie" + tmp;
 		}
-		return res;
+		return Main.loadImage("models/" + name + ".png");
 	}
 
 }

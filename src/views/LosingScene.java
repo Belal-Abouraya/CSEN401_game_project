@@ -23,8 +23,8 @@ public class LosingScene {
 	Label no = new Label("NO");
 	ImageView imageView;
 	MediaPlayer mediaPlayer;
-	private MediaPlayer select = GameScene.loadMedia("select");
-	private MediaPlayer hover = GameScene.loadMedia("hover");
+	private MediaPlayer select = Main.loadEffect("select");
+	private MediaPlayer hover = Main.loadEffect("hover");
 
 	public StackPane getRoot() {
 

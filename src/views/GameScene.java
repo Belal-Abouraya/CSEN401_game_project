@@ -46,6 +46,9 @@ import model.world.CharacterCell;
 import model.world.CollectibleCell;
 
 /**
+ * A class that renders the main game scene. It handles taking input from the
+ * user, doing the appropriate game actions, displaying the results to the user
+ * and handling all possilbe exceptions.
  * 
  * @author Belal Abouraya
  * @author Rafael Samuel
@@ -104,15 +107,7 @@ public class GameScene {
 	}
 
 	private void loadAssets() {
-		Image i = null;
-		try {
-			i = new Image(new File("assets/" + Game.mode + "/images/wallpapers/secondscene.jpeg").toURI().toURL()
-					.toExternalForm());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-
-		wallpaper = new ImageView(i);
+		wallpaper = new ImageView(Main.loadImage("wallpapers/secondscene.jpeg"));
 		wallpaper.setFitWidth(SCENEWIDTH);
 		wallpaper.setFitHeight(SCENEHEIGHT);
 
@@ -128,18 +123,18 @@ public class GameScene {
 		empty = Hero.loadIcon("empty");
 
 		// loading sounds
-		attackSound = loadMedia("attack");
-		cureSound = loadMedia("cure");
-		errorSound = loadMedia("error");
-		explorerSound = loadMedia("explorer");
-		fighterSound = loadMedia("fighter");
-		hoverSound = loadMedia("hover");
-		medicSound = loadMedia("medic");
-		selectSound = loadMedia("select");
-		supplySound = loadMedia("supply");
-		trapSound = loadMedia("trap");
-		vaccineSound = loadMedia("vaccine");
-		zombieSound = loadMedia("zombie");
+		attackSound = Main.loadEffect("attack");
+		cureSound = Main.loadEffect("cure");
+		errorSound = Main.loadEffect("error");
+		explorerSound = Main.loadEffect("explorer");
+		fighterSound = Main.loadEffect("fighter");
+		hoverSound = Main.loadEffect("hover");
+		medicSound = Main.loadEffect("medic");
+		selectSound = Main.loadEffect("select");
+		supplySound = Main.loadEffect("supply");
+		trapSound = Main.loadEffect("trap");
+		vaccineSound = Main.loadEffect("vaccine");
+		zombieSound = Main.loadEffect("zombie");
 	}
 
 	public BorderPane getRoot() {
@@ -166,7 +161,7 @@ public class GameScene {
 					j = currentHero.getTarget().getLocation().y;
 				}
 				currentHero.cure();
-				play(cureSound);
+				Main.play(cureSound);
 				animate(i, j, Color.BLUE);
 			} catch (GameActionException e1) {
 				handleException(e1);
@@ -183,12 +178,12 @@ public class GameScene {
 				animate(currentHero.getLocation().x, currentHero.getLocation().y, Color.ORANGE);
 				display("Activated special action.");
 				if (currentHero instanceof Medic) {
-					play(medicSound);
+					Main.play(medicSound);
 					animate(i, j, Color.GREEN);
 				} else if (currentHero instanceof Fighter) {
-					play(fighterSound);
+					Main.play(fighterSound);
 				} else {
-					play(explorerSound);
+					Main.play(explorerSound);
 				}
 			} catch (GameActionException e1) {
 				handleException(e1);
@@ -207,14 +202,14 @@ public class GameScene {
 				switch (type) {
 				case 1 -> {
 					display("Trap cell!");
-					play(trapSound);
+					Main.play(trapSound);
 					animate(currentHero.getLocation().x, currentHero.getLocation().y, Color.RED);
 				}
 				case 2 -> {
-					play(supplySound);
+					Main.play(supplySound);
 				}
 				case 3 -> {
-					play(vaccineSound);
+					Main.play(vaccineSound);
 				}
 				}
 			} catch (GameActionException e1) {
@@ -246,7 +241,7 @@ public class GameScene {
 					j = currentHero.getTarget().getLocation().y;
 				}
 				currentHero.attack();
-				play(attackSound);
+				Main.play(attackSound);
 				animate(i, j, Color.RED);
 			} catch (GameActionException e1) {
 				handleException(e1);
@@ -492,7 +487,7 @@ public class GameScene {
 		// setting a listener to the card
 		result.setOnMouseEntered(e -> {
 			result.setId("CurrentHero");
-			play(hoverSound);
+			Main.play(hoverSound);
 		});
 		result.setOnMouseExited(e -> {
 			if (h != currentHero) {
@@ -501,7 +496,7 @@ public class GameScene {
 
 		});
 		result.setOnMouseClicked(e -> {
-			play(selectSound);
+			Main.play(selectSound);
 			currentHero = h;
 			updateScene();
 		});
@@ -674,12 +669,6 @@ public class GameScene {
 		updateScene();
 	}
 
-	public static MediaPlayer loadMedia(String name) {
-		String path = "assets/" + Game.mode + "/audio/effects/" + name + ".wav";
-		Media res = new Media(new File(path).toURI().toString());
-		return new MediaPlayer(res);
-	}
-
 	private void animate(int i, int j, Color c) {
 		animate(i, j, c, 150);
 	}
@@ -700,14 +689,9 @@ public class GameScene {
 		ft.play();
 	}
 
-	static void play(MediaPlayer m) {
-		m.seek(Duration.ZERO);
-		m.play();
-	}
-
 	private void handleException(GameActionException e) {
 		display(e.getMessage());
-		play(errorSound);
+		Main.play(errorSound);
 	}
 
 	private void endTurn() {
@@ -718,7 +702,7 @@ public class GameScene {
 		if (locations.size() > 0) {
 			root.setOnKeyPressed(null);
 			grid.setOnMouseClicked(null);
-			play(zombieSound);
+			Main.play(zombieSound);
 
 			Timer t = new Timer();
 			t.schedule(new TimerTask() {

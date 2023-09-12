@@ -20,12 +20,14 @@ import javafx.scene.media.MediaPlayer;
 import model.characters.Hero;
 
 /**
+ * A class resposnible for showing the game controls to the user.
+ * 
  * @author Belal Abouraya
  */
 public class TutorialScene {
 	private StackPane root;
 	private VBox vBox;
-	private MediaPlayer select = GameScene.loadMedia("select");
+	private MediaPlayer select = Main.loadEffect("select");
 
 	final private static double FONTSIZE = 30, IMAGEWIDTH = 50, IMAGEHEIGHT = 50;
 	private double fontSize = FONTSIZE, imageWidth = IMAGEWIDTH, imageHeight = IMAGEHEIGHT;
@@ -57,7 +59,7 @@ public class TutorialScene {
 		root.setFocusTraversable(true);
 		root.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.H) {
-				GameScene.play(select);
+				Main.play(select);
 				Main.scene.setRoot(prev);
 			}
 		});
