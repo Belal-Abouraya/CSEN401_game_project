@@ -128,7 +128,13 @@ public class Game {
 	 * around the map, spawns 10 zombies randomly around the map, adds the hero to
 	 * the controllable heroes pool and removing from the availableHeroes, and
 	 * finally allocating the hero to the bottom left corner of the map and making
-	 * the adjacent cells visible.
+	 * the adjacent cells visible. It also reset all game statistics namely:
+	 * <ul>
+	 * <li>startTime</li>
+	 * <li>deadZombies</li>
+	 * <li>deadHeroes</li>
+	 * <li>turns</li>
+	 * </ul>
 	 * 
 	 * @param h
 	 */
@@ -209,8 +215,8 @@ public class Game {
 	 * 
 	 * @throws NotEnoughActionsException
 	 * @throws InvalidTargetException
+	 * @return the locations of the attacking zombies
 	 */
-
 	public static ArrayList<Point> endTurn() {
 		ArrayList<Point> res = new ArrayList<>();
 		Zombie z1 = null;
@@ -244,7 +250,6 @@ public class Game {
 	 * A helper method that updates the map visibility in the game such that only
 	 * cells adjacent to heroes are visible
 	 */
-
 	private static void updateMapVisibility() {
 		for (int i = 0; i < 15; i++) {
 			for (int j = 0; j < 15; j++) {

@@ -61,7 +61,7 @@ public class FirstScene {
 	}
 
 	private ImageView createImageView() {
-		ImageView imageView = new ImageView("wallpapers/firstscene.png");
+		ImageView imageView = new ImageView(Main.loadImage("wallpapers/firstscene.png"));
 
 		imageView.setFitWidth(currWidth);
 		imageView.setFitHeight(currHeight);

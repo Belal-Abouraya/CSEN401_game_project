@@ -43,8 +43,8 @@ public class Zombie extends Character {
 	}
 
 	/**
-	 * removes the dead zombie from the zombies ArrayList and calls
-	 * {@link spawnZombie}.
+	 * removes the dead zombie from the zombies ArrayList, increments the deadZombie
+	 * variable and calls {@link spawnZombie}.
 	 */
 	@Override
 	public void onCharacterDeath() {

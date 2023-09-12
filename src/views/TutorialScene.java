@@ -35,6 +35,13 @@ public class TutorialScene {
 			fKey = Hero.loadIcon("f"), hKey = Hero.loadIcon("h"), rClick = Hero.loadIcon("rightclick"),
 			lClick = Hero.loadIcon("leftclick");
 
+	/**
+	 * Initializes vBox and adds the appropriate event listener for the keyboard,
+	 * window height and width. It uses the previous scene root to avoid having to
+	 * load the other scene again.
+	 * 
+	 * @param prev the root of scene that leads to the tutorial scene.
+	 */
 	public TutorialScene(Parent prev) {
 		root = new StackPane();
 		ImageView imageView = new ImageView(Main.loadImage("wallpapers/tutorialscene.jpg"));
@@ -58,6 +65,9 @@ public class TutorialScene {
 		});
 	}
 
+	/**
+	 * initializes vBox and add the labels to it.
+	 */
 	private void createStack() {
 		vBox = new VBox();
 
@@ -78,10 +88,20 @@ public class TutorialScene {
 		root.getChildren().add(vBox);
 	}
 
+	/**
+	 * 
+	 * @return the scene root
+	 */
 	public StackPane getRoot() {
 		return root;
 	}
 
+	/**
+	 * Creates a label with text and image and adds it to vBox.
+	 * 
+	 * @param image   the image to be displayed
+	 * @param message the text to be displayed
+	 */
 	private void create(Image image, String message) {
 		HBox hBox = new HBox(20);
 		Label l = new Label(message);
@@ -95,6 +115,13 @@ public class TutorialScene {
 		vBox.getChildren().add(hBox);
 	}
 
+	/**
+	 * Resizes the height of all scene elements when the window height chages.
+	 * 
+	 * @param obs
+	 * @param oldHeight
+	 * @param newHeight
+	 */
 	private void resizeHeight(ObservableValue<? extends Number> obs, Number oldHeight, Number newHeight) {
 		double scale = (double) newHeight;
 		scale /= GameScene.SCENEHEIGHT;
@@ -108,6 +135,13 @@ public class TutorialScene {
 		createStack();
 	}
 
+	/**
+	 * Resizes the width of all scene elements when the window width chages.
+	 * 
+	 * @param obs
+	 * @param oldWidth
+	 * @param newWidth
+	 */
 	private void resizeWidth(ObservableValue<? extends Number> obs, Number oldWidth, Number newWidth) {
 		double scale = (double) newWidth;
 		scale /= GameScene.SCENEWIDTH;
