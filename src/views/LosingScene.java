@@ -1,19 +1,14 @@
 package views;
 
-import java.io.File;
-
-import engine.Game;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
@@ -32,8 +27,8 @@ public class LosingScene {
 	Label no = new Label("NO");
 	ImageView imageView;
 	MediaPlayer mediaPlayer;
-	private MediaPlayer select = GameScene.loadMedia("select");
-	private MediaPlayer hover = GameScene.loadMedia("hover");
+	private MediaPlayer select = Main.loadEffect("select");
+	private MediaPlayer hover = Main.loadEffect("hover");
 
 	public StackPane getRoot() {
 
@@ -76,21 +71,13 @@ public class LosingScene {
 	}
 
 	private void getMediaPlayer() {
-		String path = "assets/" + Game.mode + "/audio/music/losingscene.mp3";
-		Media firstSceneMusic = new Media(new File(path).toURI().toString());
-		mediaPlayer = new MediaPlayer(firstSceneMusic);
+		mediaPlayer = Main.loadMusic("losingscene");
 		mediaPlayer.setAutoPlay(true);
 		mediaPlayer.setCycleCount(Timeline.INDEFINITE);
 	}
 
 	private void getImageView() {
-		Image image = null;
-		try {
-			String path = "assets/" + Game.mode + "/images/wallpapers/losingscene.jpg";
-			image = new Image(new File(path).toURI().toURL().toExternalForm());
-		} catch (Exception e) {
-		}
-		imageView = new ImageView(image);
+		imageView = new ImageView(Main.loadImage("wallpapers/losingscene.jpg"));
 		imageView.setFitHeight(Main.height);
 		imageView.setFitWidth(Main.width);
 	}

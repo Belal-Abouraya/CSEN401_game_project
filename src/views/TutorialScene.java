@@ -1,6 +1,5 @@
 package views;
 
-import java.io.File;
 import java.text.DecimalFormat;
 
 import engine.Game;
@@ -20,12 +19,14 @@ import javafx.scene.media.MediaPlayer;
 import model.characters.Hero;
 
 /**
+ * A class resposnible for showing the game controls to the user.
+ * 
  * @author Belal Abouraya
  */
 public class TutorialScene {
 	private StackPane root;
 	private VBox vBox;
-	private MediaPlayer select = GameScene.loadMedia("select");
+	private MediaPlayer select = Main.loadEffect("select");
 
 	final private static double FONTSIZE = 30, IMAGEWIDTH = 50, IMAGEHEIGHT = 50;
 	private double fontSize = FONTSIZE, imageWidth = IMAGEWIDTH, imageHeight = IMAGEHEIGHT;
@@ -36,13 +37,7 @@ public class TutorialScene {
 
 	public TutorialScene(Parent prev) {
 		root = new StackPane();
-		Image image = null;
-		try {
-			String path = "assets/" + Game.mode + "/images/wallpapers/tutorialscene.jpg";
-			image = new Image(new File(path).toURI().toURL().toExternalForm());
-		} catch (Exception e) {
-		}
-		ImageView imageView = new ImageView(image);
+		ImageView imageView = new ImageView(Main.loadImage("wallpapers/tutorialscene.jpg"));
 
 		imageView.setFitWidth(GameScene.SCENEWIDTH);
 		imageView.setFitHeight(GameScene.SCENEHEIGHT);
@@ -57,7 +52,7 @@ public class TutorialScene {
 		root.setFocusTraversable(true);
 		root.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.H) {
-				GameScene.play(select);
+				Main.play(select);
 				Main.scene.setRoot(prev);
 			}
 		});
