@@ -1,7 +1,6 @@
 package views;
 
 import javafx.event.Event;
-import javafx.event.EventTarget;
 import javafx.event.EventType;
 
 /**

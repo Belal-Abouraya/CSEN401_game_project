@@ -1,7 +1,6 @@
 package engine;
 
 import java.awt.Point;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,11 +11,10 @@ import java.util.Scanner;
 import exceptions.GameActionException;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughActionsException;
-import javafx.scene.image.Image;
 import model.characters.Explorer;
 import model.characters.Fighter;
-import model.characters.Medic;
 import model.characters.Hero;
+import model.characters.Medic;
 import model.characters.Zombie;
 import model.collectibles.Supply;
 import model.collectibles.Vaccine;

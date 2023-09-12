@@ -1,6 +1,5 @@
 package views;
 
-import java.io.File;
 import java.text.DecimalFormat;
 
 import engine.Game;
@@ -38,13 +37,7 @@ public class TutorialScene {
 
 	public TutorialScene(Parent prev) {
 		root = new StackPane();
-		Image image = null;
-		try {
-			String path = "assets/" + Game.mode + "/images/wallpapers/tutorialscene.jpg";
-			image = new Image(new File(path).toURI().toURL().toExternalForm());
-		} catch (Exception e) {
-		}
-		ImageView imageView = new ImageView(image);
+		ImageView imageView = new ImageView(Main.loadImage("wallpapers/tutorialscene.jpg"));
 
 		imageView.setFitWidth(GameScene.SCENEWIDTH);
 		imageView.setFitHeight(GameScene.SCENEHEIGHT);

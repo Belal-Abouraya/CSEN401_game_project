@@ -1,20 +1,16 @@
 package views;
 
-import java.io.File;
-
 import engine.Game;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 public class WinningScene {
@@ -63,25 +59,17 @@ public class WinningScene {
 		return stackPane;
 	}
 
+	private void getMediaPlayer() {
+		mediaPlayer = Main.loadMusic("winningscene");
+		mediaPlayer.setAutoPlay(true);
+		mediaPlayer.setCycleCount(Timeline.INDEFINITE);
+	}
+
 	private ImageView getImageView() {
-		Image image = null;
-		try {
-			String path = "assets/" + Game.mode + "/images/wallpapers/winnigscene.jpg";
-			image = new Image(new File(path).toURI().toURL().toExternalForm());
-		} catch (Exception e) {
-		}
-		ImageView imageView = new ImageView(image);
+		ImageView imageView = new ImageView(Main.loadImage("wallpapers/winningscene.jpg"));
 		imageView.setFitHeight(Main.height);
 		imageView.setFitWidth(Main.width);
 		return imageView;
-	}
-
-	private void getMediaPlayer() {
-		String path = "assets/" + Game.mode + "/audio/music/winningcene.mp3";
-		Media firstSceneMusic = new Media(new File(path).toURI().toString());
-		mediaPlayer = new MediaPlayer(firstSceneMusic);
-		mediaPlayer.setAutoPlay(true);
-		mediaPlayer.setCycleCount(Timeline.INDEFINITE);
 	}
 
 	private void createLabel() {

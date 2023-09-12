@@ -1,6 +1,5 @@
 package views;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -121,13 +120,7 @@ public class SecondScene {
 	}
 
 	private void createBackGround() {
-		Image image = null;
-		try {
-			String path = "assets/" + Game.mode + "/images/wallpapers/secondscene.jpeg";
-			image = new Image(new File(path).toURI().toURL().toExternalForm());
-		} catch (Exception e) {
-		}
-		wallpaper = new ImageView(image);
+		wallpaper = new ImageView(Main.loadImage("wallpapers/secondscene.jpeg"));
 		wallpaper.setFitHeight(Main.height);
 		wallpaper.setFitWidth(Main.width);
 	}

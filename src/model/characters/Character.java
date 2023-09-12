@@ -1,7 +1,6 @@
 package model.characters;
 
 import java.awt.Point;
-import java.io.File;
 
 import engine.Game;
 import exceptions.InvalidTargetException;

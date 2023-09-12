@@ -8,7 +8,6 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
@@ -62,13 +61,7 @@ public class FirstScene {
 	}
 
 	private ImageView createImageView() {
-		Image image = null;
-		try {
-			String path = "assets/" + Game.mode + "/images/wallpapers/firstscene.png";
-			image = new Image(new File(path).toURI().toURL().toExternalForm());
-		} catch (Exception e) {
-		}
-		ImageView imageView = new ImageView(image);
+		ImageView imageView = new ImageView("wallpapers/firstscene.png");
 
 		imageView.setFitWidth(currWidth);
 		imageView.setFitHeight(currHeight);
