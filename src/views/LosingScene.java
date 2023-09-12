@@ -17,6 +17,15 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
+/**
+ * LosingScene represents the last scene in the game in case the player looses.
+ * LosingScene should inform the player that they lost.
+ * The class gives the player the choice to quit the game or to play again.
+ * 
+ * @author Ahmed Hussein
+ *
+ */
+
 public class LosingScene {
 
 	Label yes = new Label("YES");

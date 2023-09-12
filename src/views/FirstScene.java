@@ -16,6 +16,15 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
+/**
+ * FirstScene is a class represents the first scene that appear when starting the game.
+ * The class only contains a wallpaper and a text.
+ * The class takes the player to the second scene.
+ * 
+ * @author Ahmed Hussein
+ *
+ */
+
 public class FirstScene {
 
 	public double currHeight = Main.height, currWidth = Main.width;

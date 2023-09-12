@@ -17,6 +17,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
+/**
+ * WinningScene represents the last scene in the game in case the player wins.
+ * WinningScene gratulates the player on his winning.
+ * The class gives the player the choice to quit the game or to play again. 
+ * 
+ * @author Ahmed Hussein
+ *
+ */
+
 public class WinningScene {
 
 	MediaPlayer mediaPlayer;

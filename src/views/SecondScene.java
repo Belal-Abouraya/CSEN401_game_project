@@ -29,6 +29,15 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import model.characters.Hero;
 
+/**
+ * SecondScene is the class represents the second scene in the game.
+ * The second scene is when the player is asked to choose his hero to start the game.
+ * The class contains the images of all heroes and their abilities.
+ * 
+ * @author Ahmed Hussein
+ *
+ */
+
 public class SecondScene {
 
 	private StackPane root = new StackPane();
