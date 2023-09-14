@@ -30,7 +30,7 @@ public class LosingScene {
 	private MediaPlayer select = Main.loadEffect("select");
 	private MediaPlayer hover = Main.loadEffect("hover");
 	private StackPane root;
-	private double opacity = 0.6;
+	private double opacity = 0.5;
 
 	/**
 	 * creates the root of the loosing scene. creates the WallPaper, yes and no
@@ -59,9 +59,9 @@ public class LosingScene {
 			Main.width = width;
 			imageView.setFitWidth(width);
 			hbox.setSpacing(50 * Main.width / 1280);
-			Main.updateLabelSize(tryAgain, Main.width, Main.height, 25 , "white" , "-fx-opacity: "+opacity+";");
-			Main.updateLabelSize(yes, Main.width, Main.height, 15 , "white" , "-fx-opacity: "+opacity+";");
-			Main.updateLabelSize(no, Main.width, Main.height, 15 , "white" , "-fx-opacity: "+opacity+";");
+			Main.updateLabelSize(tryAgain, Main.width, Main.height, 25, "white", "-fx-opacity: " + opacity + ";");
+			Main.updateLabelSize(yes, Main.width, Main.height, 15, "white", "-fx-opacity: " + opacity + ";");
+			Main.updateLabelSize(no, Main.width, Main.height, 15, "white", "-fx-opacity: " + opacity + ";");
 		});
 		root.heightProperty().addListener((obs, oldHeight, newHeight) -> {
 			double height = (double) newHeight;
