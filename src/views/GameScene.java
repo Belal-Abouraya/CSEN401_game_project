@@ -74,6 +74,11 @@ public class GameScene {
 	private MediaPlayer attackSound, cureSound, errorSound, explorerSound, fighterSound, hoverSound, medicSound,
 			selectSound, supplySound, trapSound, vaccineSound, zombieSound;
 
+	/**
+	 * Loads the assets, initializes the grid and heroesStack and adds the
+	 * appropriate event listeners for the keyboard, mouse and window height and
+	 * width.
+	 */
 	public GameScene() {
 		loadAssets();
 		root = new BorderPane();
@@ -103,6 +108,9 @@ public class GameScene {
 		root.setMinSize(0, 0);
 	}
 
+	/**
+	 * Loads all The required assets for the scene
+	 */
 	private void loadAssets() {
 		wallpaper = new ImageView(Main.loadImage("wallpapers/secondscene.jpeg"));
 		wallpaper.setFitWidth(SCENEWIDTH);
@@ -134,13 +142,16 @@ public class GameScene {
 		zombieSound = Main.loadEffect("zombie");
 	}
 
+	/**
+	 * @return The root of the scene
+	 */
 	public BorderPane getRoot() {
 		return root;
 	}
 
 	/**
-	 * handles the game controls. W, A, S, D for movement Q for cure E for using the
-	 * special action and R for ending the turn.
+	 * Handles the game keyboard controls. W, A, S, D for movement Q for cure E for
+	 * using the special action and R for ending the turn.
 	 */
 	private void Keyboardcontrols(KeyEvent e) {
 		Direction d = null;
@@ -227,7 +238,7 @@ public class GameScene {
 	}
 
 	/**
-	 * handles mouse inputs. Left click for attack
+	 * Handles the game mouse inputs. Left click for attack.
 	 */
 	private void mouseControls(MouseEvent e) {
 		if (e.getButton() == MouseButton.PRIMARY) {
@@ -251,11 +262,17 @@ public class GameScene {
 		}
 	}
 
+	/**
+	 * Updates all the scene elements after player actions.
+	 */
 	private void updateScene() {
 		updateGrid();
 		updateHeroesStack();
 	}
 
+	/**
+	 * Initializes the game updates label and adds proper formating to it.
+	 */
 	private void createUpdates() {
 		updates = new Label();
 		updates.setMinSize(heroCardWidth, updatesHeight);
@@ -270,6 +287,9 @@ public class GameScene {
 		ft.setAutoReverse(true);
 	}
 
+	/**
+	 * Initializes the grid, the herodBorder and the targetBorder.
+	 */
 	private void createGrid() {
 		heroBorder = new Region();
 		heroBorder.setMinSize(cellWidth, cellHeight);
@@ -296,6 +316,11 @@ public class GameScene {
 		}
 	}
 
+	/**
+	 * Updates the game grid according to the current state of the game. Handles all
+	 * different cell types and properly relocates the heroBorder and the
+	 * targetBorder.
+	 */
 	private void updateGrid() {
 		Cell map[][] = Game.map;
 		for (int i = map.length - 1; i >= 0; i--) {
@@ -360,6 +385,9 @@ public class GameScene {
 		}
 	}
 
+	/**
+	 * @return A StackPane which is the basic building block for all grid cells.
+	 */
 	private StackPane base() {
 		StackPane res = new StackPane();
 		ImageView base = new ImageView(empty);
@@ -374,6 +402,9 @@ public class GameScene {
 		return res;
 	}
 
+	/**
+	 * Initializes the heroesStack.
+	 */
 	private void createHeroesStack() {
 		Heroes = new VBox(10);
 		Heroes.setStyle("-fx-background-color : transparent;");
@@ -390,7 +421,9 @@ public class GameScene {
 		}
 	}
 
-	// create a stack of hero cards
+	/**
+	 * Updates the heroesStack according to the current state of the game.
+	 */
 	private void updateHeroesStack() {
 		ArrayList<Hero> h = Game.heroes;
 		VBox stack = Heroes;
@@ -402,7 +435,12 @@ public class GameScene {
 		}
 	}
 
-	// create a card for a hero
+	/**
+	 * fills the given StackPane with the given heroes information
+	 * 
+	 * @param h      the hero in the card.
+	 * @param result the card to fill.
+	 */
 	private void heroCard(Hero h, BorderPane result) {
 		result.getChildren().clear();
 		result.setPrefSize(heroCardWidth, heroCardHeight);
@@ -506,6 +544,12 @@ public class GameScene {
 		img.getChildren().add(Name);
 	}
 
+	/**
+	 * Creates the hero image in the card with appropriate clipping.
+	 * 
+	 * @param h the hero to be used.
+	 * @return a VBox with the hero's image.
+	 */
 	private VBox heroImage(Hero h) {
 		StackPane photo = new StackPane();
 		ImageView imageView = new ImageView(h.getIcon());
@@ -526,6 +570,14 @@ public class GameScene {
 		return res;
 	}
 
+	/**
+	 * Creates the hero stats bar in the card.
+	 * 
+	 * @param supplies  number of supplies.
+	 * @param vaccines  number of vaccines.
+	 * @param attackDmg attack damage.
+	 * @return HBox with the hero's collectible and damage information.
+	 */
 	private HBox collectibles(int supplies, int vaccines, int attackDmg) {
 		HBox res = new HBox(heroCardWidth * 0.05);
 		res.setAlignment(Pos.CENTER);
@@ -550,6 +602,12 @@ public class GameScene {
 		return res;
 	}
 
+	/**
+	 * Creates the image view for different icons on the hero card.
+	 * 
+	 * @param icon image file of the icon.
+	 * @return StackPane with icon on it.
+	 */
 	private StackPane icon(Image icon) {
 		StackPane res = new StackPane();
 		Rectangle rec = new Rectangle(iconWidth, iconHeight);
@@ -570,6 +628,14 @@ public class GameScene {
 		return res;
 	}
 
+	/**
+	 * Creates the hero card health bar and colors it according to the current hp
+	 * value.
+	 * 
+	 * @param current currnt hp.
+	 * @param max     max hp.
+	 * @return GridPane with health bar.
+	 */
 	private GridPane createHealthBar(double current, double max) {
 		GridPane res = new GridPane();
 		res.setHgap(healthBarWidth * 0.05);
@@ -596,6 +662,12 @@ public class GameScene {
 
 	}
 
+	/**
+	 * Creates a discretized bar for action points.
+	 * 
+	 * @param x number of action points.
+	 * @return returns a GridPane with the action points bar on it.
+	 */
 	private GridPane createActionPintsBar(int x) {
 		GridPane res = new GridPane();
 		res.setHgap(healthBarWidth * 0.07);
@@ -615,6 +687,13 @@ public class GameScene {
 
 	}
 
+	/**
+	 * Resizes the height of all scene elements when the window height chages.
+	 * 
+	 * @param obs
+	 * @param oldHeight
+	 * @param newHeight
+	 */
 	private void resizeHeight(ObservableValue<? extends Number> obs, Number oldHeight, Number newHeight) {
 		double scale = (double) newHeight;
 		scale /= SCENEHEIGHT;
@@ -641,6 +720,13 @@ public class GameScene {
 		updateScene();
 	}
 
+	/**
+	 * Resizes the width of all scene elements when the window width chages.
+	 * 
+	 * @param obs
+	 * @param oldWidth
+	 * @param newWidth
+	 */
 	private void resizeWidth(ObservableValue<? extends Number> obs, Number oldWidth, Number newWidth) {
 		double scale = (double) newWidth;
 		scale /= SCENEWIDTH;
@@ -666,10 +752,25 @@ public class GameScene {
 		updateScene();
 	}
 
+	/**
+	 * Animates a given grid cell with the given color.
+	 * 
+	 * @param i the row index of the cell
+	 * @param j the column index of the cell
+	 * @param c the color of the animation
+	 */
 	private void animate(int i, int j, Color c) {
 		animate(i, j, c, 150);
 	}
 
+	/**
+	 * Animates a given grid cell with the given color and duration.
+	 * 
+	 * @param i      the row index of the cell
+	 * @param j      the column index of the cell
+	 * @param c      the color of the animation
+	 * @param period the duration of the antimation
+	 */
 	private void animate(int i, int j, Color c, int period) {
 		Rectangle rect = (Rectangle) cells[i][j].getChildren().get(2);
 		rect.setFill(c);
@@ -681,16 +782,31 @@ public class GameScene {
 		ft1.play();
 	}
 
+	/**
+	 * Displays the given text on the updates label.
+	 * 
+	 * @param s text to be displayed
+	 */
 	private void display(String s) {
 		updates.setText(s);
 		ft.play();
 	}
 
+	/**
+	 * Handles game exceptions by displaying a message to the player and playing the
+	 * error sound
+	 * 
+	 * @param e the thrown exception
+	 */
 	private void handleException(GameActionException e) {
 		display(e.getMessage());
 		Main.play(errorSound);
 	}
 
+	/**
+	 * Handles the end turn action by animating the attacking zombies and playing
+	 * the zombie sound if needed.
+	 */
 	private void endTurn() {
 		ArrayList<Point> locations = Game.endTurn();
 		for (Point p : locations) {

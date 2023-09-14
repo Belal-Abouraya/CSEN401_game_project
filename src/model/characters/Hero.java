@@ -219,7 +219,8 @@ public abstract class Hero extends Character {
 	}
 
 	/**
-	 * removes the dead hero from the heroes ArrayList
+	 * removes the dead hero from the heroes ArrayList and increments the dead
+	 * Heroes variable.
 	 */
 	@Override
 	public void onCharacterDeath() {
