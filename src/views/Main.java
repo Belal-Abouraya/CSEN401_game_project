@@ -6,12 +6,16 @@ import java.net.MalformedURLException;
 import engine.Game;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
@@ -98,6 +102,36 @@ public class Main extends Application {
 		m.seek(Duration.ZERO);
 		m.play();
 	}
+	
+	static ImageView createImageView(String name) {
+		ImageView imageView = new ImageView(Main.loadImage(name));
+
+		imageView.setFitWidth(width);
+		imageView.setFitHeight(height);
+
+		return imageView;
+	}
+	
+	static void updateLabelSize(Label label, double width, double height, double prev) {
+		Platform.runLater(() -> {
+			double size = prev * Math.sqrt((width * height) / (720 * 1280));
+			label.setStyle("-fx-text-fill: white;-fx-font-size : " + size + " ;");
+		});
+	}
+	
+	static HBox createButton(String letter, String text, double textSize, double factor) {
+		HBox button = new HBox(6);
+		Image hKey = Hero.loadIcon(letter);
+		ImageView imageView = new ImageView(hKey);
+		double size = Math.min(Main.height, Main.width) / factor;
+		imageView.setFitHeight(size);
+		imageView.setFitWidth(size);
+		Label label = new Label(text);
+		label.setStyle("-fx-font-size : " + textSize + "px;");
+		button.getChildren().addAll(imageView, label);
+		return button;
+	}
+	
 //	public static void main(String[] args) {
 //		launch(args);
 //	}

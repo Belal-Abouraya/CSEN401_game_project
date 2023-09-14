@@ -26,10 +26,8 @@ import javafx.util.Duration;
 
 public class FirstScene {
 
-	public double currHeight = Main.height, currWidth = Main.width;
-
 	public StackPane getRoot() {
-		ImageView wallpaper = createImageView();
+		ImageView wallpaper = Main.createImageView("wallpapers/firstscene.png");
 		Label label = getStartGameLabel();
 		StackPane stackPane = new StackPane();
 		stackPane.getChildren().addAll(wallpaper, label);
@@ -54,45 +52,31 @@ public class FirstScene {
 			}
 		});
 		stackPane.widthProperty().addListener((observable, oldWidth, newWidth) -> {
-			currWidth = (double) newWidth;
+			double currWidth = (double) newWidth;
 			Main.width = currWidth;
 			wallpaper.setFitWidth(currWidth);
-			updateLabelSize(label, currWidth, currHeight);
+			Main.updateLabelSize(label, currWidth, Main.height ,30);
 		});
 		stackPane.heightProperty().addListener((observable, oldHeight, newHeight) -> {
-			currHeight = (double) newHeight;
+			double currHeight = (double) newHeight;
 			Main.height = currHeight;
 			wallpaper.setFitHeight(currHeight);
 			label.setTranslateY(0.4 * currHeight);
-			updateLabelSize(label, currWidth, currHeight);
+			Main.updateLabelSize(label, Main.width, currHeight ,30);
 		});
 		return stackPane;
-	}
-
-	private ImageView createImageView() {
-		ImageView imageView = new ImageView("wallpapers/firstscene.png");
-
-		imageView.setFitWidth(currWidth);
-		imageView.setFitHeight(currHeight);
-
-		return imageView;
 	}
 
 	private Label getStartGameLabel() {
 		Label label = new Label("Press Enter to Start");
 		label.setId("StartLabel");
-		label.setTranslateY(0.4 * currHeight);
+		label.setTranslateY(0.4 * Main.height);
 		Timeline timeLine = new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(label.opacityProperty(), 0)),
 				new KeyFrame(Duration.seconds(1), new KeyValue(label.opacityProperty(), 1)),
 				new KeyFrame(Duration.seconds(2), new KeyValue(label.opacityProperty(), 0)));
 		timeLine.setCycleCount(Timeline.INDEFINITE);
 		timeLine.play();
 		return label;
-	}
-
-	private void updateLabelSize(Label label, double width, double height) {
-		double size = 30 * Math.sqrt((width * height) / (720 * 1280));
-		label.setStyle("-fx-font-size : " + size + " ;");
 	}
 
 }

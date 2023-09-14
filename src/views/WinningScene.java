@@ -19,7 +19,7 @@ import javafx.scene.media.MediaPlayer;
  * The class gives the player the choice to quit the game or to play again. 
  * 
  * @author Ahmed Hussein
- *
+ * @author Belal Abouraya
  */
 
 public class WinningScene {
@@ -32,7 +32,7 @@ public class WinningScene {
 	private MediaPlayer select = Main.loadEffect("select");
 
 	public StackPane getRoot() {
-		ImageView imageView = getImageView();
+		ImageView imageView = Main.createImageView("wallpapers/winnigscene.jpg");
 		StackPane stackPane = new StackPane();
 		createLabel();
 		createVBox();
@@ -56,29 +56,22 @@ public class WinningScene {
 		stackPane.widthProperty().addListener((obs, oldWidth, newWidth) -> {
 			Main.width = (double) newWidth;
 			imageView.setFitWidth((double) newWidth);
-			SecondScene.updateLabelSize(label, Main.width, Main.height, 30);
+			Main.updateLabelSize(label, Main.width, Main.height, 30);
 			updateVbox();
 		});
 		stackPane.heightProperty().addListener((obs, oldHeight, newHeight) -> {
 			Main.height = (double) newHeight;
 			imageView.setFitHeight((double) newHeight);
-			SecondScene.updateLabelSize(label, Main.width, Main.height, 30);
+			Main.updateLabelSize(label, Main.width, Main.height, 30);
 			updateVbox();
 		});
 		return stackPane;
 	}
 
 	private void getMediaPlayer() {
-		mediaPlayer = Main.loadMusic("winningscene");
+		mediaPlayer = Main.loadMusic("winningcene");
 		mediaPlayer.setAutoPlay(true);
 		mediaPlayer.setCycleCount(Timeline.INDEFINITE);
-	}
-
-	private ImageView getImageView() {
-		ImageView imageView = new ImageView(Main.loadImage("wallpapers/winningscene.jpg"));
-		imageView.setFitHeight(Main.height);
-		imageView.setFitWidth(Main.width);
-		return imageView;
 	}
 
 	private void createLabel() {
@@ -94,8 +87,8 @@ public class WinningScene {
 	}
 
 	private void createVBox() {
-		HBox quit = SecondScene.createButton("q", "Quit", size, factor);
-		HBox play = SecondScene.createButton("r", "Replay", size, factor);
+		HBox quit = Main.createButton("q", "Quit", size, factor);
+		HBox play = Main.createButton("r", "Replay", size, factor);
 		vbox.getChildren().addAll(play, quit);
 	}
 

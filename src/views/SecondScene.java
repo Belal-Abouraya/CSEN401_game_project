@@ -34,7 +34,7 @@ import model.characters.Hero;
  * The class contains the images of all heroes and their abilities.
  * 
  * @author Ahmed Hussein
- *
+ * @author Belal Abouraya
  */
 
 public class SecondScene {
@@ -74,10 +74,10 @@ public class SecondScene {
 		if (Main.mediaPlayer.getStatus() != Status.PLAYING)
 			Main.mediaPlayer.play();
 		Main.mediaPlayer.setCycleCount(Timeline.INDEFINITE);
-		createBackGround();
+		wallpaper = Main.createImageView("wallpapers/secondscene.jpeg");
 		createSelectYourHeroLabel();
 		createHeroes();
-		button = createButton("h", "Help", textSize, 28);
+		button = Main.createButton("h", "Help", textSize, 28);
 
 		root.getChildren().addAll(wallpaper, borderPane, selectYourHero, model);
 
@@ -99,7 +99,7 @@ public class SecondScene {
 			double nw = (double) newWidth;
 			Main.width = nw;
 			wallpaper.setFitWidth(nw + 20);
-			updateLabelSize(selectYourHero, nw, Main.height, 30);
+			Main.updateLabelSize(selectYourHero, nw, Main.height, 30);
 			model.setFitHeight((1920 / 3) * Math.pow(Main.height / 720, 0.85));
 			model.setFitWidth((1480 / 3) * Math.sqrt(Main.width / 1280));
 			RectangleHeight = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.98;
@@ -113,7 +113,7 @@ public class SecondScene {
 			vbox.setSpacing(Main.height / 3.7);
 			Main.height = nh;
 			wallpaper.setFitHeight(nh + 20);
-			updateLabelSize(selectYourHero, Main.width, nh, 30);
+			Main.updateLabelSize(selectYourHero, Main.width, nh, 30);
 			model.setFitHeight((1920 / 3) * Math.pow(Main.height / 720, 0.85));
 			model.setFitWidth((1480 / 3) * Math.sqrt(Main.width / 1280));
 			RectangleHeight = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.98;
@@ -126,12 +126,6 @@ public class SecondScene {
 
 	public StackPane getRoot() {
 		return root;
-	}
-
-	private void createBackGround() {
-		wallpaper = new ImageView(Main.loadImage("wallpapers/secondscene.jpeg"));
-		wallpaper.setFitHeight(Main.height);
-		wallpaper.setFitWidth(Main.width);
 	}
 
 	private void createHeroes() {
@@ -151,24 +145,11 @@ public class SecondScene {
 		heroes.setVgap(2);
 	}
 
-	static HBox createButton(String letter, String text, double textSize, double factor) {
-		HBox button = new HBox(6);
-		Image hKey = Hero.loadIcon(letter);
-		ImageView imageView = new ImageView(hKey);
-		double size = Math.min(Main.height, Main.width) / factor;
-		imageView.setFitHeight(size);
-		imageView.setFitWidth(size);
-		Label label = new Label(text);
-		label.setStyle("-fx-font-size : " + textSize + "px;");
-		button.getChildren().addAll(imageView, label);
-		return button;
-	}
-
 	static void updateVBox(HBox button, double prev, double factor) {
 		double size = Math.min(Main.height, Main.width) / factor;
 		((ImageView) button.getChildren().get(0)).setFitHeight(size);
 		((ImageView) button.getChildren().get(0)).setFitWidth(size);
-		updateLabelSize((Label) button.getChildren().get(1), Main.width, Main.height, prev);
+		Main.updateLabelSize((Label) button.getChildren().get(1), Main.width, Main.height, prev);
 	}
 
 	private StackPane hero(Hero h, int x, int y) {
@@ -209,14 +190,6 @@ public class SecondScene {
 	private String createInfo(Hero h) {
 		return h.getName() + "\n" + "\n" + h.getType() + "\n" + "\n" + "Health : " + h.getMaxHp() + "\n"
 				+ "Actions per Turn : " + h.getMaxActions() + "\n" + "Attack Damage : " + h.getAttackDmg();
-	}
-
-	static void updateLabelSize(Label label, double width, double height, double prev) {
-		Platform.runLater(() -> {
-			double size = prev * Math.sqrt((width * height) / (720 * 1280));
-			label.setStyle("-fx-text-fill: white;-fx-font-size : " + size + " ;");
-		});
-
 	}
 
 	private void updateMapHeight() {
