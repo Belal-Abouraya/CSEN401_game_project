@@ -24,12 +24,21 @@ import javafx.scene.media.MediaPlayer;
 
 public class WinningScene {
 
-	MediaPlayer mediaPlayer;
-	Label label = new Label();
-	VBox vbox = new VBox(6);
-	double size = 23;
-	double factor = 23;
+	private MediaPlayer mediaPlayer;
+	private Label label = new Label();
+	private VBox vbox = new VBox(6);
+	private double size = 23;
+	private double factor = 23;
 	private MediaPlayer select = Main.loadEffect("select");
+	
+	/**
+	 * creates the root of the winning scene.
+	 * creates the WallPaper, replay and quit buttons, statistics label.
+	 * plays the winning music.
+	 * handles the resizing.
+	 * 
+	 * @return root
+	 */
 
 	public StackPane getRoot() {
 		ImageView imageView = Main.createImageView("wallpapers/winnigscene.jpg");
@@ -67,12 +76,20 @@ public class WinningScene {
 		});
 		return stackPane;
 	}
+	
+	/**
+	 * loads the winning music.
+	 */
 
 	private void getMediaPlayer() {
 		mediaPlayer = Main.loadMusic("winningcene");
 		mediaPlayer.setAutoPlay(true);
 		mediaPlayer.setCycleCount(Timeline.INDEFINITE);
 	}
+	
+	/**
+	 * creates statistics label.
+	 */
 
 	private void createLabel() {
 		label.setId("winnigLabel");
@@ -86,16 +103,24 @@ public class WinningScene {
 		label.setText(text);
 	}
 
+	/**
+	 * creates replay and quit buttons.
+	 */
+	
 	private void createVBox() {
 		HBox quit = Main.createButton("q", "Quit", size, factor);
 		HBox play = Main.createButton("r", "Replay", size, factor);
 		vbox.getChildren().addAll(play, quit);
 	}
+	
+	/**
+	 * updates the size of the buttons when resizing takes place.
+	 */
 
 	private void updateVbox() {
 		for (Node node : vbox.getChildren()) {
 			HBox currentButton = (HBox) node;
-			SecondScene.updateVBox(currentButton, size, factor);
+			SecondScene.updateHBox(currentButton, size, factor);
 		}
 	}
 }

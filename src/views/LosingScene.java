@@ -23,16 +23,24 @@ import javafx.util.Duration;
 
 public class LosingScene {
 
-	Label yes = new Label("YES");
-	Label no = new Label("NO");
-	ImageView imageView;
-	MediaPlayer mediaPlayer;
+	private Label yes = new Label("YES");
+	private Label no = new Label("NO");
+	private ImageView imageView = Main.createImageView("wallpapers/losingscene.jpg");
+	private MediaPlayer mediaPlayer;
 	private MediaPlayer select = Main.loadEffect("select");
 	private MediaPlayer hover = Main.loadEffect("hover");
 
+	/**
+	 * creates the root of the loosing scene.
+	 * creates the WallPaper, yes and no buttons.
+	 * plays the loosing music.
+	 * handles the resizing.
+	 * 
+	 * @return root
+	 */
+	
 	public StackPane getRoot() {
 
-		getImageView();
 		getMediaPlayer();
 		yes.setId("yes");
 		no.setId("no");
@@ -57,9 +65,9 @@ public class LosingScene {
 			Main.width = width;
 			imageView.setFitWidth(width);
 			hbox.setSpacing(50 * Main.width / 1280);
-			updateLabelSize(tryAgain, Main.width, Main.height, 25);
-			updateLabelSize(yes, Main.width, Main.height, 15);
-			updateLabelSize(no, Main.width, Main.height, 15);
+			Main.updateLabelSize(tryAgain, Main.width, Main.height, 25);
+			Main.updateLabelSize(yes, Main.width, Main.height, 15);
+			Main.updateLabelSize(no, Main.width, Main.height, 15);
 		});
 		stackPane.heightProperty().addListener((obs, oldHeight, newHeight) -> {
 			double height = (double) newHeight;
@@ -69,6 +77,10 @@ public class LosingScene {
 		});
 		return stackPane;
 	}
+	
+	/**
+	 * loads the loosing music.
+	 */
 
 	private void getMediaPlayer() {
 		mediaPlayer = Main.loadMusic("losingscene");
@@ -76,11 +88,9 @@ public class LosingScene {
 		mediaPlayer.setCycleCount(Timeline.INDEFINITE);
 	}
 
-	private void getImageView() {
-		imageView = new ImageView(Main.loadImage("wallpapers/losingscene.jpg"));
-		imageView.setFitHeight(Main.height);
-		imageView.setFitWidth(Main.width);
-	}
+	/**
+	 * creates the yes and no buttons.
+	 */
 
 	private void getLabels() {
 		updateLabel(yes);
@@ -96,6 +106,12 @@ public class LosingScene {
 		});
 	}
 
+	/**
+	 * deals with fading animation.
+	 * 
+	 * @param label
+	 */
+	
 	private void updateLabel(Label label) {
 		Timeline timeLine = new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(label.opacityProperty(), 0)),
 				new KeyFrame(Duration.seconds(1), new KeyValue(label.opacityProperty(), 1)),
@@ -110,11 +126,6 @@ public class LosingScene {
 			timeLine.stop();
 			label.setOpacity(1);
 		});
-	}
-
-	private void updateLabelSize(Label label, double width, double height, double prev) {
-		double size = prev * Math.sqrt((width * height) / (720 * 1280));
-		label.setStyle("-fx-font-size : " + size + " ;");
 	}
 
 }

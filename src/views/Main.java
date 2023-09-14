@@ -29,6 +29,10 @@ public class Main extends Application {
 	static double height = 720;
 	static Scene scene = new Scene(new Group());
 	static MediaPlayer mediaPlayer;
+	
+	/**
+	 * loads the font used in the game.
+	 */
 
 	@Override
 	public void init() {
@@ -38,6 +42,10 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * starts the game, creates the window, calls the first scene, handles the winning and loosing events
+	 */
 
 	@Override
 	public void start(Stage primaryStage) throws MalformedURLException {
@@ -53,8 +61,7 @@ public class Main extends Application {
 		try {
 			String path = "assets/" + Game.mode + "/images/icons/cursorImage.png";
 			image = new Image(new File(path).toURI().toURL().toExternalForm());
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 		ImageCursor imageCursor = new ImageCursor(image);
 		scene.setCursor(imageCursor);
 		window.setScene(scene);
@@ -69,39 +76,83 @@ public class Main extends Application {
 		window.addEventHandler(GameEvent.GAME_OVER, e -> window.getScene().setRoot((new LosingScene()).getRoot()));
 		window.show();
 	}
+	
+	/**
+	 * main method.
+	 * @param args
+	 */
 
 	public static void main(String[] args) {
 		launch(args);
 	}
+	
+	/**
+	 * responsible for loading images.
+	 * 
+	 * @param image name
+	 * @return image
+	 */
 
 	public static Image loadImage(String name) {
 		Image i = null;
 		try {
 			i = new Image(new File("assets/" + Game.mode + "/images/" + name).toURI().toURL().toExternalForm());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+		} catch (MalformedURLException e) { e.printStackTrace(); }
 		return i;
 	}
+	
+	/**
+	 * responsible for loading sound files.
+	 * 
+	 * @param file name
+	 * @return sound file
+	 */
 
 	private static MediaPlayer loadMedia(String name) {
 		String path = "assets/" + Game.mode + "/audio/" + name;
 		Media res = new Media(new File(path).toURI().toString());
 		return new MediaPlayer(res);
 	}
+	
+	/**
+	 * loads sound files from the "music" folder.
+	 * 
+	 * @param file name
+	 * @return mediaPlayer
+	 */
 
 	static MediaPlayer loadMusic(String name) {
 		return loadMedia("music/" + name + ".mp3");
 	}
+	
+	/**
+	 * loads sound files from the "effects" folder.
+	 * 
+	 * @param file name
+	 * @return mediaPlayer
+	 */
 
 	static MediaPlayer loadEffect(String name) {
 		return loadMedia("effects/" + name + ".wav");
 	}
 
+	/**
+	 * plays the sound file from the beginning.
+	 * 
+	 * @param mediaPlayer
+	 */
+	
 	static void play(MediaPlayer m) {
 		m.seek(Duration.ZERO);
 		m.play();
 	}
+	
+	/**
+	 * creates an ImageView that contains the image and set its dimensions.
+	 * 
+	 * @param image name
+	 * @return ImageView
+	 */
 	
 	static ImageView createImageView(String name) {
 		ImageView imageView = new ImageView(Main.loadImage(name));
@@ -112,12 +163,31 @@ public class Main extends Application {
 		return imageView;
 	}
 	
+	/**
+	 * does the resizing of the label and changes the size of the text inside it.
+	 * 
+	 * @param label
+	 * @param newWidth
+	 * @param newHeight
+	 * @param previous size
+	 */
+	
 	static void updateLabelSize(Label label, double width, double height, double prev) {
 		Platform.runLater(() -> {
 			double size = prev * Math.sqrt((width * height) / (720 * 1280));
 			label.setStyle("-fx-text-fill: white;-fx-font-size : " + size + " ;");
 		});
 	}
+	
+	/**
+	 * creates a letterButton.
+	 * 
+	 * @param letter
+	 * @param text
+	 * @param textSize
+	 * @param factor
+	 * @return letterButton
+	 */
 	
 	static HBox createButton(String letter, String text, double textSize, double factor) {
 		HBox button = new HBox(6);
@@ -132,19 +202,4 @@ public class Main extends Application {
 		return button;
 	}
 	
-//	public static void main(String[] args) {
-//		launch(args);
-//	}
-//
-//	@Override
-//	public void start(Stage primaryStage) throws FileNotFoundException, IOException {
-//		Game.loadHeroes("assets/classic/heroes.csv");
-//		Game.startGame(Game.availableHeroes.get(0));
-//		WinningScene g = new WinningScene();
-////		TutorialScene t = new TutorialScene();
-//		primaryStage.setScene(new Scene(g.getRoot()));
-//		primaryStage.getScene().getStylesheets().add(this.getClass().getResource(Game.mode + ".css").toExternalForm());
-//		primaryStage.setFullScreen(true);
-//		primaryStage.show();
-//	}
 }

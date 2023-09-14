@@ -25,6 +25,15 @@ import javafx.util.Duration;
  */
 
 public class FirstScene {
+	
+	/**
+	 * creates the root of the first scene.
+	 * creates the WallPaper, start label.
+	 * plays the game music.
+	 * handles the resizing.
+	 * 
+	 * @return root
+	 */
 
 	public StackPane getRoot() {
 		ImageView wallpaper = Main.createImageView("wallpapers/firstscene.png");
@@ -67,6 +76,13 @@ public class FirstScene {
 		return stackPane;
 	}
 
+	/**
+	 * creates the start label.
+	 * creates the fading animation of the label.
+	 * 
+	 * @return startLabel
+	 */
+	
 	private Label getStartGameLabel() {
 		Label label = new Label("Press Enter to Start");
 		label.setId("StartLabel");

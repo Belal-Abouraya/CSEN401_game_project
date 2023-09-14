@@ -10,7 +10,6 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -50,34 +49,39 @@ public class SecondScene {
 	private Color brightColor = Color.DARKGRAY.brighter();
 	private Color darkColor = Color.DARKGRAY;
 	private StackPane[][] mapPane = new StackPane[d1][d2];
-
-	private double RectangleWidth;
-	private double RectangleHeight;
-	private ImageView wallpaper;
-	private ImageView model = new ImageView();
-	private Label selectYourHero;
-	private Label info = new Label();
-	private VBox vbox = new VBox(Main.height / 3.7);
-	private HBox button = new HBox(6);
-	private Timeline timeLine = new Timeline();
-
+	
 	private MediaPlayer select = Main.loadEffect("select");
 	private MediaPlayer hover = Main.loadEffect("hover");
 	private double textSize = 23;
 	private double factor = 23;
 
+	private double RectangleWidth;
+	private double RectangleHeight;
+	private ImageView wallpaper = Main.createImageView("wallpapers/secondscene.jpeg");;
+	private ImageView model = new ImageView();
+	private Label selectYourHero;
+	private Label info = new Label();
+	private VBox vbox = new VBox(Main.height / 3.7);
+	private HBox button = Main.createButton("h", "Help", textSize, 28);
+	private Timeline timeLine = new Timeline();
+
+	/**
+	 * creates the root of the second scene.
+	 * creates the WallPaper, heroes grid, full hero ImageView, hero's information section, selectHero label.
+	 * plays the game music.
+	 * handles the resizing.
+	 * 
+	 */
+	
 	public SecondScene() {
 		try {
 			Game.loadHeroes("assets/" + Game.mode + "/heroes.csv");
-		} catch (IOException e1) {
-		}
+		} catch (IOException e1) {}
 		if (Main.mediaPlayer.getStatus() != Status.PLAYING)
 			Main.mediaPlayer.play();
 		Main.mediaPlayer.setCycleCount(Timeline.INDEFINITE);
-		wallpaper = Main.createImageView("wallpapers/secondscene.jpeg");
 		createSelectYourHeroLabel();
 		createHeroes();
-		button = Main.createButton("h", "Help", textSize, 28);
 
 		root.getChildren().addAll(wallpaper, borderPane, selectYourHero, model);
 
@@ -106,7 +110,7 @@ public class SecondScene {
 			RectangleWidth = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.98;
 			updateMapWidth();
 			updateLabel();
-			updateVBox(button, textSize, factor);
+			updateHBox(button, textSize, factor);
 		});
 		borderPane.heightProperty().addListener((observable, oldHeight, newHeight) -> {
 			double nh = (double) newHeight;
@@ -120,14 +124,22 @@ public class SecondScene {
 			RectangleWidth = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.98;
 			updateMapHeight();
 			updateLabel();
-			updateVBox(button, textSize, factor);
+			updateHBox(button, textSize, factor);
 		});
 	}
+	
+	/**
+	 * @return the root of the second scene.
+	 */
 
 	public StackPane getRoot() {
 		return root;
 	}
 
+	/**
+	 * creates heroes grid.
+	 */
+	
 	private void createHeroes() {
 		ArrayList<Hero> allHeroes = Game.availableHeroes;
 		int count = 0;
@@ -144,13 +156,30 @@ public class SecondScene {
 		heroes.setHgap(2);
 		heroes.setVgap(2);
 	}
+	
+	/**
+	 * deals with resizing when takes place.
+	 * 
+	 * @param button
+	 * @param previous size
+	 * @param factor
+	 */
 
-	static void updateVBox(HBox button, double prev, double factor) {
+	static void updateHBox (HBox button, double prev, double factor) {
 		double size = Math.min(Main.height, Main.width) / factor;
 		((ImageView) button.getChildren().get(0)).setFitHeight(size);
 		((ImageView) button.getChildren().get(0)).setFitWidth(size);
 		Main.updateLabelSize((Label) button.getChildren().get(1), Main.width, Main.height, prev);
 	}
+	
+	/**
+	 * creates one hero cell in the heroes grid.
+	 * 
+	 * @param hero
+	 * @param xCoordinte
+	 * @param yCoordinate
+	 * @return heroCell
+	 */
 
 	private StackPane hero(Hero h, int x, int y) {
 		StackPane res = new StackPane();
@@ -176,6 +205,10 @@ public class SecondScene {
 		return res;
 	}
 
+	/**
+	 * creates selectHero label.
+	 */
+	
 	private void createSelectYourHeroLabel() {
 		selectYourHero = new Label("Select Your Hero");
 		selectYourHero.setId("SelectHeroLabel");
@@ -187,10 +220,21 @@ public class SecondScene {
 		timeLine.play();
 	}
 
+	/**
+	 * gets the information that will be displayed in the information section.
+	 * @param hero
+	 * @return heros's information
+	 */
+	
 	private String createInfo(Hero h) {
 		return h.getName() + "\n" + "\n" + h.getType() + "\n" + "\n" + "Health : " + h.getMaxHp() + "\n"
 				+ "Actions per Turn : " + h.getMaxActions() + "\n" + "Attack Damage : " + h.getAttackDmg();
 	}
+	
+	/**
+	 * deals with resizing when takes place.
+	 * updates the map height when changed.
+	 */
 
 	private void updateMapHeight() {
 		for (int i = 0; i < d1; i++) {
@@ -204,6 +248,11 @@ public class SecondScene {
 			}
 		}
 	}
+	
+	/**
+	 * deals with resizing when takes place.
+	 * updates the map width when changed.
+	 */
 
 	private void updateMapWidth() {
 		for (int i = 0; i < d1; i++) {
@@ -218,6 +267,10 @@ public class SecondScene {
 		}
 	}
 
+	/**
+	 * deals with resizing when takes place.
+	 * updates label size.
+	 */
 	private void updateLabel() {
 		Platform.runLater(() -> {
 			info.setMinHeight(RectangleWidth * 2);
@@ -227,6 +280,10 @@ public class SecondScene {
 		});
 
 	}
+	
+	/**
+	 * updates the scene when player uses the keyboard.
+	 */
 
 	private void keyboardHandle(KeyEvent e) {
 		boolean isValid = false;
@@ -266,12 +323,27 @@ public class SecondScene {
 			handleHelper(row, column);
 		}
 	}
+	
+	/**
+	 * updates the scene when player uses the mouse.
+	 * 
+	 * @param e
+	 * @param x
+	 * @param y
+	 */
 
 	private void mouseHandle(MouseEvent e, int x, int y) {
 		hover.seek(Duration.ZERO);
 		hover.play();
 		handleHelper(x, y);
 	}
+	
+	/**
+	 * helper method to handle the change in the scene.
+	 * 
+	 * @param xCoordinate
+	 * @param yCoordinate
+	 */
 
 	private void handleHelper(int x, int y) {
 		info.setVisible(true);
