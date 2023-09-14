@@ -23,13 +23,21 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.characters.Hero;
 
+/**
+ * The runner class that handles launching the game. It contains some helper
+ * methods that are used in other classes
+ * 
+ * @author Ahmed Hussein
+ * @author Belal Abouraya
+ */
+
 public class Main extends Application {
 	static Stage window;
 	static double width = 1280;
 	static double height = 720;
 	static Scene scene = new Scene(new Group());
 	static MediaPlayer mediaPlayer;
-	
+
 	/**
 	 * loads the font used in the game.
 	 */
@@ -42,9 +50,10 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
-	 * starts the game, creates the window, calls the first scene, handles the winning and loosing events
+	 * starts the game, creates the window, calls the first scene, handles the
+	 * winning and loosing events.
 	 */
 
 	@Override
@@ -61,7 +70,8 @@ public class Main extends Application {
 		try {
 			String path = "assets/" + Game.mode + "/images/icons/cursorImage.png";
 			image = new Image(new File(path).toURI().toURL().toExternalForm());
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		ImageCursor imageCursor = new ImageCursor(image);
 		scene.setCursor(imageCursor);
 		window.setScene(scene);
@@ -76,16 +86,11 @@ public class Main extends Application {
 		window.addEventHandler(GameEvent.GAME_OVER, e -> window.getScene().setRoot((new LosingScene()).getRoot()));
 		window.show();
 	}
-	
-	/**
-	 * main method.
-	 * @param args
-	 */
 
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
 	/**
 	 * responsible for loading images.
 	 * 
@@ -97,10 +102,12 @@ public class Main extends Application {
 		Image i = null;
 		try {
 			i = new Image(new File("assets/" + Game.mode + "/images/" + name).toURI().toURL().toExternalForm());
-		} catch (MalformedURLException e) { e.printStackTrace(); }
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 		return i;
 	}
-	
+
 	/**
 	 * responsible for loading sound files.
 	 * 
@@ -113,7 +120,7 @@ public class Main extends Application {
 		Media res = new Media(new File(path).toURI().toString());
 		return new MediaPlayer(res);
 	}
-	
+
 	/**
 	 * loads sound files from the "music" folder.
 	 * 
@@ -124,7 +131,7 @@ public class Main extends Application {
 	static MediaPlayer loadMusic(String name) {
 		return loadMedia("music/" + name + ".mp3");
 	}
-	
+
 	/**
 	 * loads sound files from the "effects" folder.
 	 * 
@@ -141,19 +148,19 @@ public class Main extends Application {
 	 * 
 	 * @param mediaPlayer
 	 */
-	
+
 	static void play(MediaPlayer m) {
 		m.seek(Duration.ZERO);
 		m.play();
 	}
-	
+
 	/**
 	 * creates an ImageView that contains the image and set its dimensions.
 	 * 
 	 * @param image name
 	 * @return ImageView
 	 */
-	
+
 	static ImageView createImageView(String name) {
 		ImageView imageView = new ImageView(Main.loadImage(name));
 
@@ -162,23 +169,23 @@ public class Main extends Application {
 
 		return imageView;
 	}
-	
+
 	/**
 	 * does the resizing of the label and changes the size of the text inside it.
 	 * 
 	 * @param label
 	 * @param newWidth
 	 * @param newHeight
-	 * @param previous size
+	 * @param previous  size
 	 */
-	
+
 	static void updateLabelSize(Label label, double width, double height, double prev) {
 		Platform.runLater(() -> {
 			double size = prev * Math.sqrt((width * height) / (720 * 1280));
 			label.setStyle("-fx-text-fill: white;-fx-font-size : " + size + " ;");
 		});
 	}
-	
+
 	/**
 	 * creates a letterButton.
 	 * 
@@ -188,7 +195,7 @@ public class Main extends Application {
 	 * @param factor
 	 * @return letterButton
 	 */
-	
+
 	static HBox createButton(String letter, String text, double textSize, double factor) {
 		HBox button = new HBox(6);
 		Image hKey = Hero.loadIcon(letter);
@@ -201,5 +208,5 @@ public class Main extends Application {
 		button.getChildren().addAll(imageView, label);
 		return button;
 	}
-	
+
 }

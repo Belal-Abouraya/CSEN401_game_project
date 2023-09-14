@@ -15,8 +15,8 @@ import javafx.scene.media.MediaPlayer;
 
 /**
  * WinningScene represents the last scene in the game in case the player wins.
- * WinningScene gratulates the player on his winning.
- * The class gives the player the choice to quit the game or to play again. 
+ * WinningScene gratulates the player on his winning. The class gives the player
+ * the choice to quit the game or to play again.
  * 
  * @author Ahmed Hussein
  * @author Belal Abouraya
@@ -30,27 +30,24 @@ public class WinningScene {
 	private double size = 23;
 	private double factor = 23;
 	private MediaPlayer select = Main.loadEffect("select");
-	
-	/**
-	 * creates the root of the winning scene.
-	 * creates the WallPaper, replay and quit buttons, statistics label.
-	 * plays the winning music.
-	 * handles the resizing.
-	 * 
-	 * @return root
-	 */
+	private StackPane root;
 
-	public StackPane getRoot() {
+	/**
+	 * creates the root of the winning scene. creates the WallPaper, replay and quit
+	 * buttons, statistics label. plays the winning music. handles the resizing.
+	 * 
+	 */
+	public WinningScene() {
 		ImageView imageView = Main.createImageView("wallpapers/winnigscene.jpg");
-		StackPane stackPane = new StackPane();
+		root = new StackPane();
 		createLabel();
 		createVBox();
-		stackPane.getChildren().addAll(imageView, label, vbox);
+		root.getChildren().addAll(imageView, label, vbox);
 		vbox.setAlignment(Pos.BOTTOM_LEFT);
 		getMediaPlayer();
-		stackPane.setFocusTraversable(true);
-		Platform.runLater(() -> stackPane.requestFocus());
-		stackPane.setOnKeyPressed(e -> {
+		root.setFocusTraversable(true);
+		Platform.runLater(() -> root.requestFocus());
+		root.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.Q) {
 				select.play();
 				Main.window.close();
@@ -62,21 +59,28 @@ public class WinningScene {
 			}
 		});
 
-		stackPane.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+		root.widthProperty().addListener((obs, oldWidth, newWidth) -> {
 			Main.width = (double) newWidth;
 			imageView.setFitWidth((double) newWidth);
 			Main.updateLabelSize(label, Main.width, Main.height, 30);
 			updateVbox();
 		});
-		stackPane.heightProperty().addListener((obs, oldHeight, newHeight) -> {
+		root.heightProperty().addListener((obs, oldHeight, newHeight) -> {
 			Main.height = (double) newHeight;
 			imageView.setFitHeight((double) newHeight);
 			Main.updateLabelSize(label, Main.width, Main.height, 30);
 			updateVbox();
 		});
-		return stackPane;
 	}
-	
+
+	/**
+	 * @return root
+	 */
+
+	public StackPane getRoot() {
+		return root;
+	}
+
 	/**
 	 * loads the winning music.
 	 */
@@ -86,7 +90,7 @@ public class WinningScene {
 		mediaPlayer.setAutoPlay(true);
 		mediaPlayer.setCycleCount(Timeline.INDEFINITE);
 	}
-	
+
 	/**
 	 * creates statistics label.
 	 */
@@ -106,13 +110,13 @@ public class WinningScene {
 	/**
 	 * creates replay and quit buttons.
 	 */
-	
+
 	private void createVBox() {
 		HBox quit = Main.createButton("q", "Quit", size, factor);
 		HBox play = Main.createButton("r", "Replay", size, factor);
 		vbox.getChildren().addAll(play, quit);
 	}
-	
+
 	/**
 	 * updates the size of the buttons when resizing takes place.
 	 */

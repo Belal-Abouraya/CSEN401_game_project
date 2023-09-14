@@ -14,8 +14,8 @@ import javafx.util.Duration;
 
 /**
  * LosingScene represents the last scene in the game in case the player looses.
- * LosingScene should inform the player that they lost.
- * The class gives the player the choice to quit the game or to play again.
+ * LosingScene should inform the player that they lost. The class gives the
+ * player the choice to quit the game or to play again.
  * 
  * @author Ahmed Hussein
  *
@@ -29,18 +29,13 @@ public class LosingScene {
 	private MediaPlayer mediaPlayer;
 	private MediaPlayer select = Main.loadEffect("select");
 	private MediaPlayer hover = Main.loadEffect("hover");
+	private StackPane root;
 
 	/**
-	 * creates the root of the loosing scene.
-	 * creates the WallPaper, yes and no buttons.
-	 * plays the loosing music.
-	 * handles the resizing.
-	 * 
-	 * @return root
+	 * creates the root of the loosing scene. creates the WallPaper, yes and no
+	 * buttons. plays the loosing music. handles the resizing.
 	 */
-	
-	public StackPane getRoot() {
-
+	public LosingScene() {
 		getMediaPlayer();
 		yes.setId("yes");
 		no.setId("no");
@@ -58,9 +53,9 @@ public class LosingScene {
 		vbox.setAlignment(Pos.CENTER);
 		vbox.setTranslateY(120 * Main.height * Main.height / 518400);
 
-		StackPane stackPane = new StackPane();
-		stackPane.getChildren().addAll(imageView, vbox);
-		stackPane.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+		root = new StackPane();
+		root.getChildren().addAll(imageView, vbox);
+		root.widthProperty().addListener((obs, oldWidth, newWidth) -> {
 			double width = (double) newWidth;
 			Main.width = width;
 			imageView.setFitWidth(width);
@@ -69,15 +64,22 @@ public class LosingScene {
 			Main.updateLabelSize(yes, Main.width, Main.height, 15);
 			Main.updateLabelSize(no, Main.width, Main.height, 15);
 		});
-		stackPane.heightProperty().addListener((obs, oldHeight, newHeight) -> {
+		root.heightProperty().addListener((obs, oldHeight, newHeight) -> {
 			double height = (double) newHeight;
 			Main.width = height;
 			imageView.setFitHeight(height);
 			vbox.setTranslateY(120 * Main.height * Main.height / 518400);
 		});
-		return stackPane;
 	}
-	
+
+	/**
+	 * @return root
+	 */
+
+	public StackPane getRoot() {
+		return root;
+	}
+
 	/**
 	 * loads the loosing music.
 	 */
@@ -111,7 +113,7 @@ public class LosingScene {
 	 * 
 	 * @param label
 	 */
-	
+
 	private void updateLabel(Label label) {
 		Timeline timeLine = new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(label.opacityProperty(), 0)),
 				new KeyFrame(Duration.seconds(1), new KeyValue(label.opacityProperty(), 1)),
@@ -127,5 +129,4 @@ public class LosingScene {
 			label.setOpacity(1);
 		});
 	}
-
 }
