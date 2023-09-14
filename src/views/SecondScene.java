@@ -103,7 +103,7 @@ public class SecondScene {
 			double nw = (double) newWidth;
 			Main.width = nw;
 			wallpaper.setFitWidth(nw + 20);
-			Main.updateLabelSize(selectYourHero, nw, Main.height, 30);
+			Main.updateLabelSize(selectYourHero, nw, Main.height, 30 , "gray","");
 			model.setFitHeight((1920 / 3) * Math.pow(Main.height / 720, 0.85));
 			model.setFitWidth((1480 / 3) * Math.sqrt(Main.width / 1280));
 			RectangleHeight = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.98;
@@ -117,7 +117,7 @@ public class SecondScene {
 			vbox.setSpacing(Main.height / 3.7);
 			Main.height = nh;
 			wallpaper.setFitHeight(nh + 20);
-			Main.updateLabelSize(selectYourHero, Main.width, nh, 30);
+			Main.updateLabelSize(selectYourHero, Main.width, nh, 30 , "gray","");
 			model.setFitHeight((1920 / 3) * Math.pow(Main.height / 720, 0.85));
 			model.setFitWidth((1480 / 3) * Math.sqrt(Main.width / 1280));
 			RectangleHeight = Math.pow(Main.height * Main.width, 1.0 / 3) / 0.98;
@@ -169,7 +169,7 @@ public class SecondScene {
 		double size = Math.min(Main.height, Main.width) / factor;
 		((ImageView) button.getChildren().get(0)).setFitHeight(size);
 		((ImageView) button.getChildren().get(0)).setFitWidth(size);
-		Main.updateLabelSize((Label) button.getChildren().get(1), Main.width, Main.height, prev);
+		Main.updateLabelSize((Label) button.getChildren().get(1), Main.width, Main.height, prev , "white", "");
 	}
 	
 	/**

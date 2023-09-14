@@ -62,13 +62,13 @@ public class WinningScene {
 		root.widthProperty().addListener((obs, oldWidth, newWidth) -> {
 			Main.width = (double) newWidth;
 			imageView.setFitWidth((double) newWidth);
-			Main.updateLabelSize(label, Main.width, Main.height, 30);
+			Main.updateLabelSize(label, Main.width, Main.height, 30 , "white" , "");
 			updateVbox();
 		});
 		root.heightProperty().addListener((obs, oldHeight, newHeight) -> {
 			Main.height = (double) newHeight;
 			imageView.setFitHeight((double) newHeight);
-			Main.updateLabelSize(label, Main.width, Main.height, 30);
+			Main.updateLabelSize(label, Main.width, Main.height, 30 , "white" , "");
 			updateVbox();
 		});
 	}

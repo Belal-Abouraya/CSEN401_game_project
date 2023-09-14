@@ -30,6 +30,7 @@ public class LosingScene {
 	private MediaPlayer select = Main.loadEffect("select");
 	private MediaPlayer hover = Main.loadEffect("hover");
 	private StackPane root;
+	private double opacity = 0.6;
 
 	/**
 	 * creates the root of the loosing scene. creates the WallPaper, yes and no
@@ -37,8 +38,6 @@ public class LosingScene {
 	 */
 	public LosingScene() {
 		getMediaPlayer();
-		yes.setId("yes");
-		no.setId("no");
 		getLabels();
 
 		HBox hbox = new HBox(50 * Main.width / 1280);
@@ -60,9 +59,9 @@ public class LosingScene {
 			Main.width = width;
 			imageView.setFitWidth(width);
 			hbox.setSpacing(50 * Main.width / 1280);
-			Main.updateLabelSize(tryAgain, Main.width, Main.height, 25);
-			Main.updateLabelSize(yes, Main.width, Main.height, 15);
-			Main.updateLabelSize(no, Main.width, Main.height, 15);
+			Main.updateLabelSize(tryAgain, Main.width, Main.height, 25 , "white" , "-fx-opacity: "+opacity+";");
+			Main.updateLabelSize(yes, Main.width, Main.height, 15 , "white" , "-fx-opacity: "+opacity+";");
+			Main.updateLabelSize(no, Main.width, Main.height, 15 , "white" , "-fx-opacity: "+opacity+";");
 		});
 		root.heightProperty().addListener((obs, oldHeight, newHeight) -> {
 			double height = (double) newHeight;
@@ -116,7 +115,7 @@ public class LosingScene {
 
 	private void updateLabel(Label label) {
 		Timeline timeLine = new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(label.opacityProperty(), 0)),
-				new KeyFrame(Duration.seconds(1), new KeyValue(label.opacityProperty(), 1)),
+				new KeyFrame(Duration.seconds(1), new KeyValue(label.opacityProperty(), opacity)),
 				new KeyFrame(Duration.seconds(2), new KeyValue(label.opacityProperty(), 0)));
 		timeLine.setCycleCount(Timeline.INDEFINITE);
 		label.setOnMouseEntered(e -> {
@@ -126,7 +125,7 @@ public class LosingScene {
 		label.setOnMouseExited(e -> {
 			hover.stop();
 			timeLine.stop();
-			label.setOpacity(1);
+			label.setOpacity(opacity);
 		});
 	}
 }

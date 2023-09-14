@@ -172,17 +172,20 @@ public class Main extends Application {
 
 	/**
 	 * does the resizing of the label and changes the size of the text inside it.
+	 * it also handles the style of the label.
 	 * 
 	 * @param label
-	 * @param newWidth
-	 * @param newHeight
-	 * @param previous  size
+	 * @param width
+	 * @param height
+	 * @param prev
+	 * @param color
+	 * @param additionalStyle
 	 */
-
-	static void updateLabelSize(Label label, double width, double height, double prev) {
+	static void updateLabelSize(Label label, double width, double height, double prev ,
+			String color , String additionalStyle) {
 		Platform.runLater(() -> {
 			double size = prev * Math.sqrt((width * height) / (720 * 1280));
-			label.setStyle("-fx-text-fill: white;-fx-font-size : " + size + " ;");
+			label.setStyle("-fx-text-fill: "+color+";-fx-font-size : " + size + " ;"+additionalStyle);
 		});
 	}
 

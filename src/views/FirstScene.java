@@ -64,14 +64,14 @@ public class FirstScene {
 			double currWidth = (double) newWidth;
 			Main.width = currWidth;
 			wallpaper.setFitWidth(currWidth);
-			Main.updateLabelSize(label, currWidth, Main.height ,30);
+			Main.updateLabelSize(label, currWidth, Main.height ,30,"white","");
 		});
 		stackPane.heightProperty().addListener((observable, oldHeight, newHeight) -> {
 			double currHeight = (double) newHeight;
 			Main.height = currHeight;
 			wallpaper.setFitHeight(currHeight);
 			label.setTranslateY(0.4 * currHeight);
-			Main.updateLabelSize(label, Main.width, currHeight ,30);
+			Main.updateLabelSize(label, Main.width, currHeight ,30,"white","");
 		});
 		return stackPane;
 	}
